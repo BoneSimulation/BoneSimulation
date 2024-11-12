@@ -92,5 +92,6 @@ conda install -c conda-forge dxchange
 pip install ciclope[all]
 pip install PyMCubes
  ````
-
+## ich habe aber bereits eine ".bat"-Datei für Windows erstellt, sodass ihr das Anaconda Zeugs nicht manuell installieren müsst! ;)
 ### wenn es Probleme bei der Installation gibt, einfach mich Fragen :) 
+
