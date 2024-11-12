@@ -1,12 +1,12 @@
-#!/bin/bash
+@echo off
 
-# Erstellt Conda-Umgebung
+REM Erstellt Conda-Umgebung
 conda create --name py3818 python==3.12.7 -y
 
-# Aktiviert Conda-Umgebung
-source activate py3818
+REM Aktiviert Conda-Umgebung
+call conda activate py3818
 
-# Installation der benötigten Pakete
+REM Installiert benötigten Pakete
 conda install -c conda-forge numpy -y
 conda install -c conda-forge scipy -y
 conda install -c conda-forge scikit-image -y
