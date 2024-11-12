@@ -1,0 +1,17 @@
+name: py3818  # Name deiner Umgebung
+channels:
+  - conda-forge
+dependencies:
+  - numpy
+  - scipy
+  - scikit-image
+  - pypng
+  - tqdm
+  - matplotlib
+  - tifffile
+  - itk
+  - vtk
+  - ccx2paraview
+  - meshio=5.0.0
+  - pygalmesh
+  - dxchange

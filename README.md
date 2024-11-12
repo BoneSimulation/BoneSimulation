@@ -28,3 +28,7 @@
 │
 └── README.md               # Projektbeschreibung
 ````
+
+
+## Installationsanleitung kann in dem Ordner "data/installation" gefunden werden
+## im weiteren Unterordner liegen auch die Datensätze
