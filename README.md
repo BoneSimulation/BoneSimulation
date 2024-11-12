@@ -27,6 +27,8 @@
 
 -  [Download PrePoMax](https://prepomax.fs.um.si/)
 
+### bitte beachten, dass das noch nicht funktioniert. Ich regel das gerade mit unserem Betreuer
+
 -   Einfach bitte den Schritten auf der Website folgen
 
   
