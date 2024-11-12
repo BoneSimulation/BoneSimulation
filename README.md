@@ -30,5 +30,5 @@
 ````
 
 
-## Installationsanleitung kann in dem Ordner "data/installation" gefunden werden
+## Installationsanleitung kann in dem Ordner "docs/installation" gefunden werden
 ## im weiteren Unterordner liegen auch die Datensätze
