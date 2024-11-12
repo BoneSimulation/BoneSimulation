@@ -1,98 +1,93 @@
 
-# HLRS-project
+# HLRS-Projekt
 
-  
+## Einrichtung der Arbeitsumgebung unter Windows
 
-# Einrichtung der Arbeitsumgebung unter Windows
+---
 
-  
+### 1. Installation von Entwicklungswerkzeugen
 
-## 1. Installation von Entwicklungswerkzeugen
+#### Visual Studio Code
 
-  
+- [Download Visual Studio Code](https://code.visualstudio.com/docs/setup/windows)
+- Folgt den Anweisungen auf der Webseite für die Installation.
 
-### Visual Studio Code
+#### PrePoMax (FEM-Softwarepaket)
 
-  
+- Die `.zip`-Datei zur Installation ist im Projektordner verfügbar.
+- [Download PrePoMax](https://prepomax.fs.um.si/) - Hier finden ihr die Installationsanleitung.
 
--  [Download Visual Studio Code](https://code.visualstudio.com/docs/setup/windows)
+#### Alternative für Linux: CalculiX
 
--  Einfach bitte den Schritten auf der Website folgen
+- [Download CalculiX](https://www.dhondt.de/) - Anweisungen zur Installation auf der Webseite.
 
-  
+#### ParaView (Wissenschaftliche Visualisierungen)
 
-### PrePoMax (FEM-Softwarepaket)
-### ".zip" Datei für Installation kann in diesem Ordner gefunden werden
-  
+- [Download ParaView](https://www.paraview.org/download/) - Folgt den Anweisungen auf der Webseite.
 
--  [Download PrePoMax](https://prepomax.fs.um.si/)
+#### Python und Anaconda
 
--   Einfach bitte den Schritten auf der Website folgen
+- [Installation von Python und Anaconda](https://www.elab2go.de/demo-py1/installation-python-anaconda.php)
+- Folgt den Anweisungen auf der Webseite. Bei Fragen oder Problemen könnt ihr mich einfach anschreiben!
 
+---
 
-### Alternative für Linux: CalculiX
+## 2. Einrichtung der Python-Umgebung
 
-- [Download CalculiX](https://https://www.dhondt.de/)
+Diese Anleitung führt durch die Erstellung und Aktivierung einer Conda-Umgebung sowie die Installation der benötigten Pakete.
 
-- Einfach bitte den Schritten auf der Website folgen
+### 2.1 Conda-Umgebung erstellen
 
-
-### ParaView (Wissenschaftliche Visualisierungen)
-
-  
-
--  [Download ParaView](https://www.paraview.org/download/)
-
--   Einfach bitte den Schritten auf der Website folgen
-
-  
-
-### Python und Anaconda
-
-  
-
--  [Installation von Python und Anaconda](https://www.elab2go.de/demo-py1/installation-python-anaconda.php)
-
--  Folgt einfach den Anweisungen auf der Website, bei Fragen dürft ihr mich gerne Anrufen und/oder schreiben. 
-
-  
-
-# Anleitung zur Einrichtung der Python-Umgebung
-
-Diese Anleitung führt durch die Erstellung und Aktivierung einer Conda-Umgebung sowie die Installation der benötigten Pakete. 
-
-Ich hoffe ich habe sie für Windows Nutzer optimiert :)
-
-
-
-## 2. Erstellen und Aktivieren einer Conda-Umgebung
-
-### Conda-Umgebung erstellen
-
-Öffne das Anaconda Prompt (auf Windows empfohlen) und führe folgenden Befehl aus, um eine neue Umgebung namens `py3818` mit Python 3.12.7 zu erstellen:
+Öffnet das Anaconda Prompt (auf Windows empfohlen) und führt den folgenden Befehl aus, um eine neue Umgebung namens `py3818` mit Python 3.12.7 zu erstellen:
 
 ```bash
 conda create --name py3818 python=3.12.7
 ```
-### Conda-Umgebung aktivieren
 
-Um die Umgebung zu aktivieren:
+### 2.2 Conda-Umgebung aktivieren
+
+Um die Umgebung zu aktivieren, verwendet:
 
 ```bash
 conda activate py3818
 ```
-> **Hinweis**: Nach Aktivierung der Umgebung sollte (py3818) links im Prompt angezeigt werden, was signalisiert, dass die Umgebung aktiv ist.
 
+> **Hinweis**: Nach Aktivierung der Umgebung sollte `(py3818)` links im Prompt angezeigt werden.
 
-## 3. Anleitung zur Nutzung der environment.yml- und requirements.txt-Dateien
+##### sollte dann etwa so aussehen: ![img_1.png](img_1.png)
 
+---
 
+## 3. Installation der Pakete mit environment.yml und requirements.txt
 
+### Installation mit `environment.yml`
 
-## 4. Manuelle Installation der notwendigen und empfohlenen Pakete
-Sobald die Umgebung aktiv ist, installiere die benötigten Pakete. Die Installation ist zweigeteilt: Einige Pakete sind über Conda verfügbar, andere müssen mit pip installiert werden.
+Falls ihr die `environment.yml` verwenden möchtt, könnt Ihr die Umgebung mit allen Paketen erstellen, indem ihr den folgenden Befehl ausführen:
 
-Führe die folgenden Befehle aus:
+```bash
+conda env create -f environment.yml
+```
+
+Die Datei `environment.yml` installiert alle erforderlichen Pakete und Abhängigkeiten automatisch.
+Zusätzlich benötigt ihr aber noch folgenden Part:
+
+### Installation mit `requirements.txt`
+
+Alternativ können Sie die `requirements.txt` verwenden:
+
+```bash
+pip install -r requirements.txt
+```
+
+> **Hinweis**: Verwenden Sie diese Methode, wenn Sie zusätzliche Pakete via pip installieren müssen, die nicht in `environment.yml` enthalten sind.
+
+---
+
+## 4. Manuelle Installation der notwendigen Pakete
+
+Falls Sie die Pakete manuell installieren möchten, verwenden Sie die folgende Liste von Befehlen, sobald die Umgebung aktiviert ist.
+
+### 4.1 Installation von Conda-Paketen
 
 ```bash
 conda install -c conda-forge numpy
@@ -110,7 +105,6 @@ conda install -c conda-forge pygalmesh
 conda install -c conda-forge dxchange
 ```
 
-
 ### Zusätzliche Pakete mit pip installieren
 
 Manche Pakete sind möglicherweise nicht in Conda verfügbar. Installiere sie mit pip:
@@ -119,9 +113,13 @@ Manche Pakete sind möglicherweise nicht in Conda verfügbar. Installiere sie mi
 pip install ciclope[all]
 pip install PyMCubes
 ```
+
 > **Hinweis**: Wenn pip-Pakete wie ciclope oder PyMCubes nicht kompatibel sind, versuche, pip-Pakete immer nach der Installation der Conda-Pakete zu installieren, um Abhängigkeitskonflikte zu vermeiden.
 
-## 4. Überprüfung der Installation
+---
+
+## 5. Überprüfung der Installation
+
 Nach der Installation kannst du die Installation durch ein einfaches Skript überprüfen, das alle installierten Pakete importiert. Erstelle eine Python-Datei (test_installation.py) mit folgendem Inhalt:
 
 ```python
@@ -143,14 +141,19 @@ import PyMCubes
 
 print("Alle Pakete wurden erfolgreich installiert.")
 ```
+
 Führe das Skript in der aktivierten Conda-Umgebung aus:
 
 ```bash
 python test_installation.py
 ```
+
 Wenn keine Fehler auftreten und die Nachricht "Alle Pakete wurden erfolgreich installiert." erscheint, ist die Installation erfolgreich abgeschlossen.
 
+---
 
-## ich habe aber bereits eine ".bat"-Datei für Windows erstellt, sodass ihr das Anaconda Zeugs nicht manuell installieren müsst! ;)
-### wenn es Probleme bei der Installation gibt, einfach mich Fragen :) 
+## Automatisierte Installation für Windows-Benutzer mit `.bat`-Datei
 
+Es gibt eine `.bat`-Datei im Projektordner, die alle Schritte automatisiert. Einfach die Datei ausführen, um die Umgebung und alle Pakete zu installieren.
+
+> **Hinweis**: Bei Problemen während der Installation stehe ich gerne zur Verfügung!
