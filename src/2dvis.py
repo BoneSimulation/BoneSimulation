@@ -1,9 +1,9 @@
-from mayavi import mlab
+import os
+
 import numpy as np
 from PIL import Image
-import os
+from mayavi import mlab
 from skimage import filters
-import matplotlib.pyplot as plt
 
 directory = "/home/mathias/PycharmProjects/BoneSimulation/data/dataset"
 
