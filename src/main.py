@@ -10,11 +10,18 @@ import warnings
 import platform
 import logging
 
-from utils.utils import logger, generate_timestamp, check_os
+from utils.utils import generate_timestamp, check_os
 
 
 timestamp = generate_timestamp()
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+file_handler = logging.FileHandler('logfile.log')
+format = logging.Formatter(f'{timestamp}: %(levelname)s : %(name)s : %(message)s')
+file_handler.setFormatter(format)
+logger.addHandler(file_handler)
 
 # Warnungen für falsche Farbprofile unterdrücken
 warnings.filterwarnings("ignore", message=".*iCCP: known incorrect sRGB profile.*")
@@ -83,11 +90,10 @@ def visualize_3d(image_array):
     #mlab.volume_slice(image_array, plane_orientation='y_axes', slice_index=image_array.shape[1] // 2)
     #mlab.volume_slice(image_array, plane_orientation='z_axes', slice_index=image_array.shape[2] // 2)
     mlab.savefig(f'/home/mathias/PycharmProjects/BoneSimulation/pictures/bone/mesh/plot_3d_{timestamp}.png')
-    logger(f"3D-Visualisierung wurde erfolgreich abgeschlossen.", level="info")
 
 
 if __name__ == "__main__":
-    logger("Running", level="warning")
+    logger.debug("Running")
 
     if check_os() == "Windows":
         directory = "..\\BoneSimulation\\data\\dataset"
