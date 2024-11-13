@@ -1,10 +1,13 @@
 import os
 import numpy as np
 from PIL import Image
+from platformdirs.windows import Windows
+from psutil import LINUX
 from skimage import filters, io
 import matplotlib.pyplot as plt
 from mayavi import mlab
 import warnings
+import platform
 
 # Warnungen für falsche Farbprofile unterdrücken
 warnings.filterwarnings("ignore", message=".*iCCP: known incorrect sRGB profile.*")
@@ -50,7 +53,6 @@ def plot_images(image_array, title):
         plt.axis('off')
     plt.tight_layout()
     plt.show()
-    print("images will be plotted")
 
 def plot_histogram(image_array):
     plt.figure(figsize=(10, 6))
@@ -62,18 +64,34 @@ def plot_histogram(image_array):
     plt.xlim(0, 1)
     plt.grid()
     plt.show()
-    print("Histogramm of the pixel values")
 
 def visualize_3d(image_array):
     mlab.figure(size=(800, 800), bgcolor=(1, 1, 1))
-    mlab.contour3d(image_array, contours=8, opacity=0.5, colormap='cool')
-    mlab.volume_slice(image_array, plane_orientation='x_axes', slice_index=image_array.shape[0] // 2)
-    mlab.volume_slice(image_array, plane_orientation='y_axes', slice_index=image_array.shape[1] // 2)
-    mlab.volume_slice(image_array, plane_orientation='z_axes', slice_index=image_array.shape[2] // 2)
+    mlab.contour3d(image_array, contours=8, opacity=0.5, colormap='bone')
+    #mlab.volume_slice(image_array, plane_orientation='x_axes', slice_index=image_array.shape[0] // 2)
+    #mlab.volume_slice(image_array, plane_orientation='y_axes', slice_index=image_array.shape[1] // 2)
+    #mlab.volume_slice(image_array, plane_orientation='z_axes', slice_index=image_array.shape[2] // 2)
     mlab.show()
-    print("3d volume will loaded")
 
-# Hauptfunktion aufrufen
+def check_os():
+    if platform.system() == "Windows":
+        return "Windows"
+    elif platform.system() == "Linux":
+        return "Linux"
+    elif platform.system() == "Darwin":
+        return "MacOS"
+    else:
+        return "Unknown"
+
 if __name__ == "__main__":
-    directory = "/home/mathias/PycharmProjects/BoneSimulation/data/dataset"
+    if check_os() == "Windows":
+        directory = "..\\BoneSimulation\\data\\dataset"
+    elif check_os() == "Linux":
+        directory = "/home/mathias/PycharmProjects/BoneSimulation/data/dataset"
+    elif check_os() == "MacOS":
+        directory = "/Users/mathias/PycharmProjects/BoneSimulation/data/dataset" # know familiar with macOS, please check
+    else:
+        print("Unknown OS!")
+        directory = None
+
     process_and_visualize(directory)

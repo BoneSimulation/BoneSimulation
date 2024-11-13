@@ -75,9 +75,3 @@ plt.grid()
 plt.show()
 
 
-def plotting():
-
-
-
-def main():
-    print("Program started")
