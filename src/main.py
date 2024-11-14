@@ -1,13 +1,10 @@
 import os
 import numpy as np
 from PIL import Image
-from platformdirs.windows import Windows
-from psutil import LINUX
-from skimage import filters, io
+from skimage import filters
 import matplotlib.pyplot as plt
 from mayavi import mlab
 import warnings
-import platform
 import logging
 
 from utils.utils import generate_timestamp, check_os
@@ -19,8 +16,8 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 file_handler = logging.FileHandler('logfile.log')
-format = logging.Formatter(f'{timestamp}: %(levelname)s : %(name)s : %(message)s')
-file_handler.setFormatter(format)
+formatter = logging.Formatter(f'{timestamp}: %(levelname)s : %(name)s : %(message)s')
+file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 # Warnungen für falsche Farbprofile unterdrücken
