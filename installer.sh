@@ -1,24 +1,21 @@
-#!/bin/bash
+ENV_NAME="py3818"
 
-# Erstellt Conda-Umgebung
-conda create --name py3818 python==3.12.7 -y
+conda env create -f environment.yml
+if [ $? -ne 0 ]; then
+    echo "Fehler beim Erstellen der Conda-Umgebung."
+    exit 1
+fi
 
-# Aktiviert Conda-Umgebung
-source activate py3818
+source activate $ENV_NAME
+if [ $? -ne 0 ]; then
+    echo "Fehler beim Aktivieren der Conda-Umgebung."
+    exit 1
+fi
 
-# Installation der benötigten Pakete
-conda install -c conda-forge numpy -y
-conda install -c conda-forge scipy -y
-conda install -c conda-forge scikit-image -y
-conda install -c conda-forge pypng -y
-conda install -c conda-forge tqdm -y
-conda install -c conda-forge matplotlib -y
-conda install -c conda-forge tifffile -y
-conda install -c conda-forge itk -y
-conda install -c conda-forge vtk -y
-conda install -c conda-forge ccx2paraview -y
-conda install -c conda-forge meshio==5.0.0 -y
-pip install PyMCubes
-conda install -c conda-forge pygalmesh -y
-conda install -c conda-forge dxchange -y
-pip install ciclope[all]
+pip install -r requirements.txt
+if [ $? -ne 0 ]; then
+    echo "Fehler beim Installieren der Pakete aus requirements.txt."
+    exit 1
+fi
+
+echo "Alle Pakete wurden erfolgreich installiert."

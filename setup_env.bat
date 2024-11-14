@@ -1,24 +1,25 @@
 @echo off
+setlocal
 
-REM Erstellt Conda-Umgebung
-conda create --name py3818 python==3.12.7 -y
+set ENV_NAME=myenv
 
-REM Aktiviert Conda-Umgebung
-call conda activate py3818
+conda env create -f environment.yml
+if %ERRORLEVEL% NEQ 0 (
+    echo Fehler beim Erstellen der Conda-Umgebung.
+    exit /b %ERRORLEVEL%
+)
 
-REM Installiert benötigten Pakete
-conda install -c conda-forge numpy -y
-conda install -c conda-forge scipy -y
-conda install -c conda-forge scikit-image -y
-conda install -c conda-forge pypng -y
-conda install -c conda-forge tqdm -y
-conda install -c conda-forge matplotlib -y
-conda install -c conda-forge tifffile -y
-conda install -c conda-forge itk -y
-conda install -c conda-forge vtk -y
-conda install -c conda-forge ccx2paraview -y
-conda install -c conda-forge meshio==5.0.0 -y
-pip install PyMCubes
-conda install -c conda-forge pygalmesh -y
-conda install -c conda-forge dxchange -y
-pip install ciclope[all]
+call conda activate %ENV_NAME%
+if %ERRORLEVEL% NEQ 0 (
+    echo Fehler beim Aktivieren der Conda-Umgebung.
+    exit /b %ERRORLEVEL%
+)
+
+pip install -r requirements.txt
+if %ERRORLEVEL% NEQ 0 (
+    echo Fehler beim Installieren der Pakete aus requirements.txt.
+    exit /b %ERRORLEVEL%
+)
+
+echo Alle Pakete wurden erfolgreich installiert.
+endlocal
