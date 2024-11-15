@@ -118,42 +118,8 @@ pip install PyMCubes
 
 ---
 
-## 5. Überprüfung der Installation
+## Automatisierte Installation für Windows mit `.bat`-Datei
 
-Nach der Installation kannst du die Installation durch ein einfaches Skript überprüfen, das alle installierten Pakete importiert. Erstelle eine Python-Datei (test_installation.py) mit folgendem Inhalt:
-
-```python
-import numpy
-import scipy
-import skimage
-import png
-import tqdm
-import matplotlib
-import tifffile
-import itk
-import vtk
-import ccx2paraview
-import meshio
-import pygalmesh
-import dxchange
-import ciclope
-import PyMCubes
-
-print("Alle Pakete wurden erfolgreich installiert.")
-```
-
-Führe das Skript in der aktivierten Conda-Umgebung aus:
-
-```bash
-python test_installation.py
-```
-
-Wenn keine Fehler auftreten und die Nachricht "Alle Pakete wurden erfolgreich installiert." erscheint, ist die Installation erfolgreich abgeschlossen.
-
----
-
-## Automatisierte Installation für Windows-Benutzer mit `.bat`-Datei
-
-Es gibt eine `.bat`-Datei im Projektordner, die alle Schritte automatisiert. Einfach die Datei ausführen, um die Umgebung und alle Pakete zu installieren.
+Es gibt eine `.bat`-Datei im Projektordner, die alle Schritte automatisiert (hoffe ich zumindest). Einfach die Datei ausführen, um die Umgebung und alle Pakete zu installieren.
 
 > **Hinweis**: Bei Problemen während der Installation stehe ich gerne zur Verfügung!
