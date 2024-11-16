@@ -2,7 +2,7 @@ from mayavi import mlab
 import numpy as np
 from PIL import Image
 import os
-from skimage import filters, io
+from skimage import filters
 import warnings
 
 # Warnungen für falsche Farbprofile unterdrücken
