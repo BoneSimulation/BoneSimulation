@@ -80,7 +80,7 @@ def plot_histogram(image_array):
     plt.xlim(0, 1)
     plt.grid()
     plt.savefig(f'/home/mathias/PycharmProjects/BoneSimulation/pictures/plot/plot_binary_{timestamp}.png')
-    print("plot historgram were found")
+    print("plot histogram were found")
 
 
 def visualize_3d(image_array):
