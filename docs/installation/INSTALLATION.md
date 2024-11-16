@@ -15,7 +15,7 @@
 #### PrePoMax (FEM-Softwarepaket)
 
 - Die `.zip`-Datei zur Installation ist im Projektordner verfügbar.
-- [Download PrePoMax](https://prepomax.fs.um.si/) - Hier finden ihr die Installationsanleitung.
+- [Download PrePoMax](https://prepomax.fs.um.si/) - hier finden ihr die Installationsanleitung.
 
 #### Alternative für Linux: CalculiX
 
@@ -23,7 +23,7 @@
 
 #### ParaView (Wissenschaftliche Visualisierungen)
 
-- [Download ParaView](https://www.paraview.org/download/) - Folgt den Anweisungen auf der Webseite.
+- [Download ParaView](https://www.paraview.org/download/) - folgt den Anweisungen auf der Webseite.
 
 #### Python und Anaconda
 
@@ -62,7 +62,7 @@ conda activate py3818
 
 ### Installation mit `environment.yml`
 
-Falls ihr die `environment.yml` verwenden möchtt, könnt Ihr die Umgebung mit allen Paketen erstellen, indem ihr den folgenden Befehl ausführen:
+Falls ihr die `environment.yml` verwenden möchtet, könnt Ihr die Umgebung mit allen Paketen erstellen, indem ihr den folgenden Befehl ausführen:
 
 ```bash
 conda env create -f environment.yml
