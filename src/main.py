@@ -66,6 +66,8 @@ def plot_images(image_array, title):
         plt.axis('off')
     plt.tight_layout()
     plt.savefig(f'/home/mathias/PycharmProjects/BoneSimulation/pictures/bone/images/plot_new_{timestamp}.png')
+    plt.show()
+    print("plot images were loaded")
 
 
 def plot_histogram(image_array):
@@ -78,6 +80,7 @@ def plot_histogram(image_array):
     plt.xlim(0, 1)
     plt.grid()
     plt.savefig(f'/home/mathias/PycharmProjects/BoneSimulation/pictures/plot/plot_binary_{timestamp}.png')
+    print("plot historgram were found")
 
 
 def visualize_3d(image_array):
@@ -91,6 +94,7 @@ def visualize_3d(image_array):
 
 if __name__ == "__main__":
     logger.debug("Running")
+    print("Running simulation")
 
     if check_os() == "Windows":
         directory = "..\\BoneSimulation\\data\\dataset"
@@ -101,5 +105,6 @@ if __name__ == "__main__":
     else:
         print("Unknown OS!")
         directory = None
+    print(f"directory found in {directory}")
 
     process_and_visualize(directory)
