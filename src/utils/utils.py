@@ -1,7 +1,3 @@
-import sys
-import os
-import logging
-from colorama import init, Fore
 import datetime
 import platform
 
