@@ -1,9 +1,7 @@
 import os
 import numpy as np
 from PIL import Image
-from platformdirs.windows import Windows
-from psutil import LINUX
-from skimage import filters, io
+from skimage import filters
 import matplotlib.pyplot as plt
 from mayavi import mlab
 import warnings
