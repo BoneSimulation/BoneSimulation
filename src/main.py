@@ -1,4 +1,8 @@
 import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+
 import numpy as np
 from PIL import Image
 from skimage import filters
@@ -8,7 +12,7 @@ import warnings
 import logging
 from multiprocessing import Pool
 
-from utils.utils import generate_timestamp, check_os
+from src.utils.utils import generate_timestamp, check_os
 
 timestamp = generate_timestamp()
 
@@ -89,6 +93,7 @@ def visualize_3d(image_array):
     mlab.figure(size=(800, 800), bgcolor=(1, 1, 1))
     mlab.contour3d(image_array, contours=8, opacity=0.5, colormap='bone')
     mlab.savefig(f'/home/mathias/PycharmProjects/BoneSimulation/pictures/bone/mesh/plot_3d_{timestamp}.png')
+    mlab.show()
 
 
 if __name__ == "__main__":
