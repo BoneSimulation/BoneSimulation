@@ -6,12 +6,12 @@ import os
 import sys
 import warnings
 import logging
+from multiprocessing import Pool
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 from skimage import filters
 from mayavi import mlab
-from multiprocessing import Pool
 from src.utils.utils import generate_timestamp, check_os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
@@ -29,17 +29,19 @@ logger.addHandler(file_handler)
 warnings.filterwarnings("ignore", message=".*iCCP: known incorrect sRGB profile.*")
 
 
+# loads image
 def load_image(filepath):
     im = Image.open(filepath).convert("L")
     return np.array(im)
 
-
+# processes the image with the gaussian filter
 def process_image(image):
     image_blurred = filters.gaussian(image, sigma=2, mode='constant', cval=0)
     binary_image = image_blurred > filters.threshold_otsu(image_blurred)
     return image_blurred, binary_image
 
 
+# processes and visualises all important images
 def process_and_visualize(directory):
     # Bilder laden und als 3D-Array speichern
     filepaths = [os.path.join(directory, filename) for filename in sorted(os.listdir(directory)) if
@@ -60,7 +62,7 @@ def process_and_visualize(directory):
 
     visualize_3d(image_blurred_array)
 
-
+# shows images and saves them in a specific directory
 def plot_images(image_array, title):
     num_images = image_array.shape[0]
     cols = 3
@@ -74,11 +76,12 @@ def plot_images(image_array, title):
         plt.axis('off')
     plt.tight_layout()
     plt.savefig(
-        f'/home/mathias/PycharmProjects/BoneSimulation/pictures/bone/images/plot_new_{timestamp}.png')
+        f'.../pictures/bone/images/plot_new_{timestamp}.png')
     plt.show()
     print("plot images were loaded")
 
 
+# shows histogram
 def plot_histogram(image_array):
     plt.figure(figsize=(10, 6))
     all_pixel_values = image_array.flatten()
@@ -89,15 +92,16 @@ def plot_histogram(image_array):
     plt.xlim(0, 1)
     plt.grid()
     plt.savefig(
-        f'/home/mathias/PycharmProjects/BoneSimulation/pictures/plot/plot_binary_{timestamp}.png')
+        f'.../pictures/plot/plot_binary_{timestamp}.png')
     print("plot histogram were found")
 
 
+# shows 3d plot
 def visualize_3d(image_array):
     mlab.figure(size=(800, 800), bgcolor=(1, 1, 1))
     mlab.contour3d(image_array, contours=8, opacity=0.5, colormap='bone')
     mlab.savefig(
-        f'/home/mathias/PycharmProjects/BoneSimulation/pictures/bone/mesh/plot_3d_{timestamp}.png')
+        f'.../pictures/bone/mesh/plot_3d_{timestamp}.png')
     mlab.show()
 
 
@@ -106,17 +110,17 @@ if __name__ == "__main__":
     print("Running simulation")
 
     if check_os() == "Windows":
-        directory = "..\\BoneSimulation\\data\\dataset"
+        DIRECTORY = "..\\BoneSimulation\\data\\dataset"
     elif check_os() == "Linux":
-        directory = "/home/mathias/PycharmProjects/BoneSimulation/data/dataset"
+        DIRECTORY = "/home/mathias/PycharmProjects/BoneSimulation/data/dataset"
     elif check_os() == "MacOS":
-        directory = "/Users/mathias/PycharmProjects/BoneSimulation/data/dataset"  # not familiar with macOS, please check
+        DIRECTORY = "/Users/mathias/PycharmProjects/BoneSimulation/data/dataset"  # not familiar with macOS, please check
     else:
         print("Unknown OS!")
-        directory = None
+        DIRECTORY = None
 
-    if directory is not None:
-        print(f"Directory found: {directory}")
-        process_and_visualize(directory)
+    if DIRECTORY is not None:
+        print(f"Directory found: {DIRECTORY}")
+        process_and_visualize(DIRECTORY)
     else:
         print("No valid directory found. Exiting.")
