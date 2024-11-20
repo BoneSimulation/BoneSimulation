@@ -5,6 +5,8 @@ This module contains tests for the functions defined in the src.main module,
 including load_image, process_image, process_and_visualize, and visualize_3d.
 """
 
+# pylint: disable=import-error
+
 import unittest
 from io import BytesIO
 from unittest.mock import patch
