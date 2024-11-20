@@ -1,5 +1,6 @@
 """
-This file is only a storage and an outsourcing for the visualization of each individual image, which is put together to a 3d image
+This file is only a storage and an outsourcing for the visualization of each individual image,
+which is put together to a 3d image
 """
 
 import os
@@ -9,13 +10,13 @@ from PIL import Image
 from mayavi import mlab
 from skimage import filters
 
-directory = "/home/mathias/PycharmProjects/BoneSimulation/data/dataset"
+DIRECTORY = "/home/mathias/PycharmProjects/BoneSimulation/data/dataset"
 
 data_list = []
 
-for filename in sorted(os.listdir(directory)):
+for filename in sorted(os.listdir(DIRECTORY)):
     if filename.endswith(".tif"):
-        filepath = os.path.join(directory, filename)
+        filepath = os.path.join(DIRECTORY, filename)
         im = Image.open(filepath)
         im_array = np.array(im)
 

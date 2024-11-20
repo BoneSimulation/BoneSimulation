@@ -54,7 +54,8 @@ def process_image(image):
     Returns:
         tuple: A tuple containing:
             - numpy.ndarray: The blurred image after applying Gaussian filter.
-            - numpy.ndarray: A binary image where pixels are set to True if they are above the Otsu threshold,
+            - numpy.ndarray: A binary image where pixels are set to True
+            if they are above the Otsu threshold,
             and False otherwise.
     """
     image_blurred = filters.gaussian(image, sigma=2, mode='constant', cval=0)

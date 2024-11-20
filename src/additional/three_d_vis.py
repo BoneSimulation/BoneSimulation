@@ -1,5 +1,6 @@
 """
-This file is only a storage and an outsourcing for the visualization of every image tu be put together as a whole 3d mesh
+This file is only a storage and an outsourcing for the visualization of every image
+to be put together as a whole 3d mesh
 """
 import os
 import warnings
