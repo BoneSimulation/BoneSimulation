@@ -186,22 +186,6 @@ def visualize_3d(image_array):
 
 
 
-"""
-Main execution block for running the bone simulation.
-
-This script checks the operating system and sets the appropriate directory for the dataset.
-It then calls the `process_and_visualize` function to process and visualize the images in the specified directory.
-
-The script logs the execution and prints relevant information to the console.
-
-Usage:
-    Run this script directly to execute the bone simulation processing and visualization.
-
-Dependencies:
-    - logger: A logging utility for debugging.
-    - process_and_visualize: A function that processes and visualizes images from the dataset.
-
-"""
 if __name__ == "__main__":
     logger.debug("Running")
     print("Running simulation")

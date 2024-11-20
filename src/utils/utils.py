@@ -22,14 +22,14 @@ def check_os():
     """
     if platform.system() == "Windows":
         return "Windows"
-    elif platform.system() == "Linux":
+    if platform.system() == "Linux":
         return "Linux"
-    elif platform.system() == "Darwin":
+    if platform.system() == "Darwin":
         return "MacOS"
     else:
         return "Unknown"
 
 
 def generate_timestamp():
-    """checks and re turns the current datetime"""
+    """checks and returns the current datetime"""
     return datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
