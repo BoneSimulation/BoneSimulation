@@ -1,18 +1,20 @@
+"""
+main file - every important pieces of code should be in there
+"""
+
 import os
 import sys
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
-
+import warnings
+import logging
+import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 from skimage import filters
-import matplotlib.pyplot as plt
 from mayavi import mlab
-import warnings
-import logging
 from multiprocessing import Pool
-
 from src.utils.utils import generate_timestamp, check_os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 
 timestamp = generate_timestamp()
 
@@ -71,7 +73,8 @@ def plot_images(image_array, title):
         plt.title(f'{title} {i + 1}')
         plt.axis('off')
     plt.tight_layout()
-    plt.savefig(f'/home/mathias/PycharmProjects/BoneSimulation/pictures/bone/images/plot_new_{timestamp}.png')
+    plt.savefig(
+        f'/home/mathias/PycharmProjects/BoneSimulation/pictures/bone/images/plot_new_{timestamp}.png')
     plt.show()
     print("plot images were loaded")
 
@@ -85,14 +88,16 @@ def plot_histogram(image_array):
     plt.ylabel('Häufigkeit')
     plt.xlim(0, 1)
     plt.grid()
-    plt.savefig(f'/home/mathias/PycharmProjects/BoneSimulation/pictures/plot/plot_binary_{timestamp}.png')
+    plt.savefig(
+        f'/home/mathias/PycharmProjects/BoneSimulation/pictures/plot/plot_binary_{timestamp}.png')
     print("plot histogram were found")
 
 
 def visualize_3d(image_array):
     mlab.figure(size=(800, 800), bgcolor=(1, 1, 1))
     mlab.contour3d(image_array, contours=8, opacity=0.5, colormap='bone')
-    mlab.savefig(f'/home/mathias/PycharmProjects/BoneSimulation/pictures/bone/mesh/plot_3d_{timestamp}.png')
+    mlab.savefig(
+        f'/home/mathias/PycharmProjects/BoneSimulation/pictures/bone/mesh/plot_3d_{timestamp}.png')
     mlab.show()
 
 
