@@ -3,6 +3,8 @@ This file is only a storage and an outsourcing for the visualization of each ind
 which is put together to a 3d image
 """
 
+# pylint: disable=import-error
+
 import os
 
 import numpy as np

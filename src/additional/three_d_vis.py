@@ -2,6 +2,10 @@
 This file is only a storage and an outsourcing for the visualization of every image
 to be put together as a whole 3d mesh
 """
+
+# pylint: disable=import-error
+
+
 import os
 import warnings
 from mayavi import mlab

@@ -2,6 +2,8 @@
 main file - every important pieces of code should be in there
 """
 
+# pylint: disable=import-error
+
 import os
 import sys
 import warnings
