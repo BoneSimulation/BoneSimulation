@@ -33,14 +33,14 @@ warnings.filterwarnings("ignore", message=".*iCCP: known incorrect sRGB profile.
 os_type = check_os()
 
 if os_type == "Windows":
-    base_path = "..\\pictures"
+    BASE_PATH = "..\\pictures"
 elif os_type == "Linux":
-    base_path = "./pictures"
+    BASE_PATH = "./pictures"
 elif os_type == "MacOS":
-    base_path = "./pictures"
+    BASE_PATH = "./pictures"
 else:
     print("Unknown OS! Using default path.")
-    base_path = "./pictures"
+    BASE_PATH = "./pictures"
 
 
 # loads image
@@ -140,7 +140,7 @@ def plot_images(image_array, title):
         plt.title(f'{title} {i + 1}')
         plt.axis('off')
     plt.tight_layout()
-    file_path = f"{base_path}/plot_{timestamp}.png"
+    file_path = f"{BASE_PATH}/plot_{timestamp}.png"
     plt.savefig(file_path)
     plt.show()
     print("Plot images were loaded")
@@ -172,7 +172,7 @@ def plot_histogram(image_array):
     plt.ylabel('Frequency')
     plt.xlim(0, 1)
     plt.grid()
-    file_path = f"{base_path}/histogram_{timestamp}.png"
+    file_path = f"{BASE_PATH}/histogram_{timestamp}.png"
     plt.savefig(file_path)
     print("Plot histogram was created")
 
@@ -195,7 +195,7 @@ def visualize_3d(image_array):
     """
     mlab.figure(size=(800, 800), bgcolor=(1, 1, 1))
     mlab.contour3d(image_array, contours=8, opacity=0.5, colormap='bone')
-    file_path = f"{base_path}/3d_visualize_{timestamp}.png"
+    file_path = f"{BASE_PATH}/3d_visualize_{timestamp}.png"
     mlab.savefig(file_path)
     mlab.show()
 
