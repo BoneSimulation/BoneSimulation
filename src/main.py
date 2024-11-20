@@ -31,39 +31,84 @@ warnings.filterwarnings("ignore", message=".*iCCP: known incorrect sRGB profile.
 
 # loads image
 def load_image(filepath):
+    """
+    Loads an image from the specified file and converts it to a grayscale image.
+
+    Args:
+        filepath (str): The path to the image file to be loaded.
+
+    Returns:
+        numpy.ndarray: A 2D array representing the grayscale image.
+    """
     im = Image.open(filepath).convert("L")
     return np.array(im)
 
-# processes the image with the gaussian filter
+
 def process_image(image):
+    """
+    Processes the input image by applying Gaussian blur and converting it to a binary image.
+
+    Args:
+        image (numpy.ndarray): A 2D array representing the input grayscale image.
+
+    Returns:
+        tuple: A tuple containing:
+            - numpy.ndarray: The blurred image after applying Gaussian filter.
+            - numpy.ndarray: A binary image where pixels are set to True if they are above the Otsu threshold, and False otherwise.
+    """
     image_blurred = filters.gaussian(image, sigma=2, mode='constant', cval=0)
     binary_image = image_blurred > filters.threshold_otsu(image_blurred)
     return image_blurred, binary_image
 
-
 # processes and visualises all important images
 def process_and_visualize(directory):
-    # Bilder laden und als 3D-Array speichern
+    """
+    Processes and visualizes all important images in the specified directory.
+
+    This function loads all TIFF images from the given directory, applies image processing techniques,
+    and visualizes the results, including blurred images, binary images, and histograms.
+
+    Args:
+        directory (str): The path to the directory containing the image files.
+
+    Returns:
+        None: This function does not return any value. It performs visualization and printing of results.
+    """
+    # Load images and store them as a 3D array
     filepaths = [os.path.join(directory, filename) for filename in sorted(os.listdir(directory)) if
                  filename.endswith(".tif")]
     with Pool() as pool:
         data_array = pool.map(load_image, filepaths)
 
     data_array = np.array(data_array)
-    print("Datenarray hat die Form:", data_array.shape)
+    print("Data array shape:", data_array.shape)
     with Pool() as pool:
         results = pool.map(process_image, data_array)
     image_blurred_array, binary_image_array = zip(*results)
     image_blurred_array = np.array(image_blurred_array)
     binary_image_array = np.array(binary_image_array)
-    plot_images(image_blurred_array, "Überarbeitete Bilder")
-    plot_images(binary_image_array, "Binarisierte Bilder")
+    plot_images(image_blurred_array, "Processed Images")
+    plot_images(binary_image_array, "Binary Images")
     plot_histogram(image_blurred_array)
 
     visualize_3d(image_blurred_array)
 
+
 # shows images and saves them in a specific directory
 def plot_images(image_array, title):
+    """
+    Plots a grid of images from the provided array and saves the plot as a PNG file.
+
+    This function takes a 3D array of images, arranges them in a grid format, and displays them
+    using Matplotlib. The plot is saved to a specified directory with a timestamp in the filename.
+
+    Args:
+        image_array (numpy.ndarray): A 3D array where each slice along the first dimension represents an image.
+        title (str): The title to be displayed above each image in the plot.
+
+    Returns:
+        None: This function does not return any value. It performs visualization and saves the plot as a file.
+    """
     num_images = image_array.shape[0]
     cols = 3
     rows = (num_images // cols) + (num_images % cols > 0)
@@ -78,26 +123,52 @@ def plot_images(image_array, title):
     plt.savefig(
         f'.../pictures/bone/images/plot_new_{timestamp}.png')
     plt.show()
-    print("plot images were loaded")
+    print("Plot images were loaded")
+
 
 
 # shows histogram
 def plot_histogram(image_array):
+    """
+    Plots a histogram of pixel values from the provided image array.
+
+    This function takes a 3D array of images, flattens it to extract all pixel values, and creates
+    a histogram to visualize the distribution of pixel intensities across the images. The histogram
+    is saved as a PNG file.
+
+    Args:
+        image_array (numpy.ndarray): A 3D array where each slice along the first dimension represents an image.
+
+    Returns:
+        None: This function does not return any value. It performs visualization and saves the histogram as a file.
+    """
     plt.figure(figsize=(10, 6))
     all_pixel_values = image_array.flatten()
     plt.hist(all_pixel_values, bins=256, range=(0, 1), color='gray', alpha=0.7)
-    plt.title('Histogramm der Pixelwerte der überarbeiteten Bilder')
-    plt.xlabel('Pixelwerte')
-    plt.ylabel('Häufigkeit')
+    plt.title('Histogram of Pixel Values of Processed Images')
+    plt.xlabel('Pixel Values')
+    plt.ylabel('Frequency')
     plt.xlim(0, 1)
     plt.grid()
     plt.savefig(
         f'.../pictures/plot/plot_binary_{timestamp}.png')
-    print("plot histogram were found")
+    print("Plot histogram was created")
 
 
-# shows 3d plot
+
 def visualize_3d(image_array):
+    """
+    Creates and displays a 3D visualization of the provided image array.
+
+    This function takes a 3D array of images and generates a 3D contour plot using Mayavi.
+    The plot is saved as a PNG file.
+
+    Args:
+        image_array (numpy.ndarray): A 3D array where each slice along the first dimension represents an image.
+
+    Returns:
+        None: This function does not return any value. It performs visualization and saves the 3D plot as a file.
+    """
     mlab.figure(size=(800, 800), bgcolor=(1, 1, 1))
     mlab.contour3d(image_array, contours=8, opacity=0.5, colormap='bone')
     mlab.savefig(
@@ -105,6 +176,23 @@ def visualize_3d(image_array):
     mlab.show()
 
 
+
+"""
+Main execution block for running the bone simulation.
+
+This script checks the operating system and sets the appropriate directory for the dataset.
+It then calls the `process_and_visualize` function to process and visualize the images in the specified directory.
+
+The script logs the execution and prints relevant information to the console.
+
+Usage:
+    Run this script directly to execute the bone simulation processing and visualization.
+
+Dependencies:
+    - logger: A logging utility for debugging.
+    - process_and_visualize: A function that processes and visualizes images from the dataset.
+
+"""
 if __name__ == "__main__":
     logger.debug("Running")
     print("Running simulation")
