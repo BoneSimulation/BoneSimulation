@@ -54,7 +54,8 @@ def process_image(image):
     Returns:
         tuple: A tuple containing:
             - numpy.ndarray: The blurred image after applying Gaussian filter.
-            - numpy.ndarray: A binary image where pixels are set to True if they are above the Otsu threshold, and False otherwise.
+            - numpy.ndarray: A binary image where pixels are set to True if they are above the Otsu threshold,
+            and False otherwise.
     """
     image_blurred = filters.gaussian(image, sigma=2, mode='constant', cval=0)
     binary_image = image_blurred > filters.threshold_otsu(image_blurred)
@@ -65,14 +66,16 @@ def process_and_visualize(directory):
     """
     Processes and visualizes all important images in the specified directory.
 
-    This function loads all TIFF images from the given directory, applies image processing techniques,
+    This function loads all TIFF images from the given directory,
+    applies image processing techniques,
     and visualizes the results, including blurred images, binary images, and histograms.
 
     Args:
         directory (str): The path to the directory containing the image files.
 
     Returns:
-        None: This function does not return any value. It performs visualization and printing of results.
+        None: This function does not return any value.
+        It performs visualization and printing of results.
     """
     # Load images and store them as a 3D array
     filepaths = [os.path.join(directory, filename) for filename in sorted(os.listdir(directory)) if
@@ -103,11 +106,13 @@ def plot_images(image_array, title):
     using Matplotlib. The plot is saved to a specified directory with a timestamp in the filename.
 
     Args:
-        image_array (numpy.ndarray): A 3D array where each slice along the first dimension represents an image.
+        image_array (numpy.ndarray):
+        A 3D array where each slice along the first dimension represents an image.
         title (str): The title to be displayed above each image in the plot.
 
     Returns:
-        None: This function does not return any value. It performs visualization and saves the plot as a file.
+        None: This function does not return any value. It performs visualization
+        and saves the plot as a file.
     """
     num_images = image_array.shape[0]
     cols = 3
@@ -137,10 +142,12 @@ def plot_histogram(image_array):
     is saved as a PNG file.
 
     Args:
-        image_array (numpy.ndarray): A 3D array where each slice along the first dimension represents an image.
+        image_array (numpy.ndarray):
+        A 3D array where each slice along the first dimension represents an image.
 
     Returns:
-        None: This function does not return any value. It performs visualization and saves the histogram as a file.
+        None: This function does not return any value. It performs visualization
+        and saves the histogram as a file.
     """
     plt.figure(figsize=(10, 6))
     all_pixel_values = image_array.flatten()
@@ -164,10 +171,12 @@ def visualize_3d(image_array):
     The plot is saved as a PNG file.
 
     Args:
-        image_array (numpy.ndarray): A 3D array where each slice along the first dimension represents an image.
+        image_array (numpy.ndarray):
+        3D array where each slice along the first dimension represents an image.
 
     Returns:
-        None: This function does not return any value. It performs visualization and saves the 3D plot as a file.
+        None: This function does not return any value. It performs visualization
+        and saves the 3D plot as a file.
     """
     mlab.figure(size=(800, 800), bgcolor=(1, 1, 1))
     mlab.contour3d(image_array, contours=8, opacity=0.5, colormap='bone')
@@ -202,7 +211,8 @@ if __name__ == "__main__":
     elif check_os() == "Linux":
         DIRECTORY = "/home/mathias/PycharmProjects/BoneSimulation/data/dataset"
     elif check_os() == "MacOS":
-        DIRECTORY = "/Users/mathias/PycharmProjects/BoneSimulation/data/dataset"  # not familiar with macOS, please check
+        DIRECTORY = "/Users/mathias/PycharmProjects/BoneSimulation/data/dataset"
+        # not familiar with macOS, please check
     else:
         print("Unknown OS!")
         DIRECTORY = None
