@@ -141,7 +141,7 @@ def plot_images(image_array, title):
         plt.axis('off')
     plt.tight_layout()
     file_path = f"{base_path}/plot_{timestamp}.png"
-    mlab.savefig(file_path)
+    plt.savefig(file_path)
     plt.show()
     print("Plot images were loaded")
 
@@ -173,7 +173,7 @@ def plot_histogram(image_array):
     plt.xlim(0, 1)
     plt.grid()
     file_path = f"{base_path}/histogram_{timestamp}.png"
-    mlab.savefig(file_path)
+    plt.savefig(file_path)
     print("Plot histogram was created")
 
 
@@ -195,7 +195,7 @@ def visualize_3d(image_array):
     """
     mlab.figure(size=(800, 800), bgcolor=(1, 1, 1))
     mlab.contour3d(image_array, contours=8, opacity=0.5, colormap='bone')
-    file_path = f"{base_path}/three_d_visualize_{timestamp}.png"
+    file_path = f"{base_path}/3d_visualize_{timestamp}.png"
     mlab.savefig(file_path)
     mlab.show()
 
