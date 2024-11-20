@@ -4,6 +4,7 @@ which is put together to a 3d image
 """
 
 # pylint: disable=import-error
+# pylint: disable=duplicate-code
 
 import os
 

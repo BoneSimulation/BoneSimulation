@@ -4,6 +4,7 @@ to be put together as a whole 3d mesh
 """
 
 # pylint: disable=import-error
+# pylint: disable=duplicate-code
 
 
 import os
