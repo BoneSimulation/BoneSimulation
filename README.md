@@ -1,7 +1,14 @@
 # HLRS Project - Bone Simulation
-````
+
+### für die Installation:
+
+```
+git clone https://github.com/Lynix152/BoneSimulation.git
+```
 
 
 
-## Installationsanleitung kann in dem Ordner "docs/installation" gefunden werden
-## im weiteren Unterordner liegen auch die Datensätze
+### zum Aktualisieren des Codes, sodass man auf dem neuesten Stand ist 
+```
+git pull origin master
+```

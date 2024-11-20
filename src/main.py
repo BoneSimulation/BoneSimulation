@@ -30,6 +30,18 @@ logger.addHandler(file_handler)
 
 warnings.filterwarnings("ignore", message=".*iCCP: known incorrect sRGB profile.*")
 
+os_type = check_os()
+
+if os_type == "Windows":
+    base_path = "..\\pictures"
+elif os_type == "Linux":
+    base_path = "./pictures"
+elif os_type == "MacOS":
+    base_path = "./pictures"
+else:
+    print("Unknown OS! Using default path.")
+    base_path = "./pictures"
+
 
 # loads image
 def load_image(filepath):
@@ -128,8 +140,8 @@ def plot_images(image_array, title):
         plt.title(f'{title} {i + 1}')
         plt.axis('off')
     plt.tight_layout()
-    plt.savefig(
-        f'.../pictures/bone/images/plot_new_{timestamp}.png')
+    file_path = f"{base_path}/plot_{timestamp}.png"
+    mlab.savefig(file_path)
     plt.show()
     print("Plot images were loaded")
 
@@ -160,8 +172,8 @@ def plot_histogram(image_array):
     plt.ylabel('Frequency')
     plt.xlim(0, 1)
     plt.grid()
-    plt.savefig(
-        f'.../pictures/plot/plot_binary_{timestamp}.png')
+    file_path = f"{base_path}/histogram_{timestamp}.png"
+    mlab.savefig(file_path)
     print("Plot histogram was created")
 
 
@@ -183,8 +195,8 @@ def visualize_3d(image_array):
     """
     mlab.figure(size=(800, 800), bgcolor=(1, 1, 1))
     mlab.contour3d(image_array, contours=8, opacity=0.5, colormap='bone')
-    mlab.savefig(
-        f'.../pictures/bone/mesh/plot_3d_{timestamp}.png')
+    file_path = f"{base_path}/three_d_visualize_{timestamp}.png"
+    mlab.savefig(file_path)
     mlab.show()
 
 
