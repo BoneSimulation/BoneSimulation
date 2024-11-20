@@ -50,8 +50,9 @@ class TestVisualize3D(unittest.TestCase):
         test_image = np.random.rand(10, 10, 10)  # random 3D image
         try:
             visualize_3d(test_image)
-        except Exception as e:
+        except (ValueError, RuntimeError) as e:
             self.fail(f"visualize_3d raised an exception: {e}")
+
 
 
 class TestProcessAndVisualize(unittest.TestCase):
@@ -61,7 +62,8 @@ class TestProcessAndVisualize(unittest.TestCase):
     @patch('os.path.join')
     @patch('src.main.process_image')
     @patch('src.main.load_image')
-    def test_process_and_visualize(self, mock_load_image, mock_process_image, mock_join, mock_listdir):
+    def test_process_and_visualize(self, mock_load_image, mock_process_image,
+                                   mock_listdir):
         """Test the process_and_visualize function with mocked dependencies."""
         mock_listdir.return_value = ['image1.tif', 'image2.tif']
         mock_load_image.side_effect = [np.zeros((10, 10)), np.ones((10, 10))]

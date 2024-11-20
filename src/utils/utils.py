@@ -26,8 +26,8 @@ def check_os():
         return "Linux"
     if platform.system() == "Darwin":
         return "MacOS"
-    else:
-        return "Unknown"
+
+    return "Unknown"
 
 
 def generate_timestamp():
