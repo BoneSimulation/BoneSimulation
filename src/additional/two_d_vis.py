@@ -1,3 +1,7 @@
+"""
+This file is only a storage and an outsourcing for the visualization of each individual image, which is put together to a 3d image
+"""
+
 import os
 
 import numpy as np
@@ -23,7 +27,8 @@ data_array = np.array(data_list)
 print("Datenarray hat die Form:", data_array.shape)
 
 # Gaußscher Filter
-image_blurred_list = [filters.gaussian(image, sigma=2, mode='constant', cval=0) for image in data_array]
+image_blurred_list = [filters.gaussian(image, sigma=2, mode='constant', cval=0)
+                      for image in data_array]
 
 # back to numpy array
 image_blurred_array = np.array(image_blurred_list)
