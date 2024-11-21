@@ -76,6 +76,7 @@ def process_image(image):
     binary_image = image_blurred > filters.threshold_otsu(image_blurred)
     return image_blurred, binary_image
 
+
 # processes and visualises all important images
 def process_and_visualize(directory):
     """
