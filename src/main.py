@@ -206,7 +206,7 @@ if __name__ == "__main__":
     print("Running simulation")
 
     if check_os() == "Windows":
-        DIRECTORY = "..\\BoneSimulation\\data\\dataset"
+        DIRECTORY = "C:\\Users\\Mathias\\Documents\\BoneSimulation\\data\\dataset"
     elif check_os() == "Linux":
         DIRECTORY = "/home/mathias/PycharmProjects/BoneSimulation/data/dataset"
     elif check_os() == "MacOS":

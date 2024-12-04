@@ -14,7 +14,6 @@ import numpy as np
 from PIL import Image
 from skimage import filters
 
-# Warnungen für falsche Farbprofile unterdrücken
 warnings.filterwarnings("ignore", message=".*iCCP: known incorrect sRGB profile.*")
 
 DIRECTORY = "/home/mathias/PycharmProjects/BoneSimulation/data/dataset"
@@ -32,7 +31,6 @@ for filename in sorted(os.listdir(DIRECTORY)):
 data_array = np.array(data_list)
 print("Datenarray hat die Form:", data_array.shape)
 
-# Gaußscher Filter
 image_blurred_array = np.array([filters.gaussian(image, sigma=2, mode='constant', cval=0)
                                 for image in data_array])
 
