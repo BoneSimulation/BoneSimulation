@@ -58,6 +58,7 @@ def save_to_tiff_stack(image_array, filepath):
     images[0].save(filepath, save_all=True, append_images=images[1:])
     print(f"Saved data to TIFF stack: {filepath}")
 
+
 # loads image
 def load_image(filepath):
     """
@@ -88,11 +89,13 @@ def process_image(image):
             and False otherwise.
     """
     image_blurred = filters.gaussian(image, sigma=2, mode="constant", cval=0)
+
+    average_intensity = np.mean(image_blurred)
+
     binary_image = image_blurred > filters.threshold_otsu(image_blurred)
-    return image_blurred, binary_image
+    return image_blurred, binary_image, average_intensity
 
 
-# processes and visualises all important images
 def process_and_visualize(directory):
     """
     Processes and visualizes all important images in the specified directory.
@@ -105,10 +108,8 @@ def process_and_visualize(directory):
         directory (str): The path to the directory containing the image files.
 
     Returns:
-        None: This function does not return any value.
-        It performs visualization and printing of results.
+        None: This function does not return any value. It performs visualization and printing of results.
     """
-    # Load images and store them as a 3D array
     filepaths = [
         os.path.join(directory, filename)
         for filename in sorted(os.listdir(directory))
@@ -122,13 +123,16 @@ def process_and_visualize(directory):
 
     with Pool() as pool:
         results = pool.map(process_image, data_array)
-    image_blurred_array, binary_image_array = zip(*results)
+
+    image_blurred_array, binary_image_array, average_intensities = zip(*results)
     image_blurred_array = np.array(image_blurred_array)
     binary_image_array = np.array(binary_image_array)
 
+    overall_average_intensity = np.mean(average_intensities) * 255
+    print(f"Average Intensity of the whole stack: {overall_average_intensity}")
+
     save_to_tiff_stack(image_blurred_array, "/home/mathias/PycharmProjects/BoneSimulation/data/stream/output_stack.tif")
-    # plot_images(image_blurred_array, "Processed Images")
-    # plot_images(binary_image_array, "Binary Images")
+
     # plot_histogram(image_blurred_array)
 
     # visualize_3d(image_blurred_array)
