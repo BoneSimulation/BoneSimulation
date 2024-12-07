@@ -126,6 +126,7 @@ def process_and_visualize(directory):
 
     image_blurred_array, binary_image_array, average_intensities = zip(*results)
     image_blurred_array = np.array(image_blurred_array)
+    image_blurred_array = (image_blurred_array * 255).astype(np.uint8)
     binary_image_array = np.array(binary_image_array)
 
     overall_average_intensity = np.mean(average_intensities) * 255
