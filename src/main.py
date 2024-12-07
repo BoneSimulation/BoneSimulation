@@ -43,7 +43,7 @@ else:
     BASE_PATH = "./pictures"
 
 
-def save_to_tiff_stream(image_array):
+def save_to_tiff_stack(image_array, filepath):
     """
         Saves the processed image array into a TIFF stream.
 
@@ -53,17 +53,10 @@ def save_to_tiff_stream(image_array):
         Returns:
             BytesIO: An in-memory TIFF file stream.
         """
-    from io import BytesIO
-    tiff_stream = BytesIO()
+    from PIL import Image
     images = [Image.fromarray((image * 255).astype(np.uint8)) for image in image_array]
-    images[0].save(
-        tiff_stream,
-        format="TIFF",
-        save_all=True,
-        append_images=images[1:]
-    )
-    tiff_stream.seek(0)
-    return tiff_stream
+    images[0].save(filepath, save_all=True, append_images=images[1:])
+    print(f"Saved data to TIFF stack: {filepath}")
 
 # loads image
 def load_image(filepath):
@@ -126,16 +119,19 @@ def process_and_visualize(directory):
 
     data_array = np.array(data_array)
     print("Data array shape:", data_array.shape)
+
     with Pool() as pool:
         results = pool.map(process_image, data_array)
     image_blurred_array, binary_image_array = zip(*results)
     image_blurred_array = np.array(image_blurred_array)
     binary_image_array = np.array(binary_image_array)
-    plot_images(image_blurred_array, "Processed Images")
-    plot_images(binary_image_array, "Binary Images")
-    plot_histogram(image_blurred_array)
 
-    visualize_3d(image_blurred_array)
+    save_to_tiff_stack(image_blurred_array, "/home/mathias/PycharmProjects/BoneSimulation/data/stream/output_stack.tif")
+    # plot_images(image_blurred_array, "Processed Images")
+    # plot_images(binary_image_array, "Binary Images")
+    # plot_histogram(image_blurred_array)
+
+    # visualize_3d(image_blurred_array)
 
 
 # shows images and saves them in a specific directory
