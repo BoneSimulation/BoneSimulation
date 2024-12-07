@@ -16,15 +16,15 @@ from skimage import filters
 from mayavi import mlab
 from src.utils.utils import generate_timestamp, check_os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
 timestamp = generate_timestamp()
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-file_handler = logging.FileHandler('logfile.log')
-formatter = logging.Formatter(f'{timestamp}: %(levelname)s : %(name)s : %(message)s')
+file_handler = logging.FileHandler("logfile.log")
+formatter = logging.Formatter(f"{timestamp}: %(levelname)s : %(name)s : %(message)s")
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
@@ -42,6 +42,28 @@ else:
     print("Unknown OS! Using default path.")
     BASE_PATH = "./pictures"
 
+
+def save_to_tiff_stream(image_array):
+    """
+        Saves the processed image array into a TIFF stream.
+
+        Args:
+            image_array (numpy.ndarray): The array of processed images to save.
+
+        Returns:
+            BytesIO: An in-memory TIFF file stream.
+        """
+    from io import BytesIO
+    tiff_stream = BytesIO()
+    images = [Image.fromarray((image * 255).astype(np.uint8)) for image in image_array]
+    images[0].save(
+        tiff_stream,
+        format="TIFF",
+        save_all=True,
+        append_images=images[1:]
+    )
+    tiff_stream.seek(0)
+    return tiff_stream
 
 # loads image
 def load_image(filepath):
@@ -72,7 +94,7 @@ def process_image(image):
             if they are above the Otsu threshold,
             and False otherwise.
     """
-    image_blurred = filters.gaussian(image, sigma=2, mode='constant', cval=0)
+    image_blurred = filters.gaussian(image, sigma=2, mode="constant", cval=0)
     binary_image = image_blurred > filters.threshold_otsu(image_blurred)
     return image_blurred, binary_image
 
@@ -94,8 +116,11 @@ def process_and_visualize(directory):
         It performs visualization and printing of results.
     """
     # Load images and store them as a 3D array
-    filepaths = [os.path.join(directory, filename) for filename in sorted(os.listdir(directory)) if
-                 filename.endswith(".tif")]
+    filepaths = [
+        os.path.join(directory, filename)
+        for filename in sorted(os.listdir(directory))
+        if filename.endswith(".tif")
+    ]
     with Pool() as pool:
         data_array = pool.map(load_image, filepaths)
 
@@ -137,15 +162,14 @@ def plot_images(image_array, title):
     plt.figure(figsize=(15, 5 * rows))
     for i in range(num_images):
         plt.subplot(rows, cols, i + 1)
-        plt.imshow(image_array[i], cmap='gray')
-        plt.title(f'{title} {i + 1}')
-        plt.axis('off')
+        plt.imshow(image_array[i], cmap="gray")
+        plt.title(f"{title} {i + 1}")
+        plt.axis("off")
     plt.tight_layout()
     file_path = f"{BASE_PATH}/plot_{timestamp}.png"
     plt.savefig(file_path)
     plt.show()
     print("Plot images were loaded")
-
 
 
 # shows histogram
@@ -167,16 +191,15 @@ def plot_histogram(image_array):
     """
     plt.figure(figsize=(10, 6))
     all_pixel_values = image_array.flatten()
-    plt.hist(all_pixel_values, bins=256, range=(0, 1), color='gray', alpha=0.7)
-    plt.title('Histogram of Pixel Values of Processed Images')
-    plt.xlabel('Pixel Values')
-    plt.ylabel('Frequency')
+    plt.hist(all_pixel_values, bins=256, range=(0, 1), color="gray", alpha=0.7)
+    plt.title("Histogram of Pixel Values of Processed Images")
+    plt.xlabel("Pixel Values")
+    plt.ylabel("Frequency")
     plt.xlim(0, 1)
     plt.grid()
     file_path = f"{BASE_PATH}/histogram_{timestamp}.png"
     plt.savefig(file_path)
     print("Plot histogram was created")
-
 
 
 def visualize_3d(image_array):
@@ -195,11 +218,10 @@ def visualize_3d(image_array):
         and saves the 3D plot as a file.
     """
     mlab.figure(size=(800, 800), bgcolor=(1, 1, 1))
-    mlab.contour3d(image_array, contours=8, opacity=0.5, colormap='bone')
+    mlab.contour3d(image_array, contours=8, opacity=0.5, colormap="bone")
     file_path = f"{BASE_PATH}/3d_visualize_{timestamp}.png"
     mlab.savefig(file_path)
     mlab.show()
-
 
 
 if __name__ == "__main__":
