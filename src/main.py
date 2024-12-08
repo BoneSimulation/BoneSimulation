@@ -88,7 +88,7 @@ def process_image(image):
             if they are above the Otsu threshold,
             and False otherwise.
     """
-    image_blurred = filters.gaussian(image, sigma=2, mode="constant", cval=0)
+    image_blurred = filters.gaussian(image, sigma=1, mode="constant")
 
     average_intensity = np.mean(image_blurred)
 
@@ -126,8 +126,8 @@ def process_and_visualize(directory):
 
     image_blurred_array, binary_image_array, average_intensities = zip(*results)
     image_blurred_array = np.array(image_blurred_array)
-    image_blurred_array = (image_blurred_array * 255).astype(np.uint8)
-    binary_image_array = np.array(binary_image_array)
+    # image_blurred_array = (image_blurred_array * 256).astype(np.uint8)
+    # np.array(binary_image_array)
 
     overall_average_intensity = np.mean(average_intensities) * 255
     print(f"Average Intensity of the whole stack: {overall_average_intensity}")
@@ -136,7 +136,7 @@ def process_and_visualize(directory):
 
     # plot_histogram(image_blurred_array)
 
-    # visualize_3d(image_blurred_array)
+    visualize_3d(image_blurred_array)
 
 
 # shows images and saves them in a specific directory
@@ -146,7 +146,7 @@ def plot_images(image_array, title):
 
     This function takes a 3D array of images, arranges them in a grid format, and displays them
     using Matplotlib. The plot is saved to a specified directory with a timestamp in the filename.
-
+t
     Args:
         image_array (numpy.ndarray):
         A 3D array where each slice along the first dimension represents an image.
