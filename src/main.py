@@ -45,15 +45,27 @@ else:
 
 def save_to_tiff_stack(image_array, filepath):
     """
-        Saves the processed image array into a TIFF stream.
+    Saves an array of processed images as a multi-page TIFF file.
 
-        Args:
-            image_array (numpy.ndarray): The array of processed images to save.
+    This function converts a NumPy array of images into TIFF format and saves it to the specified file path.
 
-        Returns:
-            BytesIO: An in-memory TIFF file stream.
-        """
+    Args:
+        image_array (numpy.ndarray): Array of processed images to save.
+        filepath (str): Path where the TIFF file will be saved.
+
+    Returns:
+        None: The function saves the file directly and does not return a value.
+
+    Raises:
+        ValueError: If the image_array is empty.
+        IOError: If an error occurs while saving the file.
+    """
     from PIL import Image
+    import numpy as np
+
+    if image_array.size == 0:
+        raise ValueError("The image_array must not be empty.")
+
     images = [Image.fromarray((image * 255).astype(np.uint8)) for image in image_array]
     images[0].save(filepath, save_all=True, append_images=images[1:])
     print(f"Saved data to TIFF stack: {filepath}")
