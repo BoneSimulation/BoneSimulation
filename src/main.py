@@ -14,6 +14,7 @@ import numpy as np
 from PIL import Image
 from skimage import filters
 from mayavi import mlab
+import scipy.ndimage
 from src.utils.utils import generate_timestamp, check_os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
