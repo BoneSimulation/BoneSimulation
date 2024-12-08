@@ -44,6 +44,11 @@ else:
     BASE_PATH = "./pictures"
 
 
+def interpolate_image_stack(image_stack, scaling_factor, order=2):
+    interpolated_stack = scipy.ndimage.zoom(image_stack, (scaling_factor, scaling_factor, scaling_factor), order=order)
+    return interpolated_stack
+
+
 def save_to_tiff_stack(image_array, filepath):
     """
     Saves an array of processed images as a multi-page TIFF file.
@@ -141,15 +146,16 @@ def process_and_visualize(directory):
     image_blurred_array = np.array(image_blurred_array)
     # image_blurred_array = (image_blurred_array * 256).astype(np.uint8)
     # np.array(binary_image_array)
+    image_blurred_array_interpolated = interpolate_image_stack(image_blurred_array, 0.5)
 
     overall_average_intensity = np.mean(average_intensities) * 255
     print(f"Average Intensity of the whole stack: {overall_average_intensity}")
 
-    save_to_tiff_stack(image_blurred_array, f"/home/mathias/PycharmProjects/BoneSimulation/data/stream/{timestamp}_output_stack.tif")
+    save_to_tiff_stack(image_blurred_array_interpolated, f"/home/mathias/PycharmProjects/BoneSimulation/data/stream/{timestamp}_output_stack.tif")
 
     # plot_histogram(image_blurred_array)
 
-    visualize_3d(image_blurred_array)
+    # visualize_3d(image_blurred_array)
 
 
 # shows images and saves them in a specific directory
