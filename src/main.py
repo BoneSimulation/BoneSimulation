@@ -44,8 +44,23 @@ else:
     BASE_PATH = "./pictures"
 
 
-def interpolate_image_stack(image_stack, scaling_factor, order=2):
-    interpolated_stack = scipy.ndimage.zoom(image_stack, (scaling_factor, scaling_factor, scaling_factor), order=order)
+def interpolate_image_stack(image_stack, scaling_factor, order=1):
+    """
+    Interpolates a 3D image stack using the specified scaling factor and interpolation order.
+
+    Args:
+        image_stack (numpy.ndarray): The input 3D image stack.
+        scaling_factor (float): The scaling factor for resizing the images.
+        order (int): The interpolation order (default: 1 for bilinear interpolation).
+
+    Returns:
+        numpy.ndarray: The interpolated 3D image stack.
+    """
+    interpolated_stack = scipy.ndimage.zoom(
+        image_stack,
+        (scaling_factor, scaling_factor, scaling_factor),
+        order=order
+    )
     return interpolated_stack
 
 
@@ -133,6 +148,7 @@ def process_and_visualize(directory):
         for filename in sorted(os.listdir(directory))
         if filename.endswith(".tif")
     ]
+
     with Pool() as pool:
         data_array = pool.map(load_image, filepaths)
 
@@ -143,19 +159,17 @@ def process_and_visualize(directory):
         results = pool.map(process_image, data_array)
 
     image_blurred_array, binary_image_array, average_intensities = zip(*results)
-    image_blurred_array = np.array(image_blurred_array)
-    # image_blurred_array = (image_blurred_array * 256).astype(np.uint8)
-    # np.array(binary_image_array)
-    image_blurred_array_interpolated = interpolate_image_stack(image_blurred_array, 0.5)
+    binary_image_array = np.array(binary_image_array)
+
+    binary_image_array_interpolated = interpolate_image_stack(binary_image_array, 0.5)
 
     overall_average_intensity = np.mean(average_intensities) * 255
     print(f"Average Intensity of the whole stack: {overall_average_intensity}")
 
-    save_to_tiff_stack(image_blurred_array_interpolated, f"/home/mathias/PycharmProjects/BoneSimulation/data/stream/{timestamp}_output_stack.tif")
+    save_to_tiff_stack(binary_image_array_interpolated,
+                       f"/home/mathias/PycharmProjects/BoneSimulation/data/stream/{timestamp}_binary_output_stack.tif")
 
-    # plot_histogram(image_blurred_array)
-
-    # visualize_3d(image_blurred_array)
+    # visualize_3d(binary_image_array_interpolated)
 
 
 # shows images and saves them in a specific directory
