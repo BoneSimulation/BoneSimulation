@@ -144,7 +144,7 @@ def process_and_visualize(directory):
     overall_average_intensity = np.mean(average_intensities) * 255
     print(f"Average Intensity of the whole stack: {overall_average_intensity}")
 
-    save_to_tiff_stack(image_blurred_array, "/home/mathias/PycharmProjects/BoneSimulation/data/stream/output_stack.tif")
+    save_to_tiff_stack(image_blurred_array, f"/home/mathias/PycharmProjects/BoneSimulation/data/stream/{timestamp}_output_stack.tif")
 
     # plot_histogram(image_blurred_array)
 
