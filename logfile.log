@@ -40,3 +40,33 @@
 2024-12-09 20-35-48: DEBUG : __main__ : Running
 2024-12-09 20-41-00: DEBUG : __main__ : Running
 2024-12-09 20-41-35: DEBUG : __main__ : Running
+2024-12-09 21-16-32: DEBUG : __main__ : Running main script.
+2024-12-09 21-16-32: INFO : __main__ : Using directory: ./pictures
+2024-12-09 21-16-32: INFO : __main__ : Starting processing and visualization...
+2024-12-09 21-17-46: DEBUG : __main__ : Running main script.
+2024-12-09 21-17-46: INFO : __main__ : Using directory: ./pictures
+2024-12-09 21-17-46: INFO : __main__ : Starting processing and visualization...
+2024-12-09 21-17-46: INFO : __main__ : Loaded 0 images. Shape: (0,)
+2024-12-09 21-23-36: DEBUG : __main__ : Running main script.
+2024-12-09 21-23-36: INFO : __main__ : Using directory: ./pictures
+2024-12-09 21-23-36: INFO : __main__ : Starting processing and visualization...
+2024-12-09 21-36-11: DEBUG : __main__ : Running main script.
+2024-12-09 21-36-11: INFO : __main__ : Using directory: ./pictures
+2024-12-09 21-36-11: INFO : __main__ : Starting processing and visualization...
+2024-12-09 21-41-21: DEBUG : __main__ : Running main script.
+2024-12-09 21-41-21: INFO : __main__ : Using directory: ./pictures
+2024-12-09 21-41-21: INFO : __main__ : Starting processing and visualization...
+2024-12-09 21-49-51: DEBUG : __main__ : Running main script.
+2024-12-09 21-49-51: INFO : __main__ : Using directory: data/dataset
+2024-12-09 21-49-51: INFO : __main__ : Starting processing and visualization...
+2024-12-09 21-49-51: INFO : __main__ : Loaded 200 images. Shape: (200, 200, 200)
+2024-12-09 21-49-51: INFO : __main__ : Found 268 clusters. Largest cluster size: 143213
+2024-12-09 21-49-51: INFO : __main__ : Average Intensity of the whole stack: 46.662866930672045
+2024-12-09 21-49-51: INFO : __main__ : Processing and visualization completed.
+2024-12-09 21-50-47: DEBUG : __main__ : Running main script.
+2024-12-09 21-50-47: INFO : __main__ : Using directory: data/dataset
+2024-12-09 21-50-47: INFO : __main__ : Starting processing and visualization...
+2024-12-09 21-50-47: INFO : __main__ : Loaded 200 images. Shape: (200, 200, 200)
+2024-12-09 21-50-47: INFO : __main__ : Found 268 clusters. Largest cluster size: 143213
+2024-12-09 21-50-47: INFO : __main__ : Average Intensity of the whole stack: 46.662866930672045
+2024-12-09 21-50-47: INFO : __main__ : Processing and visualization completed.
