@@ -2,6 +2,8 @@
 Image processing module for handling and analyzing 3D image stacks.
 """
 
+# pylint: disable=import-error
+
 import os
 import logging
 from multiprocessing import Pool
@@ -112,7 +114,8 @@ def interpolate_image_stack(image_stack, scaling_factor, order=1):
     """
     Interpolates a 3D image stack using the specified scaling factor.
     """
-    return scipy.ndimage.zoom(image_stack, (scaling_factor, scaling_factor, scaling_factor), order=order)
+    return scipy.ndimage.zoom(image_stack,
+                              (scaling_factor, scaling_factor, scaling_factor), order=order)
 
 
 def find_largest_cluster(image_stack):

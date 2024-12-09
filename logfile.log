@@ -1,0 +1,7 @@
+2024-12-09 22-41-29: DEBUG : __main__ : Running main script.
+2024-12-09 22-41-29: INFO : __main__ : Using directory: data/dataset
+2024-12-09 22-41-29: INFO : __main__ : Starting processing and visualization...
+2024-12-09 22-41-29: INFO : __main__ : Loaded 200 images. Shape: (200, 200, 200)
+2024-12-09 22-41-29: INFO : __main__ : Found 268 clusters. Largest cluster size: 143213
+2024-12-09 22-41-29: INFO : __main__ : Average Intensity of the whole stack: 46.662866930672045
+2024-12-09 22-41-29: INFO : __main__ : Processing and visualization completed.

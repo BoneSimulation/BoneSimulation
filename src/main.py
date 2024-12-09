@@ -1,6 +1,7 @@
 """This is the main file - every important thing is placed here"""
 
 # pylint: disable=import-error
+# pylint: disable=logging-fstring-interpolation
 
 import logging
 import os
@@ -52,7 +53,7 @@ def process_and_visualize(directory):
     data_array = load_images(directory)
     logger.info(f"Loaded {data_array.shape[0]} images. Shape: {data_array.shape}")
 
-    image_blurred_array, binary_image_array, average_intensities = process_images(data_array)
+    binary_image_array, average_intensities = process_images(data_array)
 
     closed_binary_images = apply_morphological_closing(binary_image_array)
 
@@ -82,14 +83,14 @@ if __name__ == "__main__":
     logger.debug("Running main script.")
     print("Running simulation")
 
-    directory = get_base_path()
+    DIRECTORY = get_base_path()
 
-    if not os.path.isdir(directory):
-        logger.error(f"Directory {directory} does not exist!")
-        sys.exit(f"Directory {directory} does not exist.")
+    if not os.path.isdir(DIRECTORY):
+        logger.error(f"Directory {DIRECTORY} does not exist!")
+        sys.exit(f"Directory {DIRECTORY} does not exist.")
 
-    logger.info(f"Using directory: {directory}")
-    process_and_visualize(directory)
+    logger.info(f"Using directory: {DIRECTORY}")
+    process_and_visualize(DIRECTORY)
 
 
 # TODO: verbesserung der Mittelwert Funktion um einen besseren Threshold Mittelwert herauszubekommen
