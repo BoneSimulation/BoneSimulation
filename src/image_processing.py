@@ -1,17 +1,14 @@
-# image_processing.py
-
-# pylint: disable=import-error
+"""
+Image processing module for handling and analyzing 3D image stacks.
+"""
 
 import os
 import logging
 from multiprocessing import Pool
-
-from skimage import morphology, filters, measure
-import scipy.ndimage
-import logging
 import numpy as np
 from PIL import Image
-
+from skimage import morphology, filters, measure
+import scipy.ndimage
 
 logger = logging.getLogger(__name__)
 
@@ -28,10 +25,10 @@ def load_image(filepath):
     """
     try:
         im = Image.open(filepath).convert("L")
-        logger.info(f"Loaded image: {filepath}")
+        logger.info("Loaded image: %s", filepath)
         return np.array(im)
-    except Exception as e:
-        logger.error(f"Error loading image {filepath}: {e}")
+    except (IOError, ValueError) as e:
+        logger.error("Error loading image %s: %s", filepath, e)
         return None
 
 
@@ -39,31 +36,27 @@ def load_images(directory):
     """
     Loads all TIFF images from the specified directory.
     """
-    logger.info(f"Loading images from directory: {directory}")
+    logger.info("Loading images from directory: %s", directory)
 
-    # Suche nach TIFF-Dateien
     filepaths = [
         os.path.join(directory, filename)
         for filename in sorted(os.listdir(directory))
         if filename.endswith(".tif")
     ]
 
-    # Wenn keine Dateien gefunden werden, Fehler werfen
     if not filepaths:
-        logger.error(f"No valid images found in directory: {directory}")
+        logger.error("No valid images found in directory: %s", directory)
         raise ValueError(f"No valid images found in directory: {directory}")
 
-    logger.info(f"Found {len(filepaths)} image(s) in {directory}")
+    logger.info("Found %d image(s) in %s", len(filepaths), directory)
 
-    # Parallel die Bilder laden
     with Pool() as pool:
         data_array = pool.map(load_image, filepaths)
 
-    # Fehlerhafte Bilder entfernen
     data_array = [img for img in data_array if img is not None]
 
     if not data_array:
-        logger.error(f"No images could be successfully loaded from {directory}")
+        logger.error("No images could be successfully loaded from %s", directory)
         raise ValueError(f"No valid images could be successfully loaded from {directory}")
 
     return np.array(data_array)
@@ -78,9 +71,8 @@ def process_images(data_array):
         try:
             result = process_image(image)
             processed_results.append(result)
-        except Exception as e:
-            logger.error(f"Error processing image {i}: {e}")
-            continue
+        except ValueError as e:
+            logger.error("Error processing image %d: %s", i, e)
 
     if not processed_results:
         raise ValueError("No valid images were processed!")
@@ -100,15 +92,10 @@ def process_image(image):
     if image is None or image.size == 0:
         raise ValueError("Input image is empty or invalid.")
 
-    try:
-        image_blurred = filters.gaussian(image, sigma=1, mode="constant")
-        binary_image = image_blurred > filters.threshold_otsu(image_blurred)
-        average_intensity = np.mean(image_blurred)
-        return image_blurred, binary_image, average_intensity
-    except Exception as e:
-        logger.error(f"Failed to process image: {e}")
-        raise
-
+    image_blurred = filters.gaussian(image, sigma=1, mode="constant")
+    binary_image = image_blurred > filters.threshold_otsu(image_blurred)
+    average_intensity = np.mean(image_blurred)
+    return image_blurred, binary_image, average_intensity
 
 
 def apply_morphological_closing(binary_images):
@@ -125,8 +112,7 @@ def interpolate_image_stack(image_stack, scaling_factor, order=1):
     """
     Interpolates a 3D image stack using the specified scaling factor.
     """
-    return scipy.ndimage.zoom(image_stack,
-                              (scaling_factor, scaling_factor, scaling_factor),order=order)
+    return scipy.ndimage.zoom(image_stack, (scaling_factor, scaling_factor, scaling_factor), order=order)
 
 
 def find_largest_cluster(image_stack):

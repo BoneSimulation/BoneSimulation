@@ -19,7 +19,6 @@ from src.image_processing import (
 )
 from src.visualization import plot_histogram, plot_images
 
-# Initialisiere Logger
 timestamp = generate_timestamp()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -50,38 +49,29 @@ def process_and_visualize(directory):
     """
     logger.info("Starting processing and visualization...")
 
-    # Lade Bilder
     data_array = load_images(directory)
     logger.info(f"Loaded {data_array.shape[0]} images. Shape: {data_array.shape}")
 
-    # Verarbeite Bilder
     image_blurred_array, binary_image_array, average_intensities = process_images(data_array)
 
-    # Morphologische Schließung
     closed_binary_images = apply_morphological_closing(binary_image_array)
 
-    # Interpolation auf geschlossene Bilder
     binary_image_array_interpolated = interpolate_image_stack(closed_binary_images,
                                                               scaling_factor=0.5)
 
-    # Größten Cluster finden
     largest_cluster, num_clusters, largest_cluster_size = (
         find_largest_cluster(binary_image_array_interpolated))
     logger.info(f"Found {num_clusters} clusters. Largest cluster size: {largest_cluster_size}")
 
-    # Speichern des größten Clusters
     save_to_tiff_stack(largest_cluster.astype(np.uint8),
                        f"pictures/{timestamp}_largest_cluster.tif")
 
-    # Durchschnittliche Intensität berechnen
     overall_average_intensity = np.mean(average_intensities) * 255
     logger.info(f"Average Intensity of the whole stack: {overall_average_intensity}")
 
-    # Speichern des verarbeiteten Stacks
     save_to_tiff_stack(binary_image_array_interpolated,
                        f"pictures/{timestamp}_binary_output_stack.tif")
 
-    # Histogramm und Bilder plotten
     plot_histogram(binary_image_array_interpolated)
     plot_images(binary_image_array_interpolated, title="Processed Image")
 
@@ -100,3 +90,7 @@ if __name__ == "__main__":
 
     logger.info(f"Using directory: {directory}")
     process_and_visualize(directory)
+
+
+# TODO: verbesserung der Mittelwert Funktion um einen besseren Threshold Mittelwert herauszubekommen
+#   -> statt jeden Bild zu nehmen, einfach den Mittelwert des Stacks nehme.
