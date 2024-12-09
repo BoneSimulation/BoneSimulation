@@ -15,6 +15,8 @@ from PIL import Image
 from skimage import filters
 from mayavi import mlab
 import scipy.ndimage
+from skimage import data, morphology
+from skimage.util import img_as_ubyte
 from src.utils.utils import generate_timestamp, check_os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
