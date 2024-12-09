@@ -17,6 +17,7 @@ from mayavi import mlab
 import scipy.ndimage
 from skimage import data, morphology
 from skimage.util import img_as_ubyte
+from skimage import exposure
 from src.utils.utils import generate_timestamp, check_os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
@@ -163,7 +164,12 @@ def process_and_visualize(directory):
     image_blurred_array, binary_image_array, average_intensities = zip(*results)
     binary_image_array = np.array(binary_image_array)
 
-    binary_image_array_interpolated = interpolate_image_stack(binary_image_array, 0.5)
+    closed_binary_images = np.array([
+        morphology.closing(image, footprint=morphology.disk(6))
+        for image in binary_image_array
+    ])
+
+    binary_image_array_interpolated = interpolate_image_stack(closed_binary_images, 0.5)
 
     overall_average_intensity = np.mean(average_intensities) * 255
     print(f"Average Intensity of the whole stack: {overall_average_intensity}")
@@ -172,6 +178,7 @@ def process_and_visualize(directory):
                        f"/home/mathias/PycharmProjects/BoneSimulation/data/stream/{timestamp}_binary_output_stack.tif")
 
     # visualize_3d(binary_image_array_interpolated)
+
 
 
 # shows images and saves them in a specific directory
