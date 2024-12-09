@@ -1,7 +1,8 @@
-# visualization.py
+"""This is the Visualization file, every function regarding that topic will be imported here"""
+
+# pylint: disable=import-error
 
 import matplotlib.pyplot as plt
-import numpy as np
 
 
 def plot_histogram(image_array):

@@ -1,20 +1,17 @@
 # image_processing.py
 
+# pylint: disable=import-error
+
 import os
+import logging
 from multiprocessing import Pool
-import numpy as np
+
 from skimage import morphology, filters, measure
 import scipy.ndimage
-from PIL import Image
 import logging
-
-logger = logging.getLogger(__name__)
-
-import os
-import logging
-from multiprocessing import Pool
 import numpy as np
 from PIL import Image
+
 
 logger = logging.getLogger(__name__)
 
@@ -128,7 +125,8 @@ def interpolate_image_stack(image_stack, scaling_factor, order=1):
     """
     Interpolates a 3D image stack using the specified scaling factor.
     """
-    return scipy.ndimage.zoom(image_stack, (scaling_factor, scaling_factor, scaling_factor), order=order)
+    return scipy.ndimage.zoom(image_stack,
+                              (scaling_factor, scaling_factor, scaling_factor),order=order)
 
 
 def find_largest_cluster(image_stack):

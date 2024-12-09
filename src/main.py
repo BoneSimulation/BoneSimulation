@@ -1,13 +1,12 @@
-# main.py
+"""This is the main file - every important thing is placed here"""
+
+# pylint: disable=import-error
 
 import logging
 import os
 import sys
 import warnings
-from multiprocessing import Pool
-from PIL import Image
 import numpy as np
-from skimage import morphology, filters, measure
 
 from src.utils.utils import generate_timestamp, check_os
 from src.image_processing import (
@@ -37,7 +36,7 @@ def get_base_path():
     os_type = check_os()
     if os_type == "Windows":
         return "data/dataset"
-    elif os_type == "Linux" or os_type == "MacOS":
+    if os_type == "Linux" or os_type == "MacOS":
         return "data/dataset"
     else:
         logger.warning("Unknown OS! Using default path.")
@@ -62,21 +61,25 @@ def process_and_visualize(directory):
     closed_binary_images = apply_morphological_closing(binary_image_array)
 
     # Interpolation auf geschlossene Bilder
-    binary_image_array_interpolated = interpolate_image_stack(closed_binary_images, scaling_factor=0.5)
+    binary_image_array_interpolated = interpolate_image_stack(closed_binary_images,
+                                                              scaling_factor=0.5)
 
     # Größten Cluster finden
-    largest_cluster, num_clusters, largest_cluster_size = find_largest_cluster(binary_image_array_interpolated)
+    largest_cluster, num_clusters, largest_cluster_size = (
+        find_largest_cluster(binary_image_array_interpolated))
     logger.info(f"Found {num_clusters} clusters. Largest cluster size: {largest_cluster_size}")
 
     # Speichern des größten Clusters
-    save_to_tiff_stack(largest_cluster.astype(np.uint8), f"pictures/{timestamp}_largest_cluster.tif")
+    save_to_tiff_stack(largest_cluster.astype(np.uint8),
+                       f"pictures/{timestamp}_largest_cluster.tif")
 
     # Durchschnittliche Intensität berechnen
     overall_average_intensity = np.mean(average_intensities) * 255
     logger.info(f"Average Intensity of the whole stack: {overall_average_intensity}")
 
     # Speichern des verarbeiteten Stacks
-    save_to_tiff_stack(binary_image_array_interpolated, f"pictures/{timestamp}_binary_output_stack.tif")
+    save_to_tiff_stack(binary_image_array_interpolated,
+                       f"pictures/{timestamp}_binary_output_stack.tif")
 
     # Histogramm und Bilder plotten
     plot_histogram(binary_image_array_interpolated)
