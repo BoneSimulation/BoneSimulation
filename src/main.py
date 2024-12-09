@@ -132,6 +132,8 @@ def process_image(image):
     return image_blurred, binary_image, average_intensity
 
 
+from skimage import measure
+
 def process_and_visualize(directory):
     """
     Processes and visualizes all important images in the specified directory.
@@ -146,6 +148,7 @@ def process_and_visualize(directory):
     Returns:
         None: This function does not return any value. It performs visualization and printing of results.
     """
+    # Lade die Bilder aus dem Verzeichnis
     filepaths = [
         os.path.join(directory, filename)
         for filename in sorted(os.listdir(directory))
@@ -158,26 +161,46 @@ def process_and_visualize(directory):
     data_array = np.array(data_array)
     print("Data array shape:", data_array.shape)
 
+    # Verarbeite die Bilder
     with Pool() as pool:
         results = pool.map(process_image, data_array)
 
     image_blurred_array, binary_image_array, average_intensities = zip(*results)
     binary_image_array = np.array(binary_image_array)
 
+    # Morphologische Schließung anwenden
     closed_binary_images = np.array([
         morphology.closing(image, footprint=morphology.disk(6))
         for image in binary_image_array
     ])
 
+    # Interpolation auf die geschlossenen Bilder anwenden
     binary_image_array_interpolated = interpolate_image_stack(closed_binary_images, 0.5)
 
+    # Größten Cluster finden
+    labels, num_clusters = measure.label(binary_image_array_interpolated, background=0, return_num=True, connectivity=1)
+    cluster_sizes = np.bincount(labels.flatten())
+    largest_cluster_label = cluster_sizes[1:].argmax() + 1  # +1, da Label 0 der Hintergrund ist
+    largest_cluster = (labels == largest_cluster_label)
+
+    print(f"Anzahl der Cluster: {num_clusters}")
+    print(f"Größe des größten Clusters: {cluster_sizes[largest_cluster_label]}")
+
+    # Speichern des größten Clusters als neuer Stack
+    save_to_tiff_stack(largest_cluster.astype(np.uint8),
+                       f"./data/stream/{timestamp}_largest_cluster.tif")
+
+    # 3D-Visualisierung des größten Clusters
+    # visualize_3d(largest_cluster)
+
+    # Durchschnittliche Intensität berechnen
     overall_average_intensity = np.mean(average_intensities) * 255
     print(f"Average Intensity of the whole stack: {overall_average_intensity}")
 
+    # Verarbeiteten Stack speichern
     save_to_tiff_stack(binary_image_array_interpolated,
-                       f"/home/mathias/PycharmProjects/BoneSimulation/data/stream/{timestamp}_binary_output_stack.tif")
+                       f"./data/stream/{timestamp}_binary_output_stack.tif")
 
-    # visualize_3d(binary_image_array_interpolated)
 
 
 
@@ -272,11 +295,11 @@ if __name__ == "__main__":
     print("Running simulation")
 
     if check_os() == "Windows":
-        DIRECTORY = "..\\BoneSimulation\\data\\dataset"
+        DIRECTORY = "..\\data\\dataset"
     elif check_os() == "Linux":
-        DIRECTORY = "/home/mathias/PycharmProjects/BoneSimulation/data/dataset"
+        DIRECTORY = "./data/dataset"
     elif check_os() == "MacOS":
-        DIRECTORY = "/Users/mathias/PycharmProjects/BoneSimulation/data/dataset"
+        DIRECTORY = "./data/dataset"
         # not familiar with macOS, please check
     else:
         print("Unknown OS!")
