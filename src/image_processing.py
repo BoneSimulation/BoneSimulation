@@ -7,10 +7,13 @@ Image processing module for handling and analyzing 3D image stacks.
 import os
 import logging
 from multiprocessing import Pool
-import numpy as np
 from PIL import Image
 from skimage import morphology, filters, measure
 import scipy.ndimage
+import tifffile as tiff
+from src.utils.utils import generate_timestamp
+
+timestamp = generate_timestamp()
 
 logger = logging.getLogger(__name__)
 
@@ -64,27 +67,54 @@ def load_images(directory):
     return np.array(data_array)
 
 
-def process_images(data_array):
+from skimage import filters
+import numpy as np
+import matplotlib.pyplot as plt
+
+def process_images_globally(data_array):
     """
-    Applies Gaussian blur and binary thresholding to each image in the stack.
+    Applies global Otsu thresholding to the entire dataset and processes the images.
+
+    Args:
+        data_array (numpy.ndarray): 3D array containing the image stack.
+
+    Returns:
+        tuple: (blurred_images, binary_images, global_threshold)
     """
-    processed_results = []
+    if data_array.size == 0:
+        raise ValueError("Input image stack is empty or invalid.")
+
+    flattened_data = data_array.flatten()
+    global_threshold = filters.threshold_otsu(flattened_data)
+
+    plt.hist(flattened_data, bins=256, color='blue', alpha=0.7)
+    plt.axvline(global_threshold, color='red', linestyle='dashed', linewidth=2)
+    plt.title("Histogram of Image Data with Global Threshold")
+    plt.xlabel("Pixel Value")
+    plt.ylabel("Frequency")
+    plt.savefig(f"debug/histogram_with_threshold_{timestamp}.png")
+    logger.info(f"Saved histogram with global threshold to debug/histogram_with_threshold_{timestamp}.png")
+    plt.close()
+
+    blurred_images = []
+    binary_images = []
+
     for i, image in enumerate(data_array):
         try:
-            result = process_image(image)
-            processed_results.append(result)
-        except ValueError as e:
-            logger.error("Error processing image %d: %s", i, e)
+            image_blurred = filters.gaussian(image, sigma=1, mode="constant")
+            blurred_images.append(image_blurred)
 
-    if not processed_results:
+            binary_image = image_blurred > global_threshold
+            binary_images.append(binary_image)
+        except Exception as e:
+            logger.error(f"Error processing image {i}: {e}")
+            continue
+
+    if not binary_images:
         raise ValueError("No valid images were processed!")
 
-    image_blurred_array, binary_image_array, average_intensities = zip(*processed_results)
-    return (
-        np.array(image_blurred_array),
-        np.array(binary_image_array),
-        np.array(average_intensities),
-    )
+    return np.array(blurred_images), np.array(binary_images), global_threshold
+
 
 
 def process_image(image):
@@ -100,14 +130,29 @@ def process_image(image):
     return image_blurred, binary_image, average_intensity
 
 
+from skimage.morphology import closing, square
+
 def apply_morphological_closing(binary_images):
     """
-    Applies morphological closing to all binary images in the stack.
+    Applies morphological closing to a stack of binary images.
+
+    Args:
+        binary_images (numpy.ndarray): 3D array of binary images.
+
+    Returns:
+        numpy.ndarray: Processed binary images after morphological closing.
     """
-    return np.array([
-        morphology.closing(image, footprint=morphology.disk(6))
-        for image in binary_images
-    ])
+    closed_images = []
+    for i, binary_image in enumerate(binary_images):
+        try:
+            closed_image = closing(binary_image, square(3))
+            closed_images.append(closed_image)
+        except Exception as e:
+            logger.error(f"Error applying morphological closing to image {i}: {e}")
+            continue
+
+    return np.array(closed_images)
+
 
 
 def interpolate_image_stack(image_stack, scaling_factor, order=1):
@@ -119,19 +164,26 @@ def interpolate_image_stack(image_stack, scaling_factor, order=1):
 
 
 def find_largest_cluster(image_stack):
-    """
-    Finds the largest voxel cluster in a 3D image stack.
-    """
     labels, num_clusters = measure.label(image_stack, background=0, return_num=True, connectivity=1)
     cluster_sizes = np.bincount(labels.flatten())
+    if len(cluster_sizes) <= 1:  # Prüfen, ob nur Hintergrund vorhanden ist
+        raise ValueError("No clusters found in the image stack.")
     largest_cluster_label = cluster_sizes[1:].argmax() + 1
     largest_cluster = (labels == largest_cluster_label)
     return largest_cluster, num_clusters, cluster_sizes[largest_cluster_label]
 
 
-def save_to_tiff_stack(image_array, filepath):
+
+def save_to_tiff_stack(image_stack, filename):
     """
-    Saves a 3D image stack as a multi-page TIFF file.
+    Saves a stack of images as a TIFF file.
+
+    Args:
+        image_stack (numpy.ndarray): Stack of images to save.
+        filename (str): Path to the output TIFF file.
     """
-    images = [Image.fromarray((image * 255).astype(np.uint8)) for image in image_array]
-    images[0].save(filepath, save_all=True, append_images=images[1:])
+    try:
+        tiff.imwrite(filename, image_stack, photometric='minisblack')
+        logger.info(f"Saved image stack to {filename}")
+    except Exception as e:
+        logger.error(f"Error saving TIFF stack to {filename}: {e}")

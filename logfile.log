@@ -1,7 +1,20 @@
-2024-12-09 22-41-29: DEBUG : __main__ : Running main script.
-2024-12-09 22-41-29: INFO : __main__ : Using directory: data/dataset
-2024-12-09 22-41-29: INFO : __main__ : Starting processing and visualization...
-2024-12-09 22-41-29: INFO : __main__ : Loaded 200 images. Shape: (200, 200, 200)
-2024-12-09 22-41-29: INFO : __main__ : Found 268 clusters. Largest cluster size: 143213
-2024-12-09 22-41-29: INFO : __main__ : Average Intensity of the whole stack: 46.662866930672045
-2024-12-09 22-41-29: INFO : __main__ : Processing and visualization completed.
+2024-12-10 20-01-56: DEBUG : __main__ : Running main script.
+2024-12-10 20-01-56: INFO : __main__ : Using directory: data/dataset
+2024-12-10 20-01-56: INFO : __main__ : Starting processing and visualization...
+2024-12-10 20-01-56: INFO : __main__ : Loaded 200 images. Shape: (200, 200, 200)
+2024-12-10 20-07-40: DEBUG : __main__ : Running main script.
+2024-12-10 20-07-40: INFO : __main__ : Using directory: data/dataset
+2024-12-10 20-07-40: INFO : __main__ : Starting processing and visualization...
+2024-12-10 20-07-40: INFO : __main__ : Loaded 200 images. Shape: (200, 200, 200)
+2024-12-10 20-07-40: INFO : __main__ : Global threshold determined: 84
+2024-12-10 20-07-40: DEBUG : __main__ : Number of active pixels after closing: 0
+2024-12-10 20-07-40: DEBUG : __main__ : Interpolated stack shape: (100, 100, 100)
+2024-12-10 20-07-40: ERROR : __main__ : Interpolated binary image stack is empty. No clusters to process.
+2024-12-10 20-20-39: DEBUG : __main__ : Running main script.
+2024-12-10 20-20-39: INFO : __main__ : Using directory: data/dataset
+2024-12-10 20-20-39: INFO : __main__ : Starting processing and visualization...
+2024-12-10 20-20-39: INFO : __main__ : Loaded 200 images. Shape: (200, 200, 200)
+2024-12-10 20-21-25: DEBUG : __main__ : Running main script.
+2024-12-10 20-21-25: INFO : __main__ : Using directory: data/dataset
+2024-12-10 20-21-25: INFO : __main__ : Starting processing and visualization...
+2024-12-10 20-21-25: INFO : __main__ : Loaded 200 images. Shape: (200, 200, 200)
