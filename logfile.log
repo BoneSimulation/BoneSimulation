@@ -1,20 +1,220 @@
-2024-12-10 20-01-56: DEBUG : __main__ : Running main script.
-2024-12-10 20-01-56: INFO : __main__ : Using directory: data/dataset
-2024-12-10 20-01-56: INFO : __main__ : Starting processing and visualization...
-2024-12-10 20-01-56: INFO : __main__ : Loaded 200 images. Shape: (200, 200, 200)
-2024-12-10 20-07-40: DEBUG : __main__ : Running main script.
-2024-12-10 20-07-40: INFO : __main__ : Using directory: data/dataset
-2024-12-10 20-07-40: INFO : __main__ : Starting processing and visualization...
-2024-12-10 20-07-40: INFO : __main__ : Loaded 200 images. Shape: (200, 200, 200)
-2024-12-10 20-07-40: INFO : __main__ : Global threshold determined: 84
-2024-12-10 20-07-40: DEBUG : __main__ : Number of active pixels after closing: 0
-2024-12-10 20-07-40: DEBUG : __main__ : Interpolated stack shape: (100, 100, 100)
-2024-12-10 20-07-40: ERROR : __main__ : Interpolated binary image stack is empty. No clusters to process.
-2024-12-10 20-20-39: DEBUG : __main__ : Running main script.
-2024-12-10 20-20-39: INFO : __main__ : Using directory: data/dataset
-2024-12-10 20-20-39: INFO : __main__ : Starting processing and visualization...
-2024-12-10 20-20-39: INFO : __main__ : Loaded 200 images. Shape: (200, 200, 200)
-2024-12-10 20-21-25: DEBUG : __main__ : Running main script.
-2024-12-10 20-21-25: INFO : __main__ : Using directory: data/dataset
-2024-12-10 20-21-25: INFO : __main__ : Starting processing and visualization...
-2024-12-10 20-21-25: INFO : __main__ : Loaded 200 images. Shape: (200, 200, 200)
+2024-12-13 20-45-27: DEBUG : __main__ : Running main script.
+2024-12-13 20-45-27: INFO : __main__ : Using directory: data/dataset
+2024-12-13 20-45-27: INFO : __main__ : Starting processing and visualization...
+2024-12-13 20-45-27: INFO : __main__ : Loaded 200 images. Shape: (200, 200, 200)
+2024-12-13 20-52-29: DEBUG : __main__ : Running main script.
+2024-12-13 20-52-29: INFO : __main__ : Using directory: data/dataset
+2024-12-13 20-52-29: INFO : __main__ : Starting processing and visualization...
+2024-12-13 20-52-29: INFO : __main__ : Loaded 200 images. Shape: (200, 200, 200)
+2024-12-13 20-52-29: INFO : __main__ : Global threshold determined: 84
+2024-12-13 20-52-29: DEBUG : __main__ : Number of active pixels after closing: 0
+2024-12-13 20-52-29: ERROR : __main__ : No active pixels found after morphological closing.
+2024-12-13 20-52-29: INFO : __main__ : Saving original binary images for debugging.
+2024-12-13 20-58-14: DEBUG : __main__ : Running
+2024-12-13 20-58-51: DEBUG : __main__ : Running
+2024-12-13 21-07-10: DEBUG : __main__ : Running main script.
+2024-12-13 21-07-10: INFO : __main__ : Using directory: data/dataset
+2024-12-13 21-07-10: INFO : __main__ : Starting processing and visualization...
+2024-12-13 21-07-10: INFO : __main__ : Loaded 200 images. Shape: (200, 200, 200)
+2024-12-13 21-07-10: INFO : __main__ : Global threshold determined: 84
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 0 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 1 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 2 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 3 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 4 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 5 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 6 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 7 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 8 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 9 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 10 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 11 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 12 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 13 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 14 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 15 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 16 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 17 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 18 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 19 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 20 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 21 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 22 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 23 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 24 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 25 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 26 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 27 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 28 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 29 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 30 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 31 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 32 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 33 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 34 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 35 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 36 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 37 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 38 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 39 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 40 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 41 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 42 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 43 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 44 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 45 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 46 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 47 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 48 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 49 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 50 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 51 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 52 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 53 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 54 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 55 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 56 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 57 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 58 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 59 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 60 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 61 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 62 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 63 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 64 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 65 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 66 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 67 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 68 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 69 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 70 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 71 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 72 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 73 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 74 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 75 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 76 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 77 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 78 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 79 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 80 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 81 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 82 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 83 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 84 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 85 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 86 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 87 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 88 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 89 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 90 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 91 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 92 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 93 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 94 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 95 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 96 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 97 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 98 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 99 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 100 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 101 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 102 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 103 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 104 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 105 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 106 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 107 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 108 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 109 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 110 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 111 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 112 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 113 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 114 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 115 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 116 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 117 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 118 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 119 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 120 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 121 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 122 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 123 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 124 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 125 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 126 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 127 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 128 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 129 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 130 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 131 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 132 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 133 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 134 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 135 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 136 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 137 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 138 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 139 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 140 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 141 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 142 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 143 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 144 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 145 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 146 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 147 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 148 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 149 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 150 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 151 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 152 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 153 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 154 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 155 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 156 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 157 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 158 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 159 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 160 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 161 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 162 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 163 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 164 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 165 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 166 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 167 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 168 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 169 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 170 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 171 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 172 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 173 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 174 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 175 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 176 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 177 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 178 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 179 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 180 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 181 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 182 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 183 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 184 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 185 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 186 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 187 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 188 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 189 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 190 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 191 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 192 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 193 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 194 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 195 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 196 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 197 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 198 contains no active pixels.
+2024-12-13 21-07-10: WARNING : __main__ : Binary image at index 199 contains no active pixels.
+2024-12-13 21-07-10: ERROR : __main__ : Error during validation or morphological closing: No valid binary images found after validation.
