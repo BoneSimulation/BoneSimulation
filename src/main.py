@@ -1,8 +1,12 @@
-# main.py
+"""
+main.py
+
+This is the main script for processing and visualizing image data. It orchestrates the loading, processing, and saving of images, as well as logging the workflow.
+"""
+
 import logging
 import os
 import sys
-import warnings
 import numpy as np
 from src.utils.utils import generate_timestamp, check_os
 from src.image_processing import (
@@ -12,134 +16,94 @@ from src.image_processing import (
     interpolate_image_stack,
     find_largest_cluster,
     save_to_tiff_stack,
+    save_raw_tiff_stack
 )
 from src.visualization import plot_histogram, plot_images
 
-# Setup logging
+# Generate timestamp for filenames
 timestamp = generate_timestamp()
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-file_handler = logging.FileHandler("logfile.log")
-formatter = logging.Formatter(f"{timestamp}: %(levelname)s : %(name)s : %(message)s")
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
-warnings.filterwarnings("ignore", message=".*iCCP: known incorrect sRGB profile.*")
 
+# Configure logging
+logging.basicConfig(level=logging.INFO,  # Change level from DEBUG to INFO
+                    format=f"%(asctime)s: %(levelname)s : %(name)s : %(message)s",
+                    handlers=[
+                        logging.FileHandler("logfile.log"),
+                        logging.StreamHandler(sys.stdout)
+                    ])
+
+# Suppress debug information from third-party libraries
+logging.getLogger("PIL").setLevel(logging.WARNING)
+logging.getLogger("matplotlib").setLevel(logging.WARNING)
+logging.getLogger("tifffile").setLevel(logging.WARNING)
+
+logger = logging.getLogger(__name__)
 
 def get_base_path():
+    """Returns the base path for the dataset."""
     os_type = check_os()
-    if os_type in ["Windows", "Linux", "MacOS"]:
-        return "data/dataset"
-    else:
-        logger.warning("Unknown OS! Using default path.")
-        return "data/dataset"
-
-
-def validate_binary_images(binary_images):
-    """
-    Validates if binary images contain any active pixels.
-
-    Args:
-        binary_images (numpy.ndarray): Stack of binary images.
-
-    Returns:
-        numpy.ndarray: Validated binary images.
-    """
-    valid_images = []
-    for i, binary_image in enumerate(binary_images):
-        if np.sum(binary_image) > 0:
-            valid_images.append(binary_image)
-        else:
-            logger.warning(f"Binary image at index {i} contains no active pixels.")
-
-    if not valid_images:
-        raise ValueError("No valid binary images found after validation.")
-
-    return np.array(valid_images)
-
+    logger.info(f"Detected OS: {os_type}")
+    return "data/dataset"
 
 def process_and_visualize(directory):
     """
-    Processes and visualizes all important images in the specified directory.
+    Main function for processing and visualizing images.
     """
     logger.info("Starting processing and visualization...")
 
-    try:
-        data_array = load_images(directory)
-    except ValueError as e:
-        logger.error(f"Error loading images: {e}")
-        return
+    # Load images
+    data_array = load_images(directory)
+    logger.info(f"Loaded images: {data_array.shape}")
 
-    logger.info(f"Loaded {data_array.shape[0]} images. Shape: {data_array.shape}")
+    # Save raw data stack
+    save_raw_tiff_stack(data_array, f"pictures/raw_{timestamp}.tif")
 
-    try:
-        blurred_images, binary_images, global_threshold = process_images_globally(data_array)
-        logger.info(f"Global threshold determined: {global_threshold}")
-    except ValueError as e:
-        logger.error(f"Error during global processing: {e}")
-        return
+    # Process images with global threshold
+    blurred_images, binary_images, global_threshold = process_images_globally(data_array)
+    logger.info(f"Global threshold determined: {global_threshold}")
 
-    try:
-        binary_images = validate_binary_images(binary_images)
-        closed_binary_images = apply_morphological_closing(binary_images)
-    except ValueError as e:
-        logger.error(f"Error during validation or morphological closing: {e}")
-        return
+    # Morphological closing
+    closed_binary_images = apply_morphological_closing(binary_images)
 
-    num_active_pixels = np.sum(closed_binary_images)
-    logger.debug(f"Number of active pixels after closing: {num_active_pixels}")
+    # Validate active pixels after morphological closing
+    active_pixels = np.sum(closed_binary_images)
+    logger.info(f"Number of active pixels after closing: {active_pixels}")
 
-    if num_active_pixels == 0:
+    if active_pixels == 0:
         logger.error("No active pixels found after morphological closing.")
-        logger.info("Saving original binary images for debugging.")
-        for idx, binary_image in enumerate(binary_images[:5]):
-            save_to_tiff_stack(
-                binary_image.astype(np.uint8),
-                f"debug_binary_image_{idx}.tif"
-            )
         return
 
     # Interpolation
-    try:
-        binary_image_array_interpolated = interpolate_image_stack(closed_binary_images, scaling_factor=0.5)
-        logger.debug(f"Interpolated stack shape: {binary_image_array_interpolated.shape}")
-    except Exception as e:
-        logger.error(f"Error during interpolation: {e}")
+    interpolated_stack = interpolate_image_stack(closed_binary_images, scaling_factor=0.5)
+    logger.info(f"Interpolated stack created: {interpolated_stack.shape}")
+
+    if np.sum(interpolated_stack) == 0:
+        logger.error("Interpolated stack contains no active pixels.")
         return
 
-    if np.sum(binary_image_array_interpolated) == 0:
-        logger.error("Interpolated binary image stack is empty. No clusters to process.")
-        return
-
+    # Find clusters
     try:
-        largest_cluster, num_clusters, largest_cluster_size = find_largest_cluster(binary_image_array_interpolated)
-        logger.info(f"Found {num_clusters} clusters. Largest cluster size: {largest_cluster_size}")
+        largest_cluster, num_clusters, cluster_size = find_largest_cluster(interpolated_stack)
+        logger.info(f"Largest cluster found: {cluster_size} voxels")
     except ValueError as e:
-        logger.error(f"Error finding largest cluster: {e}")
+        logger.error(f"Error finding the largest cluster: {e}")
         return
 
-    save_to_tiff_stack(largest_cluster.astype(np.uint8), f"largest_cluster_{timestamp}.tif")
+    # Save results
+    save_to_tiff_stack(largest_cluster.astype(np.uint8), f"pictures/largest_cluster_{timestamp}.tif")
+    save_to_tiff_stack(interpolated_stack, f"pictures/processed_{timestamp}.tif")
 
-    overall_average_intensity = np.mean(binary_images) * 255
-    logger.info(f"Average Intensity of the whole stack: {overall_average_intensity}")
+    # Visualization
+    plot_histogram(interpolated_stack, global_threshold)
+    plot_images(interpolated_stack, title="Processed Images")
 
-    save_to_tiff_stack(binary_image_array_interpolated, f"binary_output_stack_{timestamp}.tif")
-
-    plot_histogram(binary_image_array_interpolated)
-    plot_images(binary_image_array_interpolated, title="Processed Image")
-
-    logger.info("Processing and visualization completed.")
-
+    logger.info("Processing completed.")
 
 if __name__ == "__main__":
     logger.debug("Running main script.")
     print("Running simulation")
 
-    DIRECTORY = get_base_path()
-
-    if not os.path.isdir(DIRECTORY):
-        logger.error(f"Directory {DIRECTORY} does not exist!")
-        sys.exit(f"Directory {DIRECTORY} does not exist.")
-
-    logger.info(f"Using directory: {DIRECTORY}")
-    process_and_visualize(DIRECTORY)
+    directory = get_base_path()
+    if not os.path.isdir(directory):
+        logger.error(f"Directory not found: {directory}")
+        sys.exit(1)
+    process_and_visualize(directory)
