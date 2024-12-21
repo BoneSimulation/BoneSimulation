@@ -95,16 +95,16 @@ def find_largest_cluster(binary_image_stack):
     return largest_cluster, num_clusters, cluster_sizes[largest_cluster_label]
 
 
-import imageio
+import tifffile as tiff
 
 def save_to_tiff_stack(image_stack, filename):
-    """Saves a 3D image stack as a TIFF file using imageio."""
+    """Speichert ein 3D-Bildstack als TIFF-Datei."""
     try:
-        logger.info(f"Saving stack with imageio to {filename}.")
-        imageio.mimwrite(filename, image_stack, format="TIFF", bigtiff=True)
+        logger.info(f"Saving stack to {filename}.")
+        tiff.imwrite(filename, image_stack, photometric="minisblack")
         logger.info(f"Saved TIFF stack to {filename}.")
     except Exception as e:
-        logger.error("Failed to save TIFF stack: %s", e)
+        logger.error(f"Error saving TIFF stack: {e}")
 
 
 
