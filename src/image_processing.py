@@ -39,27 +39,49 @@ def load_images(directory):
     logger.info(f"Loaded {len(images)} images from directory {directory}.")
     return np.array(images)
 
+
 def process_images_globally(data_array):
     """Processes images using global Otsu thresholding."""
     if data_array.size == 0:
         raise ValueError("Input image stack is empty.")
     threshold = filters.threshold_otsu(data_array.flatten())
+
     blurred = filters.gaussian(data_array, sigma=1, preserve_range=True)
     binary = blurred > threshold
+
+    # Log the number of active pixels
+    logger.info(f"Binary image active pixels: {np.sum(binary)}")
+
     logger.info(f"Threshold applied: {threshold:.2f}")
     return blurred, binary, threshold
+
 
 def apply_morphological_closing(binary_images):
     """Performs morphological closing on binary images."""
     closed = morphology.closing(binary_images, morphology.ball(3))
+
+    # Log the number of active pixels after closing
     logger.debug(f"Performed morphological closing. Active pixels: {np.sum(closed)}")
+
     return closed
+
 
 def interpolate_image_stack(image_stack, scaling_factor=0.5):
     """Scales a 3D image stack using spline interpolation."""
-    scaled = scipy.ndimage.zoom(image_stack, (scaling_factor, scaling_factor, scaling_factor), order=2)
+    # Log values before scaling
+    logger.info(f"Before scaling: Min={image_stack.min()}, Max={image_stack.max()}")
+
+    # Skaliere und konvertiere von Boolean zu Integer (True=1, False=0)
+    scaled = scipy.ndimage.zoom(image_stack.astype(np.float32), (scaling_factor, scaling_factor, scaling_factor),
+                                order=2)
+    scaled = (scaled > 0).astype(np.uint8)  # Wandle das Bild zurück in 0 oder 1 (binär)
+
+    # Log values after scaling
+    logger.info(f"After scaling: Min={scaled.min()}, Max={scaled.max()}")
+
     logger.info(f"Scaled image stack to shape {scaled.shape}.")
     return scaled
+
 
 def find_largest_cluster(binary_image_stack):
     """Finds the largest connected voxel cluster."""
@@ -72,25 +94,52 @@ def find_largest_cluster(binary_image_stack):
     logger.info(f"Found largest cluster with size {cluster_sizes[largest_cluster_label]}.")
     return largest_cluster, num_clusters, cluster_sizes[largest_cluster_label]
 
+
+import imageio
+
 def save_to_tiff_stack(image_stack, filename):
-    """Saves a 3D image stack as a TIFF file."""
+    """Saves a 3D image stack as a TIFF file using imageio."""
     try:
-        tiff.imwrite(filename, image_stack.astype(np.uint8))
+        logger.info(f"Saving stack with imageio to {filename}.")
+        imageio.mimwrite(filename, image_stack, format="TIFF", bigtiff=True)
         logger.info(f"Saved TIFF stack to {filename}.")
     except Exception as e:
         logger.error("Failed to save TIFF stack: %s", e)
 
-def save_raw_tiff_stack(image_stack, filename):
-    """
-    Saves the TIFF stack before binarization.
 
-    Args:
-        image_stack (image_stack (numpy.ndarray): Stack of images.
-        filename (str): Location to save the file.
-    """
+
+def save_raw_tiff_stack(image_stack, filename):
+    """Saves the TIFF stack before binarization."""
+    # Log values before saving
+    logger.info(f"Raw image stack range: Min={image_stack.min()}, Max={image_stack.max()}")
+
     try:
         tiff.imwrite(filename, image_stack, photometric="minisblack")
         logger.info(f"Raw data stack saved to: {filename}")
     except Exception as e:
         logger.error(f"Error saving raw data stack: {e}")
 
+
+from skimage.measure import label
+
+
+def extract_largest_cluster(binary_stack):
+    """Extracts the largest connected component (cluster) from the binary image stack."""
+    labeled_stack, num_labels = label(binary_stack, connectivity=3, return_num=True)
+    largest_cluster_label = np.argmax(np.bincount(labeled_stack.flat)[1:]) + 1  # Ignoriere Hintergrund (0)
+
+    largest_cluster = (labeled_stack == largest_cluster_label).astype(np.uint8)
+    logger.info(f"Largest cluster found: {np.sum(largest_cluster)} voxels")
+
+    return largest_cluster
+
+import imageio
+
+def save_largest_cluster_stack(largest_cluster, filename):
+    """Speichert den größten Cluster als TIFF-Datei."""
+    try:
+        logger.info(f"Saving largest cluster to {filename}.")
+        imageio.mimwrite(filename, largest_cluster, format="TIFF", bigtiff=True)
+        logger.info(f"Saved largest cluster to {filename}.")
+    except Exception as e:
+        logger.error(f"Error saving largest cluster: {e}")

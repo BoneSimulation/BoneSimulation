@@ -8,6 +8,7 @@ import logging
 import os
 import sys
 import numpy as np
+from matplotlib import pyplot as plt
 from src.utils.utils import generate_timestamp, check_os
 from src.image_processing import (
     load_images,
@@ -24,7 +25,7 @@ from src.visualization import plot_histogram, plot_images
 timestamp = generate_timestamp()
 
 # Configure logging
-logging.basicConfig(level=logging.INFO,  # Change level from DEBUG to INFO
+logging.basicConfig(level=logging.DEBUG,  # Change level from DEBUG to INFO
                     format=f"%(asctime)s: %(levelname)s : %(name)s : %(message)s",
                     handlers=[
                         logging.FileHandler("logfile.log"),
@@ -88,8 +89,21 @@ def process_and_visualize(directory):
         logger.error(f"Error finding the largest cluster: {e}")
         return
 
+    logger.info(f"Processed stack shape before saving: {interpolated_stack.shape}")
+    logger.info(f"Largest cluster stack shape before saving: {largest_cluster.shape}")
+
+    # Visualisiere den größten Cluster
+    plt.imshow(largest_cluster[:, :, largest_cluster.shape[2] // 2], cmap='gray')
+    plt.title("Largest Cluster - Slice")
+    plt.show()
+
+    # Visualisiere das interpolierte Bild
+    plt.imshow(interpolated_stack[:, :, interpolated_stack.shape[2] // 2], cmap='gray')
+    plt.title("Interpolated Image - Slice")
+    plt.show()
+
     # Save results
-    save_to_tiff_stack(largest_cluster.astype(np.uint8), f"pictures/largest_cluster_{timestamp}.tif")
+    save_to_tiff_stack(largest_cluster.astype(np.uint32), f"pictures/largest_cluster_{timestamp}.tif")
     save_to_tiff_stack(interpolated_stack, f"pictures/processed_{timestamp}.tif")
 
     # Visualization
@@ -97,6 +111,7 @@ def process_and_visualize(directory):
     plot_images(interpolated_stack, title="Processed Images")
 
     logger.info("Processing completed.")
+
 
 if __name__ == "__main__":
     logger.debug("Running main script.")
