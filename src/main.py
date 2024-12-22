@@ -110,7 +110,7 @@ def process_and_visualize(directory):
     plot_histogram(interpolated_stack, global_threshold)
     plot_images(interpolated_stack, title="Processed Images")
 
-    logger.info("Processing completed.")
+    logger.info("Procession completed.")
 
 
 if __name__ == "__main__":
