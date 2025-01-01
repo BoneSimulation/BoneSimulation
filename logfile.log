@@ -342,3 +342,35 @@
 2024-12-22 17:50:57,727: INFO : src.image_processing : Reloaded stack stats - Min: 0, Max: 255, Shape: (100, 100, 100)
 2024-12-22 17:50:57,727: INFO : src.image_processing : Saved TIFF stack to pictures/processed_2024-12-22_17-50-54.tif.
 2024-12-22 17:50:58,631: INFO : __main__ : Processing completed.
+2025-01-01 19:46:19,419: DEBUG : __main__ : Running main script.
+2025-01-01 19:46:19,420: INFO : __main__ : Detected OS: Linux
+2025-01-01 19:46:19,420: INFO : __main__ : Starting processing and visualization...
+2025-01-01 19:46:19,671: INFO : src.image_processing : Loaded 200 images from directory data/dataset.
+2025-01-01 19:46:19,675: INFO : __main__ : Loaded images: (200, 200, 200)
+2025-01-01 19:46:19,677: INFO : src.image_processing : Raw image stack range: Min=0, Max=255
+2025-01-01 19:46:19,681: INFO : src.image_processing : Raw data stack saved to: pictures/raw_2025-01-01_19-46-19.tif
+2025-01-01 19:46:19,682: INFO : src.image_processing : Input stack stats - Min: 0, Max: 255, Shape: (200, 200, 200)
+2025-01-01 19:46:19,970: INFO : src.image_processing : Blurred stack stats - Min: 0.00010216831765295449, Max: 239.50234148063444, Shape: (200, 200, 200)
+2025-01-01 19:46:19,974: INFO : src.image_processing : Binary image active pixels: 1500404
+2025-01-01 19:46:19,975: INFO : src.image_processing : Threshold applied: 84.00
+2025-01-01 19:46:19,975: INFO : __main__ : Global threshold determined: 84
+2025-01-01 19:46:22,227: DEBUG : src.image_processing : Performed morphological closing. Active pixels: 1516151
+2025-01-01 19:46:22,231: INFO : __main__ : Number of active pixels after closing: 1516151
+2025-01-01 19:46:22,232: INFO : src.image_processing : Before scaling: Min=False, Max=True
+2025-01-01 19:46:22,664: INFO : src.image_processing : After scaling: Min=0, Max=255
+2025-01-01 19:46:22,664: INFO : src.image_processing : Scaled image stack to shape (100, 100, 100).
+2025-01-01 19:46:22,664: INFO : __main__ : Interpolated stack created: (100, 100, 100)
+2025-01-01 19:46:22,679: INFO : src.image_processing : Found largest cluster with size 34251.
+2025-01-01 19:46:22,679: INFO : __main__ : Largest cluster found: 34251 voxels
+2025-01-01 19:46:22,679: INFO : __main__ : Processed stack shape before saving: (100, 100, 100)
+2025-01-01 19:46:22,679: INFO : __main__ : Largest cluster stack shape before saving: (100, 100, 100)
+2025-01-01 19:46:23,239: INFO : src.image_processing : Stack stats before saving - Min: 0, Max: 1, Shape: (100, 100, 100)
+2025-01-01 19:46:23,239: WARNING : src.image_processing : Converting image stack to uint8 format.
+2025-01-01 19:46:23,243: INFO : src.image_processing : Saving stack to pictures/largest_cluster_2025-01-01_19-46-19.tif.
+2025-01-01 19:46:23,247: INFO : src.image_processing : Reloaded stack stats - Min: 0, Max: 255, Shape: (100, 100, 100)
+2025-01-01 19:46:23,247: INFO : src.image_processing : Saved TIFF stack to pictures/largest_cluster_2025-01-01_19-46-19.tif.
+2025-01-01 19:46:23,247: INFO : src.image_processing : Stack stats before saving - Min: 0, Max: 255, Shape: (100, 100, 100)
+2025-01-01 19:46:23,247: INFO : src.image_processing : Saving stack to pictures/processed_2025-01-01_19-46-19.tif.
+2025-01-01 19:46:23,249: INFO : src.image_processing : Reloaded stack stats - Min: 0, Max: 255, Shape: (100, 100, 100)
+2025-01-01 19:46:23,249: INFO : src.image_processing : Saved TIFF stack to pictures/processed_2025-01-01_19-46-19.tif.
+2025-01-01 19:46:24,335: INFO : __main__ : Procession completed.
