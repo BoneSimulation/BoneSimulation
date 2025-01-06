@@ -3,7 +3,7 @@
 ### für die Installation:
 
 ```
-git clone https://github.com/Lynix152/BoneSimulation.git
+git clone https://github.com/WaMathias/BoneSimulation.git
 ```
 
 
