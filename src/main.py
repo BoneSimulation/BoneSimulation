@@ -19,7 +19,8 @@ from src.image_processing import (
     interpolate_image_stack,
     find_largest_cluster,
     save_to_tiff_stack,
-    save_raw_tiff_stack
+    save_raw_tiff_stack,
+    numpy2vtk, marching_cubes
 )
 from src.visualization import plot_histogram, plot_images
 
@@ -46,57 +47,6 @@ def get_base_path():
     os_type = check_os()
     logger.info(f"Detected OS: {os_type}")
     return "data/dataset"
-
-
-from scipy.ndimage import gaussian_filter
-
-
-def smooth_image_stack(image_stack, sigma=1.0):
-    """
-    Smoothes a 3D image stack with a Gaussian filter.
-
-    Args:
-        image_stack (numpy.ndarray): 3D image stack.
-        sigma (float): Standard deviation for the Gaussian filter.
-
-    Returns:
-        numpy.ndarray: Smoothed 3D image stack.
-    """
-    logger.info(f"Applying Gaussian smoothing with sigma={sigma}.")
-    smoothed_stack = gaussian_filter(image_stack, sigma=sigma)
-    logger.info(f"Smoothed image stack stats - Min: {smoothed_stack.min()}, Max: {smoothed_stack.max()}")
-
-    return smoothed_stack
-
-
-import vtk
-
-def save_as_vtk(image_stack, output_path):
-    """
-    Saves a 3D image stack as a VTK file.
-
-    Args:
-        image_stack (numpy.ndarray): 3D image stack (z, y, x).
-        output_path (str): Path to the output VTK file.
-    """
-    logger.info(f"Saving image stack as VTK to {output_path}.")
-
-    # Convert the numpy array to a VTK-compatible array
-    vtk_data_array = numpy_to_vtk(image_stack.ravel(), deep=True, array_type=vtk.VTK_UNSIGNED_CHAR)
-
-    # Create a VTK ImageData object
-    vtk_image = vtk.vtkImageData()
-    vtk_image.SetDimensions(image_stack.shape[2], image_stack.shape[1], image_stack.shape[0])  # (x, y, z)
-    vtk_image.SetSpacing(1.0, 1.0, 1.0)  # Pixel spacing (adjustable)
-    vtk_image.GetPointData().SetScalars(vtk_data_array)
-
-    # Write the VTK file
-    writer = vtk.vtkStructuredPointsWriter()
-    writer.SetFileName(output_path)
-    writer.SetInputData(vtk_image)
-    writer.Write()
-
-    logger.info(f"VTK file saved successfully to {output_path}.")
 
 
 def process_and_visualize(directory):
@@ -143,6 +93,10 @@ def process_and_visualize(directory):
         logger.error(f"Error finding the largest cluster: {e}")
         return
 
+    # Generate mesh from the interpolated stack
+    verts, faces = marching_cubes(interpolated_stack)
+    logger.info(f"Mesh generated with {len(verts)} vertices and {len(faces)} faces.")
+
     logger.info(f"Processed stack shape before saving: {interpolated_stack.shape}")
     logger.info(f"Largest cluster stack shape before saving: {largest_cluster.shape}")
 
@@ -156,15 +110,20 @@ def process_and_visualize(directory):
     plt.title("Interpolated Image - Slice")
     plt.show()
 
-    # Save results
-    save_to_tiff_stack(largest_cluster.astype(np.uint32), f"pictures/cluster_{timestamp}.tif")
-    # save_to_tiff_stack(interpolated_stack, f"pictures/processed_{timestamp}.tif")
+    # Save interpolated stack as VTK
+    numpy2vtk(interpolated_stack, f"test_pictures/output_{timestamp}.vti")
+
+    # Optional: Save the mesh to a VTK file (if needed)
+    # save_mesh_as_vtk(verts, faces, f"test_pictures/mesh_{timestamp}.vtk")
 
     # Visualization
     plot_histogram(interpolated_stack, global_threshold)
     plot_images(interpolated_stack, title="Processed Images")
 
     logger.info("Processing completed.")
+
+
+
 
 
 if __name__ == "__main__":
