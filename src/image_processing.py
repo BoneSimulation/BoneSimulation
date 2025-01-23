@@ -243,3 +243,100 @@ def marching_cubes(binary_stack, spacing=(1, 1, 1)):
     verts, faces, _, _ = measure.marching_cubes(normalized_stack, level=0.5, spacing=spacing)
 
     return verts, faces
+
+
+import meshio
+
+
+def save_mesh_as_vtk(verts, faces, output_filename):
+    """
+    Speichert ein Mesh (Vertices und Faces) als VTK-Datei.
+
+    Args:
+        verts (numpy.ndarray): Array der Punkte des Meshes.
+        faces (numpy.ndarray): Array der Dreiecke des Meshes.
+        output_filename (str): Pfad zur Ausgabe-VTK-Datei.
+    """
+    # Konvertiere die Faces in das benötigte Format
+    cells = [("triangle", faces)]
+
+    # Speichere das Mesh als VTK-Datei
+    meshio.write_points_cells(output_filename, verts, cells)
+    logger.info(f"Mesh saved as VTK file: {output_filename}")
+
+
+
+def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, output_filename: str):
+    """
+    Erstellt ein Tetraedernetz aus einem binarisierten 3D-Bild und speichert es als VTK-Datei.
+
+    Args:
+        binary_volume (np.ndarray): Binarisierter 3D-Bildstack.
+        voxel_size (float): Größe eines Voxels.
+        output_filename (str): Pfad zur Ausgabe-VTK-Datei.
+    """
+    try:
+        import ciclope.core.tetraFE as tetraFE
+
+        # Voxelgrößenarray erstellen
+        vs = np.ones(3) * voxel_size
+
+        # Parameter für die Mesh-Erstellung
+        mesh_size_factor = 1.2
+        max_facet_distance = mesh_size_factor * np.min(vs)
+        max_cell_circumradius = 2 * mesh_size_factor * np.min(vs)
+
+        logger.info(f"Creating tetrahedral mesh with voxel_size={voxel_size}, mesh_size_factor={mesh_size_factor}, "
+                    f"max_facet_distance={max_facet_distance}, max_cell_circumradius={max_cell_circumradius}")
+
+        # Debugging der Eingabeparameter
+        logger.debug(f"binary_volume shape: {binary_volume.shape}, type: {type(binary_volume)}")
+        logger.debug(f"voxel_size array: {vs}, type: {type(vs)}")
+
+        # Erstellen des Tetraedernetzes
+        mesh = tetraFE.cgal_mesh(binary_volume, vs, 'tetra',
+                                 max_facet_distance,
+                                 max_cell_circumradius)
+
+        # Speichern des Tetraedernetzes als VTK-Datei
+        mesh.write(output_filename)
+        logger.info(f"Tetrahedral mesh saved to {output_filename}")
+
+    except ImportError as e:
+        logger.error(f"Failed to import tetraFE module: {e}")
+    except Exception as e:
+        logger.error(f"Error generating tetrahedral mesh: {e}")
+
+
+
+def generate_calculix_input(mesh_data, template_filename: str, output_filename: str):
+    """
+    Erstellt eine CalculiX Input-Datei aus einem Tetraedernetz und einer Vorlage.
+
+    Args:
+        mesh_data: Das generierte Tetraedermesh.
+        template_filename (str): Pfad zur Vorlage mit Materialdefinition und Randbedingungen.
+        output_filename (str): Pfad zur Ausgabe-CalculiX-Datei.
+    """
+    try:
+        import ciclope.core.tetraFE as tetraFE
+
+        logger.info(f"Generating CalculiX input file using template: {template_filename}")
+
+        # Debugging des übergebenen Meshes
+        logger.debug(f"Mesh type: {type(mesh_data)}")
+        logger.debug(f"Mesh attributes: {dir(mesh_data)}")
+
+        if not hasattr(mesh_data, 'vertices') or not hasattr(mesh_data, 'cells'):
+            raise ValueError("Invalid mesh_data: mesh_data must be an object with attributes.")
+
+        # Erstellen der .inp-Datei
+        tetraFE.mesh2tetrafe(mesh_data, template_filename, output_filename)
+
+        logger.info(f"FE model saved to {output_filename}")
+
+    except ImportError as e:
+        logger.error(f"Failed to import tetraFE module: {e}")
+    except Exception as e:
+        logger.error(f"Error generating CalculiX input file: {e}")
+
