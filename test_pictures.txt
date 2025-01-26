@@ -1,0 +1,2 @@
+Ich hoffe du liest das. Ich sehe gerade, dass ich Gith probeleme habe, wegen einer zu großen Datei. Deswegen referenzere ich einfach auf ein neues Repository, dass ich eben erstellt habe. Hier findest du es:
+https://github.com/WaMathias/meshes
