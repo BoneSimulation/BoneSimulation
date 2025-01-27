@@ -1,0 +1,35 @@
+2025-01-27 20:11:48,240: INFO : __main__ : Starting processing and visualization...
+2025-01-27 20:11:48,399: INFO : src.image_processing : Loaded 200 images from directory data/dataset.
+2025-01-27 20:11:48,402: INFO : __main__ : Loaded images: (200, 200, 200)
+2025-01-27 20:11:48,406: INFO : src.image_processing : Raw data stack saved to: pictures/raw.tif
+2025-01-27 20:11:48,622: INFO : src.image_processing : Threshold applied: 84.00
+2025-01-27 20:11:48,622: INFO : __main__ : Global threshold determined: 84
+2025-01-27 20:11:51,097: INFO : __main__ : Interpolated stack created: (100, 100, 100)
+2025-01-27 20:11:51,109: INFO : src.image_processing : Found largest cluster with size 188879.
+2025-01-27 20:11:51,109: INFO : __main__ : Largest cluster found: 188879 voxels
+2025-01-27 20:12:10,028: INFO : __main__ : Starting processing and visualization...
+2025-01-27 20:12:10,128: INFO : src.image_processing : Loaded 200 images from directory data/dataset.
+2025-01-27 20:12:10,131: INFO : __main__ : Loaded images: (200, 200, 200)
+2025-01-27 20:12:10,147: INFO : src.image_processing : Raw data stack saved to: pictures/raw.tif
+2025-01-27 20:12:10,354: INFO : src.image_processing : Threshold applied: 84.00
+2025-01-27 20:12:10,354: INFO : __main__ : Global threshold determined: 84
+2025-01-27 20:12:12,856: INFO : __main__ : Interpolated stack created: (100, 100, 100)
+2025-01-27 20:12:12,868: INFO : src.image_processing : Found largest cluster with size 188879.
+2025-01-27 20:12:12,868: INFO : __main__ : Largest cluster found: 188879 voxels
+2025-01-27 20:12:12,961: INFO : src.image_processing : Mesh saved as VTK file: test_pictures/mesh.vtk
+2025-01-27 20:12:12,989: ERROR : src.image_processing : Error generating tetrahedral mesh: 'float' object is not iterable
+2025-01-27 20:12:12,989: INFO : __main__ : Processing completed.
+2025-01-27 20:13:16,730: INFO : __main__ : Starting processing and visualization...
+2025-01-27 20:13:16,910: INFO : src.image_processing : Loaded 200 images from directory data/dataset.
+2025-01-27 20:13:16,913: INFO : __main__ : Loaded images: (200, 200, 200)
+2025-01-27 20:13:16,933: INFO : src.image_processing : Raw data stack saved to: pictures/raw.tif
+2025-01-27 20:13:17,162: INFO : src.image_processing : Threshold applied: 84.00
+2025-01-27 20:13:17,162: INFO : __main__ : Global threshold determined: 84
+2025-01-27 20:13:19,678: INFO : __main__ : Interpolated stack created: (100, 100, 100)
+2025-01-27 20:13:19,691: INFO : src.image_processing : Found largest cluster with size 188879.
+2025-01-27 20:13:19,691: INFO : __main__ : Largest cluster found: 188879 voxels
+2025-01-27 20:13:19,798: INFO : src.image_processing : Mesh saved as VTK file: test_pictures/mesh.vtk
+2025-01-27 20:13:19,801: INFO : src.image_processing : Creating tetrahedral mesh with voxel_size=0.1, mesh_size_factor=1.2, max_facet_distance=0.12, max_cell_circumradius=0.24
+2025-01-27 20:13:26,085: INFO : root : Removing triangle cells.
+2025-01-27 20:13:26,093: INFO : src.image_processing : Tetrahedral mesh saved to test_pictures/tetramesh.vtk
+2025-01-27 20:13:26,093: INFO : __main__ : Processing completed.
