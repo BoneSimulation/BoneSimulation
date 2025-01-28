@@ -1,17 +1,12 @@
-"""
-image_processing.py
-
-This file contains functions for loading, processing, and saving image data. It includes operations such as thresholding, morphological processing, and cluster analysis.
-"""
-
 import logging
 import numpy as np
-from multiprocessing import Pool
 from skimage import morphology, filters, measure
 import scipy.ndimage
 import tifffile as tiff
 from PIL import Image
-import os
+import vtk
+from vtk.util import numpy_support
+import meshio
 
 logger = logging.getLogger(__name__)
 
@@ -21,11 +16,14 @@ def load_image(filepath):
         im = Image.open(filepath).convert("L")
         return np.array(im)
     except Exception as e:
-        logger.error("Error loading image %s: %s", filepath, e)
+        logger.error(f"Error loading image {filepath}: {e}")
         return None
 
 def load_images(directory):
     """Loads all .tif images in a directory into a 3D NumPy array."""
+    import os
+    from multiprocessing import Pool
+
     filepaths = sorted([
         os.path.join(directory, file) for file in os.listdir(directory) if file.endswith(".tif")
     ])
@@ -39,134 +37,103 @@ def load_images(directory):
     logger.info(f"Loaded {len(images)} images from directory {directory}.")
     return np.array(images)
 
-
 def process_images_globally(data_array):
     """Processes images using global Otsu thresholding."""
     if data_array.size == 0:
         raise ValueError("Input image stack is empty.")
-
-    # Debugging vor Verarbeitung
-    logger.info(f"Input stack stats - Min: {data_array.min()}, Max: {data_array.max()}, Shape: {data_array.shape}")
-
     threshold = filters.threshold_otsu(data_array.flatten())
     blurred = filters.gaussian(data_array, sigma=1, preserve_range=True)
     binary = blurred > threshold
-
-    # Debugging nach Verarbeitung
-    logger.info(f"Blurred stack stats - Min: {blurred.min()}, Max: {blurred.max()}, Shape: {blurred.shape}")
-    logger.info(f"Binary image active pixels: {np.sum(binary)}")
     logger.info(f"Threshold applied: {threshold:.2f}")
     return blurred, binary, threshold
-
 
 def apply_morphological_closing(binary_images):
     """Performs morphological closing on binary images."""
     closed = morphology.closing(binary_images, morphology.ball(3))
-
-    # Log the number of active pixels after closing
-    logger.debug(f"Performed morphological closing. Active pixels: {np.sum(closed)}")
-
     return closed
-
 
 def interpolate_image_stack(image_stack, scaling_factor=0.5):
     """Scales a 3D image stack using spline interpolation."""
-    # Log values before scaling
-    logger.info(f"Before scaling: Min={image_stack.min()}, Max={image_stack.max()}")
-
-    # Skaliere und konvertiere von Boolean zu Integer (True=1, False=0)
-    scaled = scipy.ndimage.zoom(image_stack.astype(np.float32), (scaling_factor, scaling_factor, scaling_factor),
+    scaled = scipy.ndimage.zoom(image_stack.astype(np.float32),
+                                (scaling_factor, scaling_factor, scaling_factor),
                                 order=2)
-    scaled = (scaled * 255).astype(np.uint8)  # Wandle das Bild zurück in 0 oder 1 (binär)
-
-    # Log values after scaling
-    logger.info(f"After scaling: Min={scaled.min()}, Max={scaled.max()}")
-
-    logger.info(f"Scaled image stack to shape {scaled.shape}.")
-    return scaled
-
+    binary_scaled = (scaled > 0.5).astype(np.uint8)
+    return binary_scaled
 
 def find_largest_cluster(binary_image_stack):
     """Finds the largest connected voxel cluster."""
     labels, num_clusters = measure.label(binary_image_stack, return_num=True, connectivity=1)
     cluster_sizes = np.bincount(labels.ravel())
-    if len(cluster_sizes) <= 1:
-        raise ValueError("No clusters found.")
     largest_cluster_label = cluster_sizes[1:].argmax() + 1
     largest_cluster = labels == largest_cluster_label
     logger.info(f"Found largest cluster with size {cluster_sizes[largest_cluster_label]}.")
     return largest_cluster, num_clusters, cluster_sizes[largest_cluster_label]
 
-
-import tifffile as tiff
-
 def save_to_tiff_stack(image_stack, filename):
-    """Speichert ein 3D-Bildstack als TIFF-Datei."""
+    """Saves a 3D image stack as a TIFF file."""
     try:
-        # Debugging vor dem Speichern
-        logger.info(f"Stack stats before saving - Min: {image_stack.min()}, Max: {image_stack.max()}, Shape: {image_stack.shape}")
-
-        # Sicherstellen, dass der Stack richtig skaliert ist
-        if image_stack.dtype != np.uint8:
-            logger.warning("Converting image stack to uint8 format.")
-            image_stack = (image_stack * 255).astype(np.uint8)
-
-        logger.info(f"Saving stack to {filename}.")
         tiff.imwrite(filename, image_stack, photometric="minisblack")
-
-        # Validierung nach dem Speichern
-        reloaded_stack = tiff.imread(filename)
-        logger.info(f"Reloaded stack stats - Min: {reloaded_stack.min()}, Max: {reloaded_stack.max()}, Shape: {reloaded_stack.shape}")
         logger.info(f"Saved TIFF stack to {filename}.")
     except Exception as e:
         logger.error(f"Error saving TIFF stack: {e}")
 
-
-
 def save_raw_tiff_stack(image_stack, filename):
     """Saves the TIFF stack before binarization."""
-    # Log values before saving
-    logger.info(f"Raw image stack range: Min={image_stack.min()}, Max={image_stack.max()}")
-
     try:
         tiff.imwrite(filename, image_stack, photometric="minisblack")
         logger.info(f"Raw data stack saved to: {filename}")
     except Exception as e:
         logger.error(f"Error saving raw data stack: {e}")
 
+def marching_cubes(binary_stack, spacing=(1, 1, 1)):
+    """Generates a surface mesh using Marching Cubes."""
+    normalized_stack = (binary_stack - binary_stack.min()) / (binary_stack.max() - binary_stack.min())
+    verts, faces, _, _ = measure.marching_cubes(normalized_stack, level=0.5, spacing=spacing)
+    return verts, faces
 
-from skimage.measure import label
+def save_mesh_as_vtk(verts, faces, output_filename):
+    """Saves a mesh as a VTK file."""
+    cells = [("triangle", faces)]
+    meshio.write_points_cells(output_filename, verts, cells)
+    logger.info(f"Mesh saved as VTK file: {output_filename}")
 
+def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, output_filename: str):
+    """
+    Erstellt ein Tetraedernetz aus einem binarisierten 3D-Bild und speichert es als VTK-Datei.
 
-def extract_largest_cluster(binary_stack):
-    """Extracts the largest connected component (cluster) from the binary image stack."""
-    labeled_stack, num_labels = label(binary_stack, connectivity=3, return_num=True)
-    largest_cluster_label = np.argmax(np.bincount(labeled_stack.flat)[1:]) + 1  # Ignoriere Hintergrund (0)
-
-    largest_cluster = (labeled_stack == largest_cluster_label).astype(np.uint8)
-    logger.info(f"Largest cluster found: {np.sum(largest_cluster)} voxels")
-
-    return largest_cluster
-
-import imageio
-
-def save_largest_cluster_stack(largest_cluster, filename):
-    """Speichert den größten Cluster als TIFF-Datei."""
+    Args:
+        binary_volume (np.ndarray): Binarisierter 3D-Bildstack.
+        voxel_size (float): Größe eines Voxels.
+        output_filename (str): Pfad zur Ausgabe-VTK-Datei.
+    """
     try:
-        # Debugging vor dem Speichern
-        logger.info(f"Largest cluster stats before saving - Min: {largest_cluster.min()}, Max: {largest_cluster.max()}, Shape: {largest_cluster.shape}")
+        import ciclope.core.tetraFE as tetraFE
 
-        # Sicherstellen, dass der Cluster korrekt skaliert ist
-        if largest_cluster.dtype != np.uint8:
-            logger.warning("Converting largest cluster to uint8 format.")
-            largest_cluster = (largest_cluster * 255).astype(np.uint8)
+        # Voxelgrößenarray erstellen
+        vs = np.ones(3) * voxel_size
 
-        logger.info(f"Saving largest cluster to {filename}.")
-        imageio.mimwrite(filename, largest_cluster, format="TIFF", bigtiff=True)
+        # Parameter für die Mesh-Erstellung
+        mesh_size_factor = 1.2
+        max_facet_distance = mesh_size_factor * np.min(vs)
+        max_cell_circumradius = 2 * mesh_size_factor * np.min(vs)
 
-        # Validierung nach dem Speichern
-        reloaded_cluster = tiff.imread(filename)
-        logger.info(f"Reloaded cluster stats - Min: {reloaded_cluster.min()}, Max: {reloaded_cluster.max()}, Shape: {reloaded_cluster.shape}")
-        logger.info(f"Saved largest cluster to {filename}.")
+        logger.info(f"Creating tetrahedral mesh with voxel_size={voxel_size}, mesh_size_factor={mesh_size_factor}, "
+                    f"max_facet_distance={max_facet_distance}, max_cell_circumradius={max_cell_circumradius}")
+
+        # Debugging der Eingabeparameter
+        logger.debug(f"binary_volume shape: {binary_volume.shape}, type: {type(binary_volume)}")
+        logger.debug(f"voxel_size array: {vs}, type: {type(vs)}")
+
+        # Erstellen des Tetraedernetzes
+        mesh = tetraFE.cgal_mesh(binary_volume, vs, 'tetra',
+                                 max_facet_distance,
+                                 max_cell_circumradius)
+
+        # Speichern des Tetraedernetzes als VTK-Datei
+        mesh.write(output_filename)
+        logger.info(f"Tetrahedral mesh saved to {output_filename}")
+
+    except ImportError as e:
+        logger.error(f"Failed to import tetraFE module: {e}")
     except Exception as e:
-        logger.error(f"Error saving largest cluster: {e}")
+        logger.error(f"Error generating tetrahedral mesh: {e}")
