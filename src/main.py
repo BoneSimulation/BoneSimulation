@@ -27,14 +27,14 @@ logger = logging.getLogger(__name__)
 
 def get_base_path():
     """Returns the base path for the dataset."""
-    return "data/dataset"
+    return "C:\\Users\\Mathias\\Documents\\BoneSimulation\\data\\dataset"
 
 def process_and_visualize(directory):
     """Main function for processing and visualizing images."""
     logger.info("Starting processing and visualization...")
     data_array = load_images(directory)
     logger.info(f"Loaded images: {data_array.shape}")
-    save_raw_tiff_stack(data_array, f"pictures/raw_{generate_timestamp}.tif")
+    save_raw_tiff_stack(data_array, f"pictures/raw.tif")
     blurred_images, binary_images, global_threshold = process_images_globally(data_array)
     logger.info(f"Global threshold determined: {global_threshold}")
     closed_binary_images = apply_morphological_closing(binary_images)
@@ -43,8 +43,8 @@ def process_and_visualize(directory):
     largest_cluster, _, cluster_size = find_largest_cluster(interpolated_stack)
     logger.info(f"Largest cluster found: {cluster_size} voxels")
     verts, faces = marching_cubes(interpolated_stack)
-    save_mesh_as_vtk(verts, faces, f"test_pictures/mesh_{generate_timestamp}.vtk")
-    generate_tetrahedral_mesh(largest_cluster, 0.1, f"test_pictures/tetramesh_{generate_timestamp}.vtk")
+    save_mesh_as_vtk(verts, faces, f"test_pictures/mesh.vtk")
+    generate_tetrahedral_mesh(largest_cluster, 0.1, f"test_pictures/tetramesh_.vtk")
     logger.info("Processing completed.")
 
 if __name__ == "__main__":

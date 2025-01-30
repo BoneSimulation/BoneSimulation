@@ -1,4 +1,6 @@
 import logging
+
+import ciclope.core.tetraFE
 import numpy as np
 from skimage import morphology, filters, measure
 import scipy.ndimage
@@ -113,7 +115,7 @@ def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, outp
         vs = np.ones(3) * voxel_size
 
         # Parameter für die Mesh-Erstellung
-        mesh_size_factor = 1.2
+        mesh_size_factor = 0.8
         max_facet_distance = mesh_size_factor * np.min(vs)
         max_cell_circumradius = 2 * mesh_size_factor * np.min(vs)
 
@@ -130,8 +132,11 @@ def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, outp
                                  max_cell_circumradius)
 
         # Speichern des Tetraedernetzes als VTK-Datei
+        input_template = "C:\\Users\\Mathias\\Documents\\BoneSimulation\\data\\bone.inp"
+        filename_putput = "final_bone.inp"
         mesh.write(output_filename)
         logger.info(f"Tetrahedral mesh saved to {output_filename}")
+        ciclope.core.tetraFE.mesh2tetrafe(mesh, input_template, filename_putput)
 
     except ImportError as e:
         logger.error(f"Failed to import tetraFE module: {e}")
