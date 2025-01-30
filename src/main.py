@@ -15,6 +15,7 @@ from src.image_processing import (
     save_mesh_as_vtk,
     generate_tetrahedral_mesh
 )
+from utils.utils import generate_timestamp
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s: %(levelname)s : %(name)s : %(message)s",
