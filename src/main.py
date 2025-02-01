@@ -1,8 +1,6 @@
 import logging
 import os
 import sys
-import numpy as np
-from matplotlib import pyplot as plt
 from src.image_processing import (
     load_images,
     process_images_globally,
