@@ -95,3 +95,100 @@
        [2.740846 , 5.295635 , 9.197708 ]], shape=(49436, 3), dtype=float32), 'cells': [<meshio CellBlock, type: tetra, num cells: 190814, tags: []>], 'point_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(49436,))}, 'cell_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(190814,))}, 'field_data': {}, 'point_sets': {}, 'cell_sets': {}, 'gmsh_periodic': None, 'info': None}
 2025-02-03 19:03:41,413: ERROR : src.image_processing : Error generating tetrahedral mesh: 'CellBlock' object is not subscriptable
 2025-02-03 19:03:41,413: INFO : __main__ : Processing completed.
+2025-02-03 19:53:45,704: INFO : __main__ : Starting processing and visualization...
+2025-02-03 19:53:45,809: INFO : src.image_processing : Loaded 200 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/dataset.
+2025-02-03 19:53:45,811: INFO : __main__ : Loaded images: (200, 200, 200)
+2025-02-03 19:53:45,832: INFO : src.image_processing : Raw data stack saved to: pictures/raw.tif
+2025-02-03 19:53:46,117: INFO : src.image_processing : Threshold applied: 84.00
+2025-02-03 19:53:46,118: INFO : __main__ : Global threshold determined: 84
+2025-02-03 19:53:48,610: INFO : __main__ : Interpolated stack created: (100, 100, 100)
+2025-02-03 19:53:48,623: INFO : src.image_processing : Found largest cluster with size 188879.
+2025-02-03 19:53:48,623: INFO : __main__ : Largest cluster found: 188879 voxels
+2025-02-03 19:53:48,729: INFO : src.image_processing : Mesh saved as VTK file: test_pictures/mesh.vtk
+2025-02-03 19:53:48,730: INFO : src.image_processing : Creating tetrahedral mesh with voxel_size=0.1, mesh_size_factor=0.8, max_facet_distance=0.08000000000000002, max_cell_circumradius=0.16000000000000003
+2025-02-03 19:54:14,296: INFO : root : Removing triangle cells.
+2025-02-03 19:58:07,297: INFO : __main__ : Starting processing and visualization...
+2025-02-03 19:58:07,387: INFO : src.image_processing : Loaded 200 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/dataset.
+2025-02-03 19:58:07,390: INFO : __main__ : Loaded images: (200, 200, 200)
+2025-02-03 19:58:07,410: INFO : src.image_processing : Raw data stack saved to: pictures/raw.tif
+2025-02-03 19:58:07,738: INFO : src.image_processing : Threshold applied: 84.00
+2025-02-03 19:58:07,738: INFO : __main__ : Global threshold determined: 84
+2025-02-03 19:58:10,300: INFO : __main__ : Interpolated stack created: (100, 100, 100)
+2025-02-03 19:58:10,314: INFO : src.image_processing : Found largest cluster with size 188879.
+2025-02-03 19:58:10,314: INFO : __main__ : Largest cluster found: 188879 voxels
+2025-02-03 19:58:10,421: INFO : src.image_processing : Mesh saved as VTK file: test_pictures/mesh.vtk
+2025-02-03 19:58:10,422: INFO : src.image_processing : Creating tetrahedral mesh with voxel_size=0.1, mesh_size_factor=1.9, max_facet_distance=0.19, max_cell_circumradius=0.38
+2025-02-03 19:58:11,728: INFO : root : Removing triangle cells.
+2025-02-03 19:58:11,731: INFO : src.image_processing : Tetrahedral mesh for simulation saved to test_pictures/tetramesh_final.vtk
+2025-02-03 19:58:11,731: INFO : root : Converting mesh with fields:
+
+2025-02-03 19:58:11,731: INFO : root : {'points': array([[5.92847  , 3.5276334, 9.672405 ],
+       [1.8302649, 7.87523  , 6.149687 ],
+       [6.1843677, 1.1514663, 6.123105 ],
+       ...,
+       [5.4470644, 3.8277774, 3.462655 ],
+       [4.795254 , 2.607399 , 5.9284797],
+       [4.9503856, 4.3901978, 4.5835576]], shape=(4491, 3), dtype=float32), 'cells': [<meshio CellBlock, type: tetra, num cells: 11916, tags: []>], 'point_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(4491,))}, 'cell_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(11916,))}, 'field_data': {}, 'point_sets': {}, 'cell_sets': {}, 'gmsh_periodic': None, 'info': None}
+2025-02-03 20:03:36,599: INFO : __main__ : Starting processing and visualization...
+2025-02-03 20:03:36,779: INFO : src.image_processing : Loaded 200 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/dataset.
+2025-02-03 20:03:36,782: INFO : __main__ : Loaded images: (200, 200, 200)
+2025-02-03 20:03:36,803: INFO : src.image_processing : Raw data stack saved to: pictures/raw.tif
+2025-02-03 20:03:37,024: INFO : src.image_processing : Threshold applied: 84.00
+2025-02-03 20:03:37,024: INFO : __main__ : Global threshold determined: 84
+2025-02-03 20:03:39,515: INFO : __main__ : Interpolated stack created: (100, 100, 100)
+2025-02-03 20:03:39,529: INFO : src.image_processing : Found largest cluster with size 188879.
+2025-02-03 20:03:39,529: INFO : __main__ : Largest cluster found: 188879 voxels
+2025-02-03 20:03:39,636: INFO : src.image_processing : Mesh saved as VTK file: test_pictures/mesh.vtk
+2025-02-03 20:03:39,637: INFO : src.image_processing : Creating tetrahedral mesh with voxel_size=0.1, mesh_size_factor=1.9, max_facet_distance=0.19, max_cell_circumradius=0.38
+2025-02-03 20:03:40,940: INFO : root : Removing triangle cells.
+2025-02-03 20:03:40,945: INFO : src.image_processing : Tetrahedral mesh for simulation saved to test_pictures/tetramesh_final.vtk
+2025-02-03 20:03:40,945: INFO : root : Converting mesh with fields:
+
+2025-02-03 20:19:40,878: INFO : __main__ : Starting processing and visualization...
+2025-02-03 20:19:40,972: INFO : src.image_processing : Loaded 200 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/dataset.
+2025-02-03 20:19:40,975: INFO : __main__ : Loaded images: (200, 200, 200)
+2025-02-03 20:19:40,994: INFO : src.image_processing : Raw data stack saved to: pictures/raw.tif
+2025-02-03 20:19:41,196: INFO : src.image_processing : Threshold applied: 84.00
+2025-02-03 20:19:41,196: INFO : __main__ : Global threshold determined: 84
+2025-02-03 20:19:43,648: INFO : __main__ : Interpolated stack created: (100, 100, 100)
+2025-02-03 20:19:43,661: INFO : src.image_processing : Found largest cluster with size 188879.
+2025-02-03 20:19:43,661: INFO : __main__ : Largest cluster found: 188879 voxels
+2025-02-03 20:19:43,768: INFO : src.image_processing : Mesh saved as VTK file: test_pictures/mesh.vtk
+2025-02-03 20:19:43,768: INFO : src.image_processing : Creating tetrahedral mesh with voxel_size=0.1, mesh_size_factor=0.8, max_facet_distance=0.08000000000000002, max_cell_circumradius=0.16000000000000003
+2025-02-03 20:20:05,368: INFO : root : Removing triangle cells.
+2025-02-03 20:20:05,418: INFO : src.image_processing : Tetrahedral mesh saved to test_pictures/tetramesh.vtk
+2025-02-03 20:20:05,418: INFO : root : Converting mesh with fields:
+
+2025-02-03 20:20:05,418: INFO : root : {'points': array([[1.6626656, 8.118582 , 6.217432 ],
+       [1.8302649, 7.87523  , 6.149687 ],
+       [6.1843677, 1.1514663, 6.123105 ],
+       ...,
+       [1.3234074, 0.3229384, 3.5325618],
+       [6.884763 , 9.8976   , 5.8430696],
+       [2.740846 , 5.295635 , 9.197708 ]], shape=(49436, 3), dtype=float32), 'cells': [<meshio CellBlock, type: tetra, num cells: 190814, tags: []>], 'point_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(49436,))}, 'cell_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(190814,))}, 'field_data': {}, 'point_sets': {}, 'cell_sets': {}, 'gmsh_periodic': None, 'info': None}
+2025-02-03 20:20:05,423: ERROR : src.image_processing : Error converting tetrahedral mesh: 'CellBlock' object is not subscriptable
+2025-02-03 20:20:05,423: INFO : __main__ : Simulation finished
+2025-02-03 20:32:36,145: INFO : __main__ : Starting processing and visualization...
+2025-02-03 20:32:36,241: INFO : src.image_processing : Loaded 200 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/dataset.
+2025-02-03 20:32:36,244: INFO : __main__ : Loaded images: (200, 200, 200)
+2025-02-03 20:32:36,264: INFO : src.image_processing : Raw data stack saved to: pictures/raw.tif
+2025-02-03 20:32:36,476: INFO : src.image_processing : Threshold applied: 84.00
+2025-02-03 20:32:36,476: INFO : __main__ : Global threshold determined: 84
+2025-02-03 20:32:38,960: INFO : __main__ : Interpolated stack created: (100, 100, 100)
+2025-02-03 20:32:38,973: INFO : src.image_processing : Found largest cluster with size 188879.
+2025-02-03 20:32:38,973: INFO : __main__ : Largest cluster found: 188879 voxels
+2025-02-03 20:32:39,085: INFO : src.image_processing : Mesh saved as VTK file: test_pictures/mesh.vtk
+2025-02-03 20:32:39,085: INFO : src.image_processing : Creating tetrahedral mesh with voxel_size=0.1, mesh_size_factor=0.8, max_facet_distance=0.08000000000000002, max_cell_circumradius=0.16000000000000003
+2025-02-03 20:33:00,783: INFO : root : Removing triangle cells.
+2025-02-03 20:33:00,831: INFO : src.image_processing : Tetrahedral mesh saved to test_pictures/tetramesh_.vtk
+2025-02-03 20:33:00,832: INFO : root : Converting mesh with fields:
+
+2025-02-03 20:33:00,832: INFO : root : {'points': array([[1.6626656, 8.118582 , 6.217432 ],
+       [1.8302649, 7.87523  , 6.149687 ],
+       [6.1843677, 1.1514663, 6.123105 ],
+       ...,
+       [1.3234074, 0.3229384, 3.5325618],
+       [6.884763 , 9.8976   , 5.8430696],
+       [2.740846 , 5.295635 , 9.197708 ]], shape=(49436, 3), dtype=float32), 'cells': [<meshio CellBlock, type: tetra, num cells: 190814, tags: []>], 'point_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(49436,))}, 'cell_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(190814,))}, 'field_data': {}, 'point_sets': {}, 'cell_sets': {}, 'gmsh_periodic': None, 'info': None}
+2025-02-03 20:33:00,836: ERROR : src.image_processing : Error generating tetrahedral mesh: 'CellBlock' object is not subscriptable
+2025-02-03 20:33:00,836: INFO : __main__ : Processing completed.

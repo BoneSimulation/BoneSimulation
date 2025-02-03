@@ -327,8 +327,8 @@ def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, outp
                                  max_cell_circumradius)
 
         # Speichern des Tetraedernetzes als VTK-Datei
-        input_template = "C:\\Users\\Mathias\\Documents\\BoneSimulation\\data\\bone.inp"
-        filename_putput = "final_bone.inp"
+        input_template = "/data/bone.inp"
+        filename_putput = "test_pictures/final_bone.inp"
         mesh.write(output_filename)
         logger.info(f"Tetrahedral mesh saved to {output_filename}")
         ciclope.core.tetraFE.mesh2tetrafe(mesh, input_template, filename_putput)
