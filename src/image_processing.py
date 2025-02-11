@@ -287,8 +287,42 @@ def save_mesh_as_vtk(verts, faces, output_filename):
     logger.info(f"Mesh saved as VTK file: {output_filename}")
 
 
+import logging
+import numpy as np
+import os
+
+logger = logging.getLogger(__name__)
+
+
+# Hilfsklasse, um Mesh-Daten in einem Objekt zu kapseln (sodass vars() funktioniert)
+class MeshDataContainer:
+    """
+    Ein einfacher Container, der Mesh-Daten hält und ein __dict__-Attribut besitzt.
+    """
+
+    def __init__(self, points, cells, point_data, cell_data, field_data, point_sets, cell_sets):
+        self.points = points
+        self.cells = cells
+        self.point_data = point_data
+        self.cell_data = cell_data
+        self.field_data = field_data
+        self.point_sets = point_sets
+        self.cell_sets = cell_sets
+
+
+# Hilfsklasse, die ein CellBlock-ähnliches Objekt simuliert
+class CellBlock:
+    """
+    Ein einfacher Container für Zell-Daten, der ein __dict__-Attribut besitzt.
+    """
+
+    def __init__(self, cell_type, data):
+        self.type = cell_type
+        self.data = data
+
+
 def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, output_filename: str):
-    """"
+    """
     Creates a tetrahedral mesh from a binary 3D image and saves it as a VTK file.
 
     This function takes a binary volume represented as a 3D NumPy array and generates a
@@ -301,15 +335,15 @@ def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, outp
         output_filename (str): The path to the output VTK file where the tetrahedral mesh will be saved.
 
     Returns:
-        None: This function does not return a value; it logs the operation and any errors encountered.
+        mesh: The generated tetrahedral mesh object, or None if an error occurs.
     """
     try:
         import ciclope.core.tetraFE as tetraFE
 
-        # Voxelgrößenarray erstellen
+        # Create a voxel size array (iterable)
         vs = np.ones(3) * voxel_size
 
-        # Parameter für die Mesh-Erstellung
+        # Parameters for mesh generation
         mesh_size_factor = 0.8
         max_facet_distance = mesh_size_factor * np.min(vs)
         max_cell_circumradius = 2 * mesh_size_factor * np.min(vs)
@@ -317,23 +351,65 @@ def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, outp
         logger.info(f"Creating tetrahedral mesh with voxel_size={voxel_size}, mesh_size_factor={mesh_size_factor}, "
                     f"max_facet_distance={max_facet_distance}, max_cell_circumradius={max_cell_circumradius}")
 
-        # Debugging der Eingabeparameter
+        # Debugging the input parameters
         logger.debug(f"binary_volume shape: {binary_volume.shape}, type: {type(binary_volume)}")
         logger.debug(f"voxel_size array: {vs}, type: {type(vs)}")
 
-        # Erstellen des Tetraedernetzes
+        # Generate the tetrahedral mesh
         mesh = tetraFE.cgal_mesh(binary_volume, vs, 'tetra',
                                  max_facet_distance,
                                  max_cell_circumradius)
 
-        # Speichern des Tetraedernetzes als VTK-Datei
-        input_template = "/data/bone.inp"
-        filename_putput = "test_pictures/final_bone.inp"
+        # Save the tetrahedral mesh as a VTK file
         mesh.write(output_filename)
         logger.info(f"Tetrahedral mesh saved to {output_filename}")
-        ciclope.core.tetraFE.mesh2tetrafe(mesh, input_template, filename_putput)
+
+        # Bereite Mesh-Daten in einem Container vor, damit tetraFE.mesh2tetrafe korrekt darauf zugreifen kann.
+        # Anstatt ein Tupel ("tetra", ...) zu übergeben, erstellen wir ein CellBlock-Objekt.
+        mesh_data_fixed = MeshDataContainer(
+            points=mesh.points,
+            cells=[CellBlock("tetra", mesh.cells[0].data)],
+            point_data=mesh.point_data,
+            cell_data=mesh.cell_data,
+            field_data=mesh.field_data,
+            point_sets=mesh.point_sets,
+            cell_sets=mesh.cell_sets,
+        )
+
+        # Define template and output for CalculiX input file conversion
+        input_template = "C:\\Users\\Mathias\\Documents\\BoneSimulation\\data\\bone.inp"
+        filename_putput = "test_pictures/final_bone.inp"
+
+        # Convert the tetrahedral mesh to a CalculiX input file
+        tetraFE.mesh2tetrafe(mesh_data_fixed, input_template, filename_putput)
+        logger.info(f"CalculiX input file saved to {filename_putput}")
+
+        return mesh
 
     except ImportError as e:
         logger.error(f"Failed to import tetraFE module: {e}")
     except Exception as e:
         logger.error(f"Error generating tetrahedral mesh: {e}")
+    return None
+
+
+def write_tetrahedral_mesh(mesh, output_filename: str):
+    """
+    Saves the tetrahedral mesh as a VTK file and converts it to a specified input format.
+
+    Args:
+        mesh: The tetrahedral mesh to be saved and converted.
+        output_filename (str): The path to the output VTK file where the mesh will be saved.
+
+    Returns:
+        None
+    """
+    try:
+        mesh.write(output_filename)
+        logger.info(f"Tetrahedral mesh for simulation saved to {output_filename}")
+
+        # Convert the mesh to a CalculiX input file using a template
+        input_template = "C:\\Users\\Mathias\\Documents\\BoneSimulation\\data\\bone.inp"
+        ciclope.core.tetraFE.mesh2tetrafe(mesh, input_template, output_filename)
+    except Exception as e:
+        logger.error(f"Error converting tetrahedral mesh: {e}")
