@@ -311,3 +311,176 @@
        [2.740846 , 5.295635 , 9.197708 ]], shape=(49436, 3), dtype=float32), 'cells': [<src.image_processing.CellBlock object at 0x7fbee1e0ca40>], 'point_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(49436,))}, 'cell_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(190814,))}, 'field_data': {}, 'point_sets': {}, 'cell_sets': {}}
 2025-02-11 18:43:58,540: ERROR : src.image_processing : Error generating tetrahedral mesh: 'CellBlock' object is not subscriptable
 2025-02-11 18:43:59,980: INFO : __main__ : Processing completed.
+2025-02-12 21:06:51,221: ERROR : __main__ : Directory not found: /home/mathias/PycharmProjects/BoneSimulation/data/Knochenprobe2stream.tiff
+2025-02-13 18:33:08,069: INFO : __main__ : Starting processing and visualization...
+2025-02-13 18:33:08,070: ERROR : __main__ : Invalid input path: /home/mathias/PycharmProjects/BoneSimulation/data/Knochenprobe2stream.tiff
+2025-02-13 18:41:07,396: INFO : __main__ : Starting processing and visualization...
+2025-02-13 18:41:10,566: INFO : src.image_processing : Loaded TIFF stream with shape (691, 1024, 1024) from /home/mathias/PycharmProjects/BoneSimulation/data/Knochenprobe2stream.tiff
+2025-02-13 18:41:10,567: INFO : __main__ : Loaded images: (691, 1024, 1024)
+2025-02-13 18:42:14,738: INFO : __main__ : Starting processing and visualization...
+2025-02-13 18:42:17,715: INFO : src.image_processing : Loaded TIFF stream with shape (691, 1024, 1024) from /home/mathias/PycharmProjects/BoneSimulation/data/Knochenprobe2stream.tiff
+2025-02-13 18:42:17,716: INFO : __main__ : Loaded images: (691, 1024, 1024)
+2025-02-13 18:44:43,294: INFO : src.image_processing : Threshold applied: 195.00
+2025-02-13 18:44:43,299: INFO : __main__ : Global threshold determined: 195
+2025-02-13 18:48:28,797: INFO : __main__ : Starting processing and visualization...
+2025-02-13 18:48:31,817: INFO : src.image_processing : Loaded TIFF stream with shape (691, 1024, 1024) from /home/mathias/PycharmProjects/BoneSimulation/data/Knochenprobe2stream.tiff
+2025-02-13 18:48:31,817: INFO : __main__ : Loaded images: (691, 1024, 1024)
+2025-02-13 18:50:58,672: INFO : src.image_processing : Threshold applied: 195.00
+2025-02-13 18:50:58,677: INFO : __main__ : Global threshold determined: 195
+2025-02-13 18:52:59,226: INFO : __main__ : Starting processing and visualization...
+2025-02-13 18:53:02,258: INFO : src.image_processing : Loaded TIFF stream with shape (691, 1024, 1024) from /home/mathias/PycharmProjects/BoneSimulation/data/Knochenprobe2stream.tiff
+2025-02-13 18:53:02,258: INFO : __main__ : Loaded images: (691, 1024, 1024)
+2025-02-13 18:53:02,479: INFO : src.image_processing : Raw data stack saved to: pictures/raw_20250213_185302.tif
+2025-02-13 18:55:08,351: INFO : src.image_processing : Threshold applied: 195.00
+2025-02-13 18:55:08,356: INFO : __main__ : Global threshold determined: 195
+2025-02-13 19:02:58,534: INFO : __main__ : Starting processing and visualization...
+2025-02-13 19:02:58,535: ERROR : src.image_processing : Error loading TIFF stream /BoneSimulation/data/Knochenprobe2stream.tiff: [Errno 2] No such file or directory: '/BoneSimulation/data/Knochenprobe2stream.tiff'
+2025-02-13 19:03:17,108: INFO : __main__ : Starting processing and visualization...
+2025-02-13 19:03:20,046: INFO : src.image_processing : Loaded TIFF stream with shape (691, 1024, 1024) from /home/mathias/PycharmProjects/BoneSimulation/data/Knochenprobe2stream.tiff
+2025-02-13 19:03:20,046: INFO : __main__ : Loaded images: (691, 1024, 1024)
+2025-02-13 19:03:20,252: INFO : src.image_processing : Raw data stack saved to: pictures/raw_20250213_190320.tif
+2025-02-13 19:20:56,642: INFO : __main__ : Starting processing and visualization...
+2025-02-13 19:20:59,629: INFO : src.image_processing : Loaded TIFF stream with shape (691, 1024, 1024) from /home/mathias/PycharmProjects/BoneSimulation/data/Knochenprobe2stream.tiff
+2025-02-13 19:20:59,629: INFO : __main__ : Loaded images: (691, 1024, 1024)
+2025-02-13 19:20:59,879: INFO : src.image_processing : Saved TIFF stack to pictures/raw_20250213_192059.tif.
+2025-02-13 19:21:11,461: INFO : __main__ : Starting processing and visualization...
+2025-02-13 19:21:14,462: INFO : src.image_processing : Loaded TIFF stream with shape (691, 1024, 1024) from /home/mathias/PycharmProjects/BoneSimulation/data/Knochenprobe2stream.tiff
+2025-02-13 19:21:14,462: INFO : __main__ : Loaded images: (691, 1024, 1024)
+2025-02-13 19:21:14,678: INFO : src.image_processing : Saved TIFF stack to pictures/raw_20250213_192114.tif.
+2025-02-13 19:23:05,928: INFO : src.image_processing : Threshold applied: 195.00
+2025-02-13 19:43:43,029: INFO : __main__ : Starting processing and visualization...
+2025-02-13 19:44:24,849: INFO : __main__ : Starting processing and visualization...
+2025-02-13 19:44:24,993: INFO : src.image_processing : Loaded 200 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/dataset.
+2025-02-13 19:44:24,996: INFO : __main__ : Loaded images: (200, 200, 200)
+2025-02-13 19:44:24,999: INFO : src.image_processing : Saved TIFF stack to pictures/raw_20250213_194424.tif.
+2025-02-13 19:44:25,202: INFO : src.image_processing : Threshold applied: 84.00
+2025-02-13 19:44:27,588: INFO : src.image_processing : Found largest cluster with size 188879.
+2025-02-13 19:44:27,588: INFO : __main__ : Largest cluster found: 188879 voxels
+2025-02-13 19:44:27,682: INFO : src.image_processing : Mesh saved as VTK file: test_pictures/mesh_20250213_194424.vtk
+2025-02-13 19:44:49,329: INFO : root : Removing triangle cells.
+2025-02-13 19:44:49,355: INFO : src.image_processing : Tetrahedral mesh saved to test_pictures/tetramesh_20250213_194424.vtk
+2025-02-13 19:44:49,355: INFO : __main__ : Tetrahedral mesh successfully generated.
+2025-02-13 19:44:49,355: INFO : __main__ : Processing completed.
+2025-02-11 18:14:02,524: INFO : __main__ : Starting processing and visualization...
+2025-02-11 18:14:02,820: INFO : src.image_processing : Loaded 200 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/dataset.
+2025-02-11 18:14:02,823: INFO : __main__ : Loaded images: (200, 200, 200)
+2025-02-11 18:14:02,840: INFO : src.image_processing : Raw data stack saved to: pictures/raw.tif
+2025-02-11 18:14:03,331: INFO : src.image_processing : Threshold applied: 84.00
+2025-02-11 18:14:03,331: INFO : __main__ : Global threshold determined: 84
+2025-02-11 18:14:06,295: INFO : __main__ : Interpolated stack created: (100, 100, 100)
+2025-02-11 18:14:06,316: INFO : src.image_processing : Found largest cluster with size 188879.
+2025-02-11 18:14:06,316: INFO : __main__ : Largest cluster found: 188879 voxels
+2025-02-11 18:14:06,500: INFO : src.image_processing : Mesh saved as VTK file: test_pictures/mesh_2025-02-11 18:14:06.487896.vtk
+2025-02-11 18:14:06,501: INFO : src.image_processing : Creating tetrahedral mesh with voxel_size=0.1, mesh_size_factor=0.8, max_facet_distance=0.08000000000000002, max_cell_circumradius=0.16000000000000003
+2025-02-11 18:14:30,570: INFO : root : Removing triangle cells.
+2025-02-11 18:14:30,598: INFO : src.image_processing : Tetrahedral mesh saved to test_pictures/tetramesh_{datetime.datetime.now()}.vtk
+2025-02-11 18:14:30,598: INFO : root : Converting mesh with fields:
+
+2025-02-11 18:14:30,598: INFO : root : {'points': array([[1.6626656, 8.118582 , 6.217432 ],
+       [1.8302649, 7.87523  , 6.149687 ],
+       [6.1843677, 1.1514663, 6.123105 ],
+       ...,
+       [1.3234074, 0.3229384, 3.5325618],
+       [6.884763 , 9.8976   , 5.8430696],
+       [2.740846 , 5.295635 , 9.197708 ]], shape=(49436, 3), dtype=float32), 'cells': [<meshio CellBlock, type: tetra, num cells: 190814, tags: []>], 'point_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(49436,))}, 'cell_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(190814,))}, 'field_data': {}, 'point_sets': {}, 'cell_sets': {}, 'gmsh_periodic': None, 'info': None}
+2025-02-11 18:14:30,601: ERROR : src.image_processing : Error generating tetrahedral mesh: 'CellBlock' object is not subscriptable
+2025-02-11 18:14:30,601: INFO : __main__ : Processing completed.
+2025-02-11 18:25:05,474: INFO : __main__ : Starting processing and visualization...
+2025-02-11 18:25:05,583: INFO : src.image_processing : Loaded 200 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/dataset.
+2025-02-11 18:25:05,587: INFO : __main__ : Loaded images: (200, 200, 200)
+2025-02-11 18:25:05,608: INFO : src.image_processing : Raw data stack saved to: pictures/raw.tif
+2025-02-11 18:25:05,851: INFO : src.image_processing : Threshold applied: 84.00
+2025-02-11 18:25:05,852: INFO : __main__ : Global threshold determined: 84
+2025-02-11 18:25:08,350: INFO : __main__ : Interpolated stack created: (100, 100, 100)
+2025-02-11 18:25:08,362: INFO : src.image_processing : Found largest cluster with size 188879.
+2025-02-11 18:25:08,362: INFO : __main__ : Largest cluster found: 188879 voxels
+2025-02-11 18:25:08,455: INFO : src.image_processing : Mesh saved as VTK file: test_pictures/mesh_2025-02-11 18:25:08.444835.vtk
+2025-02-11 18:25:08,455: INFO : src.image_processing : Creating tetrahedral mesh with voxel_size=0.1, mesh_size_factor=0.8, max_facet_distance=0.08000000000000002, max_cell_circumradius=0.16000000000000003
+2025-02-11 18:25:31,651: INFO : root : Removing triangle cells.
+2025-02-11 18:25:31,700: INFO : src.image_processing : Tetrahedral mesh saved to test_pictures/tetramesh_{datetime.datetime.now()}.vtk
+2025-02-11 18:25:31,701: INFO : root : Converting mesh with fields:
+
+2025-02-11 18:25:31,701: ERROR : src.image_processing : Error generating tetrahedral mesh: vars() argument must have __dict__ attribute
+2025-02-11 18:25:31,701: INFO : __main__ : Processing completed.
+2025-02-11 18:35:56,337: INFO : __main__ : Starting processing and visualization...
+2025-02-11 18:35:56,472: INFO : src.image_processing : Loaded 200 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/dataset.
+2025-02-11 18:35:56,475: INFO : __main__ : Loaded images: (200, 200, 200)
+2025-02-11 18:35:56,495: INFO : src.image_processing : Raw data stack saved to: pictures/raw.tif
+2025-02-11 18:35:56,697: INFO : src.image_processing : Threshold applied: 84.00
+2025-02-11 18:35:56,697: INFO : __main__ : Global threshold determined: 84
+2025-02-11 18:35:59,157: INFO : __main__ : Interpolated stack created: (100, 100, 100)
+2025-02-11 18:35:59,170: INFO : src.image_processing : Found largest cluster with size 188879.
+2025-02-11 18:35:59,170: INFO : __main__ : Largest cluster found: 188879 voxels
+2025-02-11 18:35:59,264: INFO : src.image_processing : Mesh saved as VTK file: test_pictures/mesh_2025-02-11 18:35:59.252946.vtk
+2025-02-11 18:35:59,264: INFO : src.image_processing : Creating tetrahedral mesh with voxel_size=0.1, mesh_size_factor=0.8, max_facet_distance=0.08000000000000002, max_cell_circumradius=0.16000000000000003
+2025-02-11 18:36:21,986: INFO : root : Removing triangle cells.
+2025-02-11 18:36:22,014: INFO : src.image_processing : Tetrahedral mesh saved to test_pictures/tetramesh_2025-02-11 18:35:59.264292.vtk
+2025-02-11 18:36:22,014: INFO : root : Converting mesh with fields:
+
+2025-02-11 18:36:22,014: INFO : root : {'points': array([[1.6626656, 8.118582 , 6.217432 ],
+       [1.8302649, 7.87523  , 6.149687 ],
+       [6.1843677, 1.1514663, 6.123105 ],
+       ...,
+       [1.3234074, 0.3229384, 3.5325618],
+       [6.884763 , 9.8976   , 5.8430696],
+       [2.740846 , 5.295635 , 9.197708 ]], shape=(49436, 3), dtype=float32), 'cells': [('tetra', array([[27490, 23647,  1046, 15931],
+       [41553, 32906,  5558, 45424],
+       [30892, 36304, 45081, 26180],
+       ...,
+       [46190, 48367, 30155, 14550],
+       [35871,  2554, 15244, 15712],
+       [21478, 15244, 48424, 15712]], shape=(190814, 4)))], 'point_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(49436,))}, 'cell_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(190814,))}, 'field_data': {}, 'point_sets': {}, 'cell_sets': {}}
+2025-02-11 18:36:25,706: ERROR : src.image_processing : Error generating tetrahedral mesh: 'tuple' object has no attribute 'type'
+2025-02-11 18:36:25,706: INFO : __main__ : Processing completed.
+2025-02-11 18:40:03,759: INFO : __main__ : Starting processing and visualization...
+2025-02-11 18:40:04,061: INFO : src.image_processing : Loaded 200 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/dataset.
+2025-02-11 18:40:04,065: INFO : __main__ : Loaded images: (200, 200, 200)
+2025-02-11 18:40:04,072: INFO : src.image_processing : Raw data stack saved to: pictures/raw_2025-02-11_18-40-03.tif
+2025-02-11 18:40:04,297: INFO : src.image_processing : Threshold applied: 84.00
+2025-02-11 18:40:04,298: INFO : __main__ : Global threshold determined: 84
+2025-02-11 18:40:06,865: INFO : __main__ : Interpolated stack created: (100, 100, 100)
+2025-02-11 18:40:06,878: INFO : src.image_processing : Found largest cluster with size 188879.
+2025-02-11 18:40:06,879: INFO : __main__ : Largest cluster found: 188879 voxels
+2025-02-11 18:40:06,973: INFO : src.image_processing : Mesh saved as VTK file: test_pictures/mesh_2025-02-11_18-40-03.vtk
+2025-02-11 18:40:06,973: INFO : src.image_processing : Creating tetrahedral mesh with voxel_size=0.1, mesh_size_factor=0.8, max_facet_distance=0.08000000000000002, max_cell_circumradius=0.16000000000000003
+2025-02-11 18:40:29,881: INFO : root : Removing triangle cells.
+2025-02-11 18:40:29,908: INFO : src.image_processing : Tetrahedral mesh saved to test_pictures/tetramesh_2025-02-11_18-40-03.vtk
+2025-02-11 18:40:29,909: INFO : root : Converting mesh with fields:
+
+2025-02-11 18:40:29,909: INFO : root : {'points': array([[1.6626656, 8.118582 , 6.217432 ],
+       [1.8302649, 7.87523  , 6.149687 ],
+       [6.1843677, 1.1514663, 6.123105 ],
+       ...,
+       [1.3234074, 0.3229384, 3.5325618],
+       [6.884763 , 9.8976   , 5.8430696],
+       [2.740846 , 5.295635 , 9.197708 ]], shape=(49436, 3), dtype=float32), 'cells': [<src.image_processing.CellBlock object at 0x7f81fcdece30>], 'point_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(49436,))}, 'cell_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(190814,))}, 'field_data': {}, 'point_sets': {}, 'cell_sets': {}}
+2025-02-11 18:40:29,912: ERROR : src.image_processing : Error generating tetrahedral mesh: 'CellBlock' object is not subscriptable
+2025-02-11 18:40:31,102: INFO : __main__ : Processing completed.
+2025-02-11 18:43:30,359: INFO : __main__ : Starting processing and visualization...
+2025-02-11 18:43:30,653: INFO : src.image_processing : Loaded 200 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/dataset.
+2025-02-11 18:43:30,656: INFO : __main__ : Loaded images: (200, 200, 200)
+2025-02-11 18:43:30,662: INFO : src.image_processing : Raw data stack saved to: pictures/raw_2025-02-11_18-43-30.tif
+2025-02-11 18:43:30,886: INFO : src.image_processing : Threshold applied: 84.00
+2025-02-11 18:43:30,887: INFO : __main__ : Global threshold determined: 84
+2025-02-11 18:43:33,507: INFO : __main__ : Interpolated stack created: (100, 100, 100)
+2025-02-11 18:43:33,520: INFO : src.image_processing : Found largest cluster with size 188879.
+2025-02-11 18:43:33,520: INFO : __main__ : Largest cluster found: 188879 voxels
+2025-02-11 18:43:33,616: INFO : src.image_processing : Mesh saved as VTK file: test_pictures/mesh_2025-02-11_18-43-30.vtk
+2025-02-11 18:43:33,616: INFO : src.image_processing : Creating tetrahedral mesh with voxel_size=0.1, mesh_size_factor=0.8, max_facet_distance=0.08000000000000002, max_cell_circumradius=0.16000000000000003
+2025-02-11 18:43:58,505: INFO : root : Removing triangle cells.
+2025-02-11 18:43:58,536: INFO : src.image_processing : Tetrahedral mesh saved to test_pictures/tetramesh_2025-02-11_18-43-30.vtk
+2025-02-11 18:43:58,537: INFO : root : Converting mesh with fields:
+
+2025-02-11 18:43:58,537: INFO : root : {'points': array([[1.6626656, 8.118582 , 6.217432 ],
+       [1.8302649, 7.87523  , 6.149687 ],
+       [6.1843677, 1.1514663, 6.123105 ],
+       ...,
+       [1.3234074, 0.3229384, 3.5325618],
+       [6.884763 , 9.8976   , 5.8430696],
+       [2.740846 , 5.295635 , 9.197708 ]], shape=(49436, 3), dtype=float32), 'cells': [<src.image_processing.CellBlock object at 0x7fbee1e0ca40>], 'point_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(49436,))}, 'cell_data': {'medit:ref': array([1, 1, 1, ..., 1, 1, 1], shape=(190814,))}, 'field_data': {}, 'point_sets': {}, 'cell_sets': {}}
+2025-02-11 18:43:58,540: ERROR : src.image_processing : Error generating tetrahedral mesh: 'CellBlock' object is not subscriptable
+2025-02-11 18:43:59,980: INFO : __main__ : Processing completed.
+2025-02-15 20:35:51,645: INFO : __main__ : Starting processing and visualization...
+2025-02-15 20:35:55,665: INFO : src.image_processing : Lazy-loaded TIFF stream with shape (691, 1024, 1024) from /home/mathias/PycharmProjects/BoneSimulation/data/Knochenprobe2stream.tiff
+2025-02-15 20:35:55,665: INFO : __main__ : Loaded images: (691, 1024, 1024)
+2025-02-15 20:35:55,892: INFO : src.image_processing : Saved TIFF stack in chunks to pictures/raw_20250215_203555.tif.
