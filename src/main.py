@@ -4,7 +4,6 @@ import sys
 import datetime
 import numpy as np
 from image_processing import (
-    load_tiff_stream_lazy,
     load_images,
     process_images_globally,
     apply_morphological_closing,
@@ -23,22 +22,28 @@ logging.basicConfig(level=logging.INFO,
                               logging.StreamHandler(sys.stdout)])
 logger = logging.getLogger(__name__)
 
+# Variable zur Steuerung des Datensatzes
+USE_LARGE_DATASET = True  # True: Großer Datensatz-Ordner, False: Kleiner Datensatz-Ordner
 
-USE_TIFF_STREAM = True  # True: Lade TIFF-Stream, False: Lade einzelne Bilder als Stack
 
 def get_base_path():
     """Gibt den Basis-Pfad der Daten zurück."""
     return "/home/mathias/PycharmProjects/BoneSimulation/data"
 
+
 def process_and_visualize(directory):
     """Führt den gesamten Bildverarbeitungs- und Meshing-Prozess durch, speicherschonend."""
     logger.info("Starting processing and visualization...")
 
-    if USE_TIFF_STREAM:
-        filepath = os.path.join(directory, "Knochenprobe2stream.tiff")
-        data_array = load_tiff_stream_lazy(filepath)
-    else:
-        data_array = load_images(directory)
+    # Pfad setzen abhängig von der Datensatzgröße
+    dataset_path = os.path.join(directory, "bigdataset" if USE_LARGE_DATASET else "dataset")
+
+    if not os.path.isdir(dataset_path):
+        logger.error(f"Dataset directory not found: {dataset_path}")
+        sys.exit(1)
+
+    # Bilder aus dem entsprechenden Ordner laden
+    data_array = load_images(dataset_path)
 
     if data_array is None:
         logger.error("Failed to load images. Exiting.")
@@ -51,6 +56,7 @@ def process_and_visualize(directory):
 
     # Bildverarbeitungsschritte
     blurred_images, binary_images, global_threshold = process_images_globally(data_array)
+    print("3")
     closed_binary_images = apply_morphological_closing(binary_images)
     interpolated_stack = interpolate_image_stack(closed_binary_images, scaling_factor=0.5)
 
@@ -67,9 +73,7 @@ def process_and_visualize(directory):
 
     logger.info("Processing completed.")
 
+
 if __name__ == "__main__":
     directory = get_base_path()
-    if not os.path.isdir(directory):
-        logger.error(f"Directory not found: {directory}")
-        sys.exit(1)
     process_and_visualize(directory)

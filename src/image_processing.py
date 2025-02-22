@@ -47,6 +47,7 @@ def save_tiff_in_chunks(image_stack, filename, chunk_size=100):
             for i in range(0, image_stack.shape[0], chunk_size):
                 tif.write(image_stack[i:i + chunk_size])
         logger.info(f"Saved TIFF stack in chunks to {filename}.")
+        print("saved in Chunks")
     except Exception as e:
         logger.error(f"Error saving TIFF stack in chunks: {e}")
 
@@ -93,7 +94,9 @@ def process_images_globally(data_array):
 
 def apply_morphological_closing(binary_images):
     """Führt morphologisches Closing durch, um kleine Lücken zu schließen."""
+    print("1")
     closed = morphology.closing(binary_images, morphology.ball(3))
+    print("2")
     return closed
 
 
