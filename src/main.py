@@ -3,7 +3,7 @@ import os
 import sys
 import datetime
 import numpy as np
-from src.image_processing import (
+from image_processing import (
     load_tiff_stream_lazy,
     load_images,
     process_images_globally,
@@ -23,7 +23,7 @@ logging.basicConfig(level=logging.INFO,
                               logging.StreamHandler(sys.stdout)])
 logger = logging.getLogger(__name__)
 
-# Variable zur Steuerung des Ladeverhaltens
+
 USE_TIFF_STREAM = True  # True: Lade TIFF-Stream, False: Lade einzelne Bilder als Stack
 
 def get_base_path():

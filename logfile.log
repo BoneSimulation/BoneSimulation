@@ -484,3 +484,14 @@
 2025-02-15 20:35:55,665: INFO : src.image_processing : Lazy-loaded TIFF stream with shape (691, 1024, 1024) from /home/mathias/PycharmProjects/BoneSimulation/data/Knochenprobe2stream.tiff
 2025-02-15 20:35:55,665: INFO : __main__ : Loaded images: (691, 1024, 1024)
 2025-02-15 20:35:55,892: INFO : src.image_processing : Saved TIFF stack in chunks to pictures/raw_20250215_203555.tif.
+2025-02-15 20:37:51,290: INFO : src.image_processing : Threshold applied: 195.00
+2025-02-22 17:18:23,683: INFO : __main__ : Starting processing and visualization...
+2025-02-22 17:18:26,840: INFO : src.image_processing : Lazy-loaded TIFF stream with shape (691, 1024, 1024) from /home/mathias/PycharmProjects/BoneSimulation/data/Knochenprobe2stream.tiff
+2025-02-22 17:18:26,840: INFO : __main__ : Loaded images: (691, 1024, 1024)
+2025-02-22 17:18:27,041: INFO : src.image_processing : Saved TIFF stack in chunks to pictures/raw_20250222_171826.tif.
+2025-02-22 17:20:44,143: INFO : src.image_processing : Threshold applied: 195.00
+2025-02-22 17:36:34,356: INFO : __main__ : Starting processing and visualization...
+2025-02-22 17:36:37,318: INFO : image_processing : Lazy-loaded TIFF stream with shape (691, 1024, 1024) from /home/mathias/PycharmProjects/BoneSimulation/data/Knochenprobe2stream.tiff
+2025-02-22 17:36:37,318: INFO : __main__ : Loaded images: (691, 1024, 1024)
+2025-02-22 17:36:37,520: INFO : image_processing : Saved TIFF stack in chunks to pictures/raw_20250222_173637.tif.
+2025-02-22 17:38:49,412: INFO : image_processing : Threshold applied: 195.00
