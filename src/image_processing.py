@@ -94,18 +94,47 @@ def process_images_globally(data_array):
 
 def apply_morphological_closing(binary_images):
     """Führt morphologisches Closing durch, um kleine Lücken zu schließen."""
-    print("1")
     closed = morphology.closing(binary_images, morphology.ball(3))
-    print("2")
+    print("1")
     return closed
 
 
-def interpolate_image_stack(image_stack, scaling_factor=0.5):
-    """Interpoliert das Bild mittels Spline-Interpolation."""
-    scaled = scipy.ndimage.zoom(image_stack.astype(np.float32),
-                                (scaling_factor, scaling_factor, scaling_factor),
-                                order=2)
-    return (scaled > 0.5).astype(np.uint8)
+import numpy as np
+import scipy.ndimage
+
+
+def interpolate_image_stack(image_stack, scaling_factor=0.5, chunk_size=100):
+    """
+    Interpoliert das Bild mittels Spline-Interpolation in kleineren Chunks,
+    um Speicherprobleme zu vermeiden.
+
+    Args:
+        image_stack (np.ndarray): 3D-Bildstapel (z, y, x).
+        scaling_factor (float): Skalierungsfaktor für die Interpolation.
+        chunk_size (int): Größe der Blöcke für die Verarbeitung (z-Richtung).
+
+    Returns:
+        np.ndarray: Interpoliertes 3D-Bild als Binärmaske.
+    """
+    print("3")
+
+    # Berechne neue Dimensionen
+    new_shape = tuple(int(dim * scaling_factor) for dim in image_stack.shape)
+    scaled_stack = np.zeros(new_shape, dtype=np.float32)  # Speicher sparen
+
+    # Chunkweise Interpolation in der z-Richtung
+    for i in range(0, image_stack.shape[0], chunk_size):
+        chunk = image_stack[i:i + chunk_size].astype(np.float32)
+        zoom_factors = (scaling_factor, scaling_factor, scaling_factor)
+        scaled_chunk = scipy.ndimage.zoom(chunk, zoom_factors, order=2)
+
+        # Schreibe interpolierte Werte ins neue Array
+        end_idx = min(i + scaled_chunk.shape[0], new_shape[0])
+        scaled_stack[i:end_idx, :, :] = scaled_chunk[:end_idx - i, :, :]
+
+    print("4")
+
+    return (scaled_stack > 0.5).astype(np.uint8)
 
 
 def find_largest_cluster(binary_image_stack):
@@ -147,7 +176,7 @@ def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, outp
         import ciclope.core.tetraFE as tetraFE
 
         vs = np.ones(3) * voxel_size
-        mesh_size_factor = 0.8
+        mesh_size_factor = 1.4
         max_facet_distance = mesh_size_factor * np.min(vs)
         max_cell_circumradius = 2 * mesh_size_factor * np.min(vs)
 
