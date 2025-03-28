@@ -25,13 +25,13 @@ logger = logging.getLogger(__name__)
 
 # Variable zur Steuerung des Datensatzes
 USE_LARGE_DATASET = (
-    True  # True: Großer Datensatz-Ordner, False: Kleiner Datensatz-Ordner
+    False  # True: Großer Datensatz-Ordner, False: Kleiner Datensatz-Ordner
 )
 
 
 def get_base_path():
     """Gibt den Basis-Pfad der Daten zurück."""
-    return "/home/mathias/PycharmProjects/BoneSimulation/data"
+    return "C:\\Users\\Mathias\\Documents\\BoneSimulation\\data"
 
 
 def process_and_visualize(directory):
@@ -74,10 +74,10 @@ def process_and_visualize(directory):
     logger.info(f"Largest cluster found: {cluster_size} voxels")
 
     verts, faces = marching_cubes(interpolated_stack)
-    save_mesh_as_vtk(verts, faces, f"test_pictures/mesh_{timestamp}.vtk")
+    save_mesh_as_vtk(verts, faces, f"C:\\Users\\Mathias\\Documents\\BoneSimulation\\test_pictures\\mesh_{timestamp}.vtk")
 
     tetrahedral_mesh = generate_tetrahedral_mesh(
-        largest_cluster, 0.1, f"test_pictures/tetramesh_{timestamp}.vtk"
+        largest_cluster, 0.1, f"C:\\Users\\Mathias\\Documents\\BoneSimulation\\test_pictures\\tetramesh_{timestamp}.vtk"
     )
 
     if tetrahedral_mesh:
