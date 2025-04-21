@@ -320,3 +320,52 @@
 2025-03-21 20:02:26,669: INFO : image_processing : Tetrahedral mesh saved to test_pictures/tetramesh_2025-03-21_19-56-52.vtk
 2025-03-21 20:02:26,670: INFO : __main__ : Tetrahedral mesh successfully generated.
 2025-03-21 20:02:26,670: INFO : __main__ : Processing completed.
+2025-03-21 20:39:21,839: INFO : __main__ : Starting processing and visualization...
+2025-03-21 20:39:24,290: INFO : image_processing : Loaded 691 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/bigdataset.
+2025-03-21 20:39:25,163: INFO : __main__ : Loaded images: (691, 1024, 1024)
+2025-03-21 20:39:25,477: INFO : image_processing : Saved TIFF stack in chunks to pictures/raw_2025-03-21_20-39-25.tif.
+2025-03-26 18:56:53,295: INFO : __main__ : Starting processing and visualization...
+2025-03-26 18:56:55,419: INFO : image_processing : Loaded 691 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/bigdataset.
+2025-03-26 18:56:56,049: INFO : __main__ : Loaded images: (691, 1024, 1024)
+2025-03-26 18:56:56,359: INFO : image_processing : Saved TIFF stack in chunks to pictures/raw_2025-03-26_18-56-56.tif.
+2025-03-26 18:57:14,229: INFO : __main__ : Starting processing and visualization...
+2025-03-26 18:57:16,014: INFO : image_processing : Loaded 691 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/bigdataset.
+2025-03-26 18:57:16,172: INFO : __main__ : Loaded images: (691, 1024, 1024)
+2025-03-26 18:57:16,458: INFO : image_processing : Saved TIFF stack in chunks to pictures/raw_2025-03-26_18-57-16.tif.
+2025-03-26 18:59:50,786: INFO : __main__ : Starting processing and visualization...
+2025-03-26 18:59:50,947: INFO : image_processing : Loaded 200 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/dataset.
+2025-03-26 18:59:50,950: INFO : __main__ : Loaded images: (200, 200, 200)
+2025-03-26 18:59:50,955: INFO : image_processing : Saved TIFF stack in chunks to pictures/raw_2025-03-26_18-59-50.tif.
+2025-03-26 18:59:51,176: INFO : image_processing : Threshold applied: 84.00
+2025-03-26 18:59:53,577: INFO : image_processing : Found largest cluster with size 432429.
+2025-03-26 18:59:53,577: INFO : __main__ : Largest cluster found: 432429 voxels
+2025-03-26 18:59:53,632: INFO : image_processing : Mesh saved as VTK file: test_pictures/mesh_2025-03-26_18-59-53.vtk
+2025-03-26 19:00:02,600: INFO : root : Removing triangle cells.
+2025-03-26 19:00:02,613: INFO : image_processing : Tetrahedral mesh saved to test_pictures/tetramesh_2025-03-26_18-59-53.vtk
+2025-03-26 19:00:02,613: INFO : __main__ : Tetrahedral mesh successfully generated.
+2025-03-26 19:00:02,613: INFO : __main__ : Processing completed.
+2025-03-28 20:32:57,023: INFO : __main__ : Starting processing and visualization...
+2025-03-28 20:32:59,230: INFO : image_loading : Loaded 691 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/bigdataset.
+2025-03-28 20:32:59,845: INFO : __main__ : Loaded images: (691, 1024, 1024)
+2025-03-28 20:33:00,186: INFO : file_io : Saved TIFF stack in chunks to pictures/raw_20250328_203259.tif.
+2025-03-28 20:35:14,438: INFO : image_processing : Threshold applied: 195.00
+2025-03-28 20:40:42,525: INFO : cluster_analysis : Found largest cluster with size 12212927.
+2025-03-28 20:40:42,530: INFO : __main__ : Largest cluster found: 12212927 voxels
+2025-03-28 20:40:47,679: INFO : mesh_generation : Mesh saved as VTK file: test_pictures/mesh_20250328_203259.vtk
+2025-03-28 20:45:36,950: INFO : root : Removing triangle cells.
+2025-03-28 20:45:37,285: INFO : mesh_generation : Tetrahedral mesh saved to test_pictures/tetramesh_20250328_203259.vtk
+2025-03-28 20:45:37,285: INFO : __main__ : Tetrahedral mesh successfully generated.
+2025-03-28 20:45:37,285: INFO : __main__ : Processing completed.
+2025-03-28 22:01:01,942: INFO : __main__ : Starting processing and visualization...
+2025-03-28 22:01:04,351: INFO : image_loading : Loaded 691 images from directory /home/mathias/PycharmProjects/BoneSimulation/data/bigdataset.
+2025-03-28 22:01:04,988: INFO : __main__ : Loaded images: (691, 1024, 1024)
+2025-03-28 22:01:05,286: INFO : file_io : Saved TIFF stack in chunks to pictures/raw_20250328_220104.tif.
+2025-03-28 22:02:48,272: INFO : image_processing : Threshold applied: 195.00
+2025-03-28 22:08:03,802: INFO : cluster_analysis : Found largest cluster with size 12212927.
+2025-03-28 22:08:03,807: INFO : __main__ : Largest cluster found: 12212927 voxels
+2025-03-28 22:08:07,464: INFO : mesh_generation : Marching Cubes erfolgreich ausgeführt. 4079694 Punkte, 8142046 Flächen generiert.
+2025-03-28 22:08:07,817: INFO : mesh_generation : Mesh erfolgreich als VTK-Datei gespeichert: test_pictures/mesh_20250328_220104.vtk
+2025-03-28 22:13:02,624: INFO : root : Removing triangle cells.
+2025-03-28 22:13:03,040: INFO : mesh_generation : Tetrahedral Mesh erfolgreich gespeichert: test_pictures/tetramesh_20250328_220104.vtk
+2025-03-28 22:13:03,040: INFO : __main__ : Tetrahedral mesh successfully generated.
+2025-03-28 22:13:03,040: INFO : __main__ : Processing completed.
