@@ -2,12 +2,27 @@ import logging
 import numpy as np
 from skimage import measure
 
+
 logger = logging.getLogger(__name__)
 
 
 def find_largest_cluster(binary_image_stack):
-    """Findet den größten verbundenen Cluster im binären Bild."""
-    labels, num_clusters = measure.label(binary_image_stack, return_num=True, connectivity=1)
+    """Find the largest connected cluster in the binary image.
+
+    Args:
+        binary_image_stack: Binary image data to analyze.
+
+    Returns:
+        tuple: (largest_cluster, num_clusters, size_of_largest_cluster)
+            - largest_cluster: Binary array marking the largest cluster
+            - num_clusters: Total number of clusters found
+            - size_of_largest_cluster: Size of the largest cluster
+    """
+    labels, num_clusters = measure.label(
+        binary_image_stack, 
+        return_num=True, 
+        connectivity=1
+    )
     cluster_sizes = np.bincount(labels.ravel())
 
     if len(cluster_sizes) <= 1:

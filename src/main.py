@@ -52,10 +52,7 @@ def process_and_visualize(directory):
     """Führt den gesamten Bildverarbeitungs- und Meshing-Prozess durch, speicherschonend."""
     logger.info("Starting processing and visualization...")
 
-    # Pfad setzen abhängig von der Datensatzgröße
-    dataset_path = os.path.join(
-        directory, "bigdataset" if USE_LARGE_DATASET else "dataset"
-    )
+    dataset_path = os.path.join(directory, "bigdataset")
 
     if not os.path.isdir(dataset_path):
         logger.error(f"Dataset directory not found: {dataset_path}")
