@@ -21,50 +21,50 @@ def find_largest_cluster(binary_image_stack, connectivity=1):
             - num_clusters: Total number of clusters found
             - size_of_largest_cluster: Size of the largest cluster
     """
-    logger.info("Starte Connected Component Labeling...")
+    logger.info("Starting Connected Component Labeling...")
 
-    # Prüfe auf leeres Volumen
+    # Check for empty volume
     if binary_image_stack.size == 0 or binary_image_stack.max() == 0:
-        logger.warning("Leeres Volumen oder keine aktiven Voxel für Cluster-Analyse.")
+        logger.warning("Empty volume or no active voxels for cluster analysis.")
         return None, 0, 0
 
-    # Bei sehr großen Volumen muss die Analyse angepasst werden
-    if binary_image_stack.size > 100_000_000:  # ~100 Millionen Voxel
-        logger.info("Großes Volumen erkannt, verwende optimierte Cluster-Analyse...")
+    # For very large volumes, the analysis needs to be adjusted
+    if binary_image_stack.size > 100_000_000:  # ~100 million voxels
+        logger.info("Large volume detected, using optimized cluster analysis...")
         return _find_largest_cluster_memory_efficient(binary_image_stack, connectivity)
 
-    # Standard-Analyse für kleinere Volumen
+    # Standard analysis for smaller volumes
     labels, num_clusters = measure.label(
         binary_image_stack,
         return_num=True,
         connectivity=connectivity
     )
 
-    logger.info(f"Connected Component Labeling abgeschlossen. {num_clusters} Cluster gefunden.")
+    logger.info(f"Connected Component Labeling completed. {num_clusters} clusters found.")
 
     if num_clusters == 0:
-        logger.warning("Keine Cluster gefunden.")
+        logger.warning("No clusters found.")
         return None, 0, 0
 
-    # Berechne Clustergröße
+    # Calculate cluster sizes
     cluster_sizes = np.bincount(labels.ravel())
 
-    # Ignoriere den Hintergrund (Label 0)
+    # Ignore the background (label 0)
     if len(cluster_sizes) <= 1:
-        logger.warning("Keine Voxel über dem Schwellwert gefunden.")
+        logger.warning("No voxels above the threshold found.")
         return None, 0, 0
 
-    # Finde das größte Cluster
+    # Find the largest cluster
     foreground_sizes = cluster_sizes[1:]
     largest_cluster_label = foreground_sizes.argmax() + 1
     largest_cluster_size = foreground_sizes.max()
 
-    logger.info(f"Größtes Cluster hat Label {largest_cluster_label} mit {largest_cluster_size} Voxeln")
+    logger.info(f"The largest cluster has label {largest_cluster_label} with {largest_cluster_size} voxels.")
 
-    # Extrahiere das größte Cluster
+    # Extract the largest cluster
     largest_cluster = labels == largest_cluster_label
 
-    # Speicher freigeben
+    # Free memory
     del labels
     gc.collect()
 
@@ -73,36 +73,36 @@ def find_largest_cluster(binary_image_stack, connectivity=1):
 
 def _find_largest_cluster_memory_efficient(binary_volume, connectivity=1):
     """
-    Memory-effiziente Version der Cluster-Analyse für sehr große Volumen.
+    Memory-efficient version of cluster analysis for very large volumes.
 
-    Diese Funktion verarbeitet das Volumen in Scheiben und verfolgt
-    Cluster-Verbindungen zwischen Scheiben.
+    This function processes the volume in slices and tracks
+    cluster connections between slices.
     """
-    logger.info("Verwende scheiben-basierte Clusteranalyse zur Speicheroptimierung...")
+    logger.info("Using slice-based cluster analysis for memory optimization...")
 
-    # Diese Implementation würde eine komplexe adaptive Komponenten-Labeling-Methode
-    # erfordern, die scheiben-weise arbeitet und Cluster-Zuordnungen nachverfolgt.
-    # Für diesen Code-Ausschnitt verwenden wir eine vereinfachte Version:
+    # This implementation would require a complex adaptive component labeling method
+    # that works slice-wise and tracks cluster assignments.
+    # For this code snippet, we use a simplified version:
 
-    # 1. Verwenden eines hohen connectivity-Werts für bessere Verbindungen
+    # 1. Use a high connectivity value for better connections
     labels, num_clusters = measure.label(
         binary_volume,
         return_num=True,
         connectivity=connectivity
     )
 
-    logger.info(f"Labeling abgeschlossen. {num_clusters} Cluster identifiziert.")
+    logger.info(f"Labeling completed. {num_clusters} clusters identified.")
 
     if num_clusters == 0:
         return None, 0, 0
 
-    # 2. Berechne Clustergrößen direkt und minimiere Speicherverbrauch
+    # 2. Calculate cluster sizes directly to minimize memory usage
     unique_labels, counts = np.unique(labels, return_counts=True)
 
-    # 3. Finde das größte Cluster (ignoriere Hintergrund mit Label 0)
+    # 3. Find the largest cluster (ignore background with label 0)
     background_idx = np.where(unique_labels == 0)[0]
     if len(background_idx) > 0:
-        # Entferne Hintergrund aus den Zählungen
+        # Remove background from counts
         mask = unique_labels != 0
         unique_labels = unique_labels[mask]
         counts = counts[mask]
@@ -114,12 +114,12 @@ def _find_largest_cluster_memory_efficient(binary_volume, connectivity=1):
     largest_label = unique_labels[largest_idx]
     largest_size = counts[largest_idx]
 
-    logger.info(f"Größtes Cluster identifiziert: Label {largest_label}, Größe {largest_size}")
+    logger.info(f"Largest cluster identified: Label {largest_label}, Size {largest_size}.")
 
-    # 4. Extrahiere nur das größte Cluster, um Speicher zu sparen
+    # 4. Extract only the largest cluster to save memory
     largest_cluster = (labels == largest_label)
 
-    # 5. Speicher freigeben
+    # 5. Free memory
     del labels
     gc.collect()
 

@@ -1,6 +1,8 @@
 # mesh_generation.py
 
 import logging
+import os
+
 import numpy as np
 from skimage import measure
 import meshio
@@ -29,7 +31,11 @@ def marching_cubes(binary_stack: np.ndarray, spacing=(1, 1, 1), chunk_size=None)
         if binary_stack.size == 0:
             raise ValueError("Leerer Eingabestack für Marching Cubes.")
 
-        min_val, max_val = binary_stack.min(), binary_stack.max()
+        # Fix: Convert the binary data to float before checking min/max
+        # to avoid boolean subtraction issues
+        normalized_stack = binary_stack.astype(np.float32)
+
+        min_val, max_val = normalized_stack.min(), normalized_stack.max()
         if max_val - min_val == 0:
             raise ValueError("Konstantes Bild erkannt. Keine Mesh-Generierung möglich.")
 
@@ -38,7 +44,6 @@ def marching_cubes(binary_stack: np.ndarray, spacing=(1, 1, 1), chunk_size=None)
             return _chunked_marching_cubes(binary_stack, spacing=spacing, chunk_size=chunk_size)
 
         # Für kleinere Volumen verwenden wir den Standard-Ansatz
-        normalized_stack = binary_stack.astype(np.float32)  # float32 für Speichereffizienz
         verts, faces, _, _ = measure.marching_cubes(normalized_stack, level=0.5, spacing=spacing)
 
         logger.info(f"Marching Cubes erfolgreich ausgeführt. {len(verts)} Punkte, {len(faces)} Flächen generiert.")
@@ -75,8 +80,8 @@ def _chunked_marching_cubes(binary_stack, spacing=(1, 1, 1), chunk_size=50, over
 
         logger.info(f"Verarbeite Chunk von z={z_start} bis z={z_end}")
 
-        # Extrahiere den Chunk
-        chunk = binary_stack[z_start:z_end].copy()
+        # Extrahiere den Chunk und wandele zu float32 um
+        chunk = binary_stack[z_start:z_end].copy().astype(np.float32)
 
         # Wende Marching Cubes auf den Chunk an
         try:
@@ -126,6 +131,7 @@ def _chunked_marching_cubes(binary_stack, spacing=(1, 1, 1), chunk_size=50, over
         return None, None
 
 
+
 def save_mesh_as_vtk(verts: np.ndarray, faces: np.ndarray, output_filename: str):
     """
     Speichert ein Mesh als VTK-Datei.
@@ -159,13 +165,6 @@ def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, outp
     """
     Erstellt ein Tetraedernetz und speichert es als VTK-Datei.
     Bei großen Volumen wird optional Downsampling angewendet.
-
-    :param binary_volume: 3D-Binärvolumen (numpy.ndarray)
-    :param voxel_size: Voxelgröße als Float
-    :param output_filename: Name der VTK-Datei
-    :param use_downsampling: Ob Downsampling für große Volumen verwendet werden soll
-    :param max_volume_size: Maximale Volumengröße (in Voxeln) bevor Downsampling angewendet wird
-    :return: Mesh-Objekt oder None bei Fehler
     """
     if tetraFE is None:
         logger.error("Tetrahedral Meshing kann nicht ausgeführt werden – 'ciclope.core.tetraFE' nicht verfügbar.")
@@ -195,17 +194,20 @@ def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, outp
             voxel_size = voxel_size / reduction_factor
             logger.info(f"Voxelgröße angepasst auf {voxel_size:.6f}")
 
+        # Berechne Mesh-Parameter
         vs = np.ones(3) * voxel_size
         mesh_size_factor = 1.4
         max_facet_distance = mesh_size_factor * np.min(vs)
         max_cell_circumradius = 2 * mesh_size_factor * np.min(vs)
 
         logger.info("Starte CGAL Tetrahedral Meshing...")
+
+        # Direktes Anwenden der cgal_mesh-Funktion auf das binäre Volumen
+        # ohne den nicht unterstützten Parameter 'surface_mesh_file'
         mesh = tetraFE.cgal_mesh(binary_volume, vs, 'tetra', max_facet_distance, max_cell_circumradius)
 
-        # Fix: Check the mesh object attributes and structure
+        # Log mesh information if possible
         try:
-            # Try different methods to get cell count
             if hasattr(mesh, 'n_cells'):
                 if callable(mesh.n_cells):
                     cell_count = mesh.n_cells()
@@ -219,18 +221,13 @@ def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, outp
                 else:
                     cell_count = mesh.num_cells
             else:
-                # If no method works, just report success without a count
-                logger.info("Tetrahedral Mesh erfolgreich erstellt.")
                 cell_count = None
 
-            # Log with cell count if available
             if cell_count is not None:
                 logger.info(f"Tetrahedral Mesh erstellt mit {cell_count} Tetraedern.")
         except Exception as attribute_error:
-            # If accessing attributes fails, just continue without reporting count
             logger.warning(f"Konnte Anzahl der Tetraeder nicht ermitteln: {attribute_error}")
 
-        # Save the mesh regardless of count retrieval
         mesh.write(output_filename)
         logger.info(f"Tetrahedral Mesh erfolgreich gespeichert: {output_filename}")
         return mesh

@@ -1,4 +1,4 @@
-# image_loading.py (ergänzt mit Chunk-Funktionalität)
+# image_loading.py (enhanced with chunk functionality)
 
 import logging
 import os
@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 def load_image(filepath):
-    """Lädt ein einzelnes Bild als Graustufen-Array."""
+    """Loads a single image as a grayscale array."""
     try:
         im = Image.open(filepath).convert("L")
         return np.array(im)
@@ -20,7 +20,7 @@ def load_image(filepath):
 
 
 def load_images(directory):
-    """Lädt mehrere Bilder und kombiniert sie zu einem 3D-Array."""
+    """Loads multiple images and combines them into a 3D array."""
     filepaths = sorted([os.path.join(directory, file) for file in os.listdir(directory) if file.endswith(".tif")])
 
     if not filepaths:
@@ -39,35 +39,35 @@ def load_images(directory):
 
 def load_images_in_chunks(directory, chunk_size=50):
     """
-    Generator-Funktion, die Bilder in Chunks lädt.
+    Generator function that loads images in chunks.
 
     Args:
-        directory: Verzeichnis mit den Bildern
-        chunk_size: Anzahl der Bilder pro Chunk
+        directory: Directory containing the images
+        chunk_size: Number of images per chunk
 
     Yields:
-        numpy.ndarray: Chunk mit Bildern als 3D-Array
+        numpy.ndarray: Chunk of images as a 3D array
     """
     filepaths = sorted([os.path.join(directory, file) for file in os.listdir(directory)
                         if file.lower().endswith((".tif", ".tiff"))])
 
     if not filepaths:
-        raise ValueError(f"Keine gültigen Bilder im Verzeichnis gefunden: {directory}")
+        raise ValueError(f"No valid images found in directory: {directory}")
 
-    logger.info(f"Insgesamt {len(filepaths)} Bilder gefunden. Verarbeite in Chunks von {chunk_size}")
+    logger.info(f"Total of {len(filepaths)} images found. Processing in chunks of {chunk_size}.")
 
     for i in range(0, len(filepaths), chunk_size):
         chunk_paths = filepaths[i:i + chunk_size]
         logger.info(
-            f"Lade Chunk {i // chunk_size + 1}/{(len(filepaths) - 1) // chunk_size + 1} ({len(chunk_paths)} Bilder)")
+            f"Loading chunk {i // chunk_size + 1}/{(len(filepaths) - 1) // chunk_size + 1} ({len(chunk_paths)} images)")
 
         with Pool() as pool:
             chunk_images = pool.map(load_image, chunk_paths)
 
-        # Entferne fehlgeschlagene Ladevorgänge
+        # Remove failed loads
         chunk_images = [img for img in chunk_images if img is not None]
         if not chunk_images:
-            logger.warning(f"Keine Bilder im Chunk {i // chunk_size + 1} geladen. Überspringe.")
+            logger.warning(f"No images loaded in chunk {i // chunk_size + 1}. Skipping.")
             continue
 
         yield np.array(chunk_images)

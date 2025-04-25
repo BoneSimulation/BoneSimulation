@@ -3,7 +3,7 @@ import numpy as np
 
 
 def plot_histogram(image_array, threshold=None):
-    """Zeigt das Histogramm der Pixelwerte eines Bildstapels an."""
+    """Displays the histogram of pixel values of an image stack."""
     flattened_data = image_array.flatten().astype(np.uint8)
 
     plt.figure(figsize=(10, 6))
@@ -21,7 +21,7 @@ def plot_histogram(image_array, threshold=None):
 
 
 def plot_images(images, title):
-    """Zeigt bis zu 10 Bilder aus einem 3D-Stack an."""
+    """Displays up to 10 images from a 3D stack."""
     slices = min(10, images.shape[0])
     fig, axes = plt.subplots(1, slices, figsize=(20, 5))
     for i, ax in enumerate(axes):

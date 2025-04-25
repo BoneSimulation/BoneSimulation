@@ -1,4 +1,4 @@
-# main.py (optimiert)
+# main.py (optimized)
 
 import logging
 import os
@@ -29,7 +29,7 @@ from file_io import (
     save_tiff_in_chunks
 )
 
-# Logging konfigurieren
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s: %(levelname)s : %(name)s : %(message)s",
@@ -37,73 +37,73 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Konfigurationsparameter
-MEMORY_LIMIT_PERCENT = 80  # Maximale Speicherauslastung in Prozent
-CHUNK_SIZE = 50  # Anzahl der Bilder pro Chunk für die Verarbeitung
+# Configuration parameters
+MEMORY_LIMIT_PERCENT = 80  # Maximum memory usage in percent
+CHUNK_SIZE = 50  # Number of images per chunk for processing
 OUTPUT_DIR = "test_pictures"
 
 
 def get_base_path():
-    """Gibt den Basis-Pfad der Daten zurück."""
+    """Returns the base path of the data."""
     return "/home/mathias/PycharmProjects/BoneSimulation/data"
 
 
 def check_memory():
-    """Überprüft den Speicherverbrauch und gibt True zurück wenn zu hoch."""
+    """Checks memory usage and returns True if it is too high."""
     memory = psutil.virtual_memory()
     return memory.percent > MEMORY_LIMIT_PERCENT
 
 
 def wait_for_memory():
-    """Wartet bis genügend Speicher frei ist."""
+    """Waits until enough memory is free."""
     while check_memory():
-        logger.warning(f"Speicherverbrauch zu hoch ({psutil.virtual_memory().percent}%). Warte 10 Sekunden...")
-        gc.collect()  # Garbage Collection explizit aufrufen
+        logger.warning(f"Memory usage too high ({psutil.virtual_memory().percent}%). Waiting 10 seconds...")
+        gc.collect()  # Explicitly call garbage collection
         time.sleep(10)
 
 
 def ensure_output_dir(dir_path):
-    """Stellt sicher, dass das Ausgabeverzeichnis existiert."""
+    """Ensures that the output directory exists."""
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
-        logger.info(f"Ausgabeverzeichnis erstellt: {dir_path}")
+        logger.info(f"Output directory created: {dir_path}")
 
 
 def process_and_visualize(directory):
-    """Führt den gesamten Bildverarbeitungs- und Meshing-Prozess durch, speichereffizient."""
+    """Conducts the entire image processing and meshing process, memory-efficiently."""
     logger.info("Starting processing and visualization...")
     ensure_output_dir(OUTPUT_DIR)
 
-    # Timestamp für die Ausgabedateien
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    # Timestamp for output files
+    timestamp = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
 
-    # Pfad direkt für den großen Datensatz setzen
+    # Set path directly for the large dataset
     dataset_path = os.path.join(directory, "bigdataset")
 
     if not os.path.isdir(dataset_path):
         logger.error(f"Dataset directory not found: {dataset_path}")
         sys.exit(1)
 
-    # Bilder in Chunks laden und verarbeiten
-    logger.info(f"Lade Bilder aus: {dataset_path}")
+    # Load and process images in chunks
+    logger.info(f"Loading images from: {dataset_path}")
 
-    # Speichern des Rohdatensatzes in Chunks
+    # Save the raw dataset in chunks
     raw_output_path = os.path.join(OUTPUT_DIR, f"raw_{timestamp}.tif")
 
-    # Wir verarbeiten die Bilder in Chunks statt alles auf einmal zu laden
+    # Process images in chunks instead of loading everything at once
     try:
         data_generator = load_images_in_chunks(dataset_path, chunk_size=CHUNK_SIZE)
         all_processed_chunks = []
 
         for i, chunk in enumerate(data_generator):
-            logger.info(f"Verarbeite Chunk {i + 1} mit {len(chunk)} Bildern")
+            logger.info(f"Processing chunk {i + 1} with {len(chunk)} images")
 
-            # Vor jedem Verarbeitungsschritt Speicher prüfen
+            # Check memory before each processing step
             wait_for_memory()
 
-            # Chunk verarbeiten
+            # Process chunk
             blurred_chunk, binary_chunk, _ = process_images_globally(chunk)
-            del chunk  # Freigeben des Speicherplatzes
+            del chunk  # Free up memory
             gc.collect()
 
             wait_for_memory()
@@ -116,71 +116,71 @@ def process_and_visualize(directory):
             del closed_binary_chunk
             gc.collect()
 
-            # Verarbeitetes Chunk speichern
+            # Save processed chunk
             all_processed_chunks.append(interpolated_chunk)
 
-            # Fortschritt protokollieren
-            logger.info(f"Chunk {i + 1} verarbeitet. Aktueller Speicherverbrauch: {psutil.virtual_memory().percent}%")
+            # Log progress
+            logger.info(f"Chunk {i + 1} processed. Current memory usage: {psutil.virtual_memory().percent}%")
 
-        # Alle verarbeiteten Chunks zusammenführen
+        # Concatenate all processed chunks
         wait_for_memory()
         interpolated_stack = np.concatenate(all_processed_chunks, axis=0)
         del all_processed_chunks
         gc.collect()
 
-        # Größtes Cluster finden
+        # Find the largest cluster
         wait_for_memory()
-        logger.info("Suche nach dem größten Cluster...")
+        logger.info("Searching for the largest cluster...")
         largest_cluster, num_clusters, cluster_size = find_largest_cluster(interpolated_stack)
-        logger.info(f"Größtes Cluster gefunden: {cluster_size} Voxel von insgesamt {num_clusters} Clustern")
+        logger.info(f"Largest cluster found: {cluster_size} voxels out of {num_clusters} clusters")
 
-        # Wenn kein Cluster gefunden wurde, Programm beenden
+        # If no cluster was found, exit the program
         if largest_cluster is None:
-            logger.error("Kein Cluster gefunden. Beende das Programm.")
+            logger.error("No cluster found. Exiting the program.")
             return
 
-        # Originales interpolated_stack nicht mehr benötigt
+        # Original interpolated_stack is no longer needed
         del interpolated_stack
         gc.collect()
 
-        # Mesh generieren
+        # Generate mesh
         wait_for_memory()
-        logger.info("Generiere Mesh mit Marching Cubes...")
+        logger.info("Generating mesh with Marching Cubes...")
         verts, faces = marching_cubes(largest_cluster)
 
         if verts is not None and faces is not None:
             mesh_output_path = os.path.join(OUTPUT_DIR, f"mesh_{timestamp}.vtk")
             save_mesh_as_vtk(verts, faces, mesh_output_path)
-            logger.info(f"Mesh gespeichert als: {mesh_output_path}")
+            logger.info(f"Mesh saved as: {mesh_output_path}")
         else:
-            logger.error("Fehler bei der Mesh-Generierung. Überspringe Speicherung.")
+            logger.error("Error during mesh generation. Skipping save.")
 
-        # Tetrahedrales Mesh generieren
+        # Generate tetrahedral mesh
         wait_for_memory()
-        logger.info("Generiere tetrahedrales Mesh...")
+        logger.info("Generating tetrahedral mesh...")
         tetra_output_path = os.path.join(OUTPUT_DIR, f"tetramesh_{timestamp}.vtk")
         tetrahedral_mesh = generate_tetrahedral_mesh(largest_cluster, 0.1, tetra_output_path)
 
         if tetrahedral_mesh:
-            logger.info(f"Tetrahedrales Mesh erfolgreich generiert und gespeichert als: {tetra_output_path}")
+            logger.info(f"Tetrahedral mesh successfully generated and saved as: {tetra_output_path}")
         else:
-            logger.warning("Tetrahedrales Mesh konnte nicht generiert werden.")
+            logger.warning("Tetrahedral mesh could not be generated.")
 
-        logger.info("Verarbeitung abgeschlossen.")
+        logger.info("Processing completed.")
 
     except Exception as e:
-        logger.error(f"Fehler während der Verarbeitung: {e}", exc_info=True)
+        logger.error(f"Error during processing: {e}", exc_info=True)
         sys.exit(1)
 
+    if __name__ == "__main__":
+        starttime = timeit.default_timer()
+        try:
+            directory = get_base_path()
+            process_and_visualize(directory)
+            endtime = timeit.default_timer()
+            logger.info(f"Processing completed in {endtime - starttime:.2f} seconds.")
+        except KeyboardInterrupt:
+            logger.info("Program interrupted by user.")
+        except Exception as e:
+            logger.error(f"Unexpected error: {e}", exc_info=True)
 
-if __name__ == "__main__":
-    starttime = timeit.default_timer()
-    try:
-        directory = get_base_path()
-        process_and_visualize(directory)
-        endtime = timeit.default_timer()
-        logger.info(f"Verarbeitung in {endtime - starttime:.2f} Sekunden abgeschlossen.")
-    except KeyboardInterrupt:
-        logger.info("Programm durch Benutzer unterbrochen.")
-    except Exception as e:
-        logger.error(f"Unerwarteter Fehler: {e}", exc_info=True)
