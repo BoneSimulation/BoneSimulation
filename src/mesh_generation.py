@@ -1,4 +1,4 @@
-# mesh_generation.py
+# src/mesh_generation.py
 
 import logging
 import os

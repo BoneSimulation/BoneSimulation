@@ -1,4 +1,4 @@
-# main.py (optimized)
+# src/main.py
 
 import logging
 import os
@@ -172,15 +172,15 @@ def process_and_visualize(directory):
         logger.error(f"Error during processing: {e}", exc_info=True)
         sys.exit(1)
 
-    if __name__ == "__main__":
-        starttime = timeit.default_timer()
-        try:
-            directory = get_base_path()
-            process_and_visualize(directory)
-            endtime = timeit.default_timer()
-            logger.info(f"Processing completed in {endtime - starttime:.2f} seconds.")
-        except KeyboardInterrupt:
-            logger.info("Program interrupted by user.")
-        except Exception as e:
-            logger.error(f"Unexpected error: {e}", exc_info=True)
+if __name__ == "__main__":
+    starttime = timeit.default_timer()
+    try:
+        directory = get_base_path()
+        process_and_visualize(directory)
+        endtime = timeit.default_timer()
+        logger.info(f"Processing completed in {endtime - starttime:.2f} seconds.")
+    except KeyboardInterrupt:
+        logger.info("Program interrupted by user.")
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}", exc_info=True)
 

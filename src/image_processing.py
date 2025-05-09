@@ -1,4 +1,4 @@
-# image_processing.py
+# src/image_processing.py
 
 import logging
 import numpy as np

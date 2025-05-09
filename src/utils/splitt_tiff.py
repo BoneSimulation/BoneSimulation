@@ -1,3 +1,5 @@
+# src/utils/splitt_tiff.py
+
 import os
 import tifffile as tiff
 import numpy as np

@@ -1,4 +1,4 @@
-# image_loading.py (enhanced with chunk functionality)
+# src/image_loading.py
 
 import logging
 import os

@@ -1,5 +1,5 @@
 """
-utils/utils.py
+# src/utils/utils.py
 
 This file contains utility functions for generating timestamps and checking the operating system type.
 """
