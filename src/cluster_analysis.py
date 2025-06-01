@@ -124,3 +124,4 @@ def _find_largest_cluster_memory_efficient(binary_volume, connectivity=1):
     gc.collect()
 
     return largest_cluster, num_clusters, largest_size
+

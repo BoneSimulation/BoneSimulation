@@ -76,3 +76,19 @@ def load_tiff_in_chunks(filepath, chunk_size=100):
     except Exception as e:
         logger.error(f"Error loading TIFF file {filepath} in chunks: {e}")
         raise
+
+def save_largest_cluster_as_tiff(cluster_array: np.ndarray, output_path: str) -> None:
+    """
+    Saves the binary cluster array as a multi-page TIFF.
+
+    Args:
+        cluster_array (np.ndarray): Binary 3D array (bool or 0/1).
+        output_path (str): Target path for the TIFF file.
+    """
+    if not isinstance(cluster_array, np.ndarray) or cluster_array.ndim != 3:
+        raise ValueError("Expected a 3D NumPy array for the cluster.")
+
+    logger.info(f"Saving largest cluster as TIFF to: {output_path}")
+    cluster_uint8 = (cluster_array > 0).astype(np.uint8)
+    tiff.imwrite(output_path, cluster_uint8, imagej=True)
+    logger.info("Cluster saved successfully.")

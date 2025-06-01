@@ -13,6 +13,7 @@ from image_processing import (
     process_images_globally,
     apply_morphological_closing,
     interpolate_image_stack,
+    crop_stack_custom
 )
 from cluster_analysis import (
     find_largest_cluster
@@ -26,7 +27,8 @@ from image_loading import (
     load_images_in_chunks
 )
 from file_io import (
-    save_tiff_in_chunks
+    save_tiff_in_chunks,
+    save_largest_cluster_as_tiff
 )
 
 # Configure logging
@@ -68,6 +70,13 @@ def ensure_output_dir(dir_path):
         os.makedirs(dir_path)
         logger.info(f"Output directory created: {dir_path}")
 
+
+
+cropping_settings = {
+    "z": (3, 0), # x achse
+    "y": (50, 50), # z achse
+    "x": (15, 35), # y achse
+}
 
 def process_and_visualize(directory):
     """Conducts the entire image processing and meshing process, memory-efficiently."""
@@ -125,6 +134,8 @@ def process_and_visualize(directory):
         # Concatenate all processed chunks
         wait_for_memory()
         interpolated_stack = np.concatenate(all_processed_chunks, axis=0)
+        interpolated_stack = crop_stack_custom(interpolated_stack, cropping_settings)
+        logger.info(f"Stack cropped with custom settings defined in cropping_settings: {cropping_settings}")
         del all_processed_chunks
         gc.collect()
 
@@ -133,6 +144,10 @@ def process_and_visualize(directory):
         logger.info("Searching for the largest cluster...")
         largest_cluster, num_clusters, cluster_size = find_largest_cluster(interpolated_stack)
         logger.info(f"Largest cluster found: {cluster_size} voxels out of {num_clusters} clusters")
+        # Cluster als TIFF speichern
+        cluster_tiff_path = os.path.join(OUTPUT_DIR, f"largest_cluster_{timestamp}.tif")
+        save_largest_cluster_as_tiff(largest_cluster, cluster_tiff_path)
+        logger.info(f"Largest cluster saved as TIFF at: {cluster_tiff_path}")
 
         # If no cluster was found, exit the program
         if largest_cluster is None:
@@ -158,13 +173,18 @@ def process_and_visualize(directory):
         # Generate tetrahedral mesh
         wait_for_memory()
         logger.info("Generating tetrahedral mesh...")
+        print("1")
         tetra_output_path = os.path.join(OUTPUT_DIR, f"tetramesh_{timestamp}.vtk")
+        print("2")
         tetrahedral_mesh = generate_tetrahedral_mesh(largest_cluster, 0.1, tetra_output_path)
+        print("3")
 
         if tetrahedral_mesh:
             logger.info(f"Tetrahedral mesh successfully generated and saved as: {tetra_output_path}")
+            print("4")
         else:
             logger.warning("Tetrahedral mesh could not be generated.")
+            print("4.1")
 
         logger.info("Processing completed.")
 
@@ -183,4 +203,3 @@ if __name__ == "__main__":
         logger.info("Program interrupted by user.")
     except Exception as e:
         logger.error(f"Unexpected error: {e}", exc_info=True)
-

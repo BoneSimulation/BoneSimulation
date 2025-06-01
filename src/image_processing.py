@@ -105,3 +105,25 @@ def interpolate_image_stack(image_stack, scaling_factor=0.5, chunk_size=20):
 
     logger.info(f"Interpolation completed. New volume: {scaled_stack.shape}")
     return scaled_stack
+
+
+def crop_stack_custom(stack, crop: dict):
+    """
+    Crops a 3D stack by removing specific voxel counts from each border.
+
+    crop = {
+        'z': (top, bottom),
+        'y': (front, back),
+        'x': (left, right)
+    }
+    """
+    z0, z1 = crop.get("z", (0, 0))
+    y0, y1 = crop.get("y", (0, 0))
+    x0, x1 = crop.get("x", (0, 0))
+
+    z, y, x = stack.shape
+    return stack[
+           z0: z - z1,
+           y0: y - y1,
+           x0: x - x1
+           ]

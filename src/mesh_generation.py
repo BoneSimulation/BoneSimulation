@@ -165,6 +165,7 @@ def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, outp
     """
     Erstellt ein Tetraedernetz und speichert es als VTK-Datei.
     Bei großen Volumen wird optional Downsampling angewendet.
+    Schutz gegen invertierte oder verrauschte Binärvolumina ist eingebaut.
     """
     if tetraFE is None:
         logger.error("Tetrahedral Meshing kann nicht ausgeführt werden – 'ciclope.core.tetraFE' nicht verfügbar.")
@@ -174,52 +175,56 @@ def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, outp
         if binary_volume.size == 0:
             raise ValueError("Leeres Eingangsvolumen für Tetrahedral Meshing.")
 
-        # Prüfe Volumengröße und wende ggf. Downsampling an
+        # --- Sicherheit: Volume binär machen ---
+        binary_volume = (binary_volume > 0.5).astype(np.uint8)
+
+        # --- Optional: Invertieren, wenn es wahrscheinlich falsch herum ist ---
+        if np.mean(binary_volume) > 0.5:
+            logger.warning("Binärvolumen scheint invertiert – führe Invertierung durch.")
+            binary_volume = 1 - binary_volume
+
+        # --- Downsampling bei großen Volumina ---
         if use_downsampling and binary_volume.size > max_volume_size:
             logger.info(f"Volumen zu groß für direktes Tetrahedral Meshing ({binary_volume.size} > {max_volume_size}).")
             logger.info("Wende Downsampling an...")
 
-            # Berechne Downsampling-Faktor
             reduction_factor = (max_volume_size / binary_volume.size) ** (1 / 3)
-            # Mindestens Faktor 0.5 (Halbierung)
             reduction_factor = min(reduction_factor, 0.5)
 
             from scipy.ndimage import zoom
-            downsampled = zoom(binary_volume, reduction_factor, order=0)  # order=0 für nächste-Nachbar-Interpolation
+            downsampled = zoom(binary_volume, reduction_factor, order=0)
 
-            logger.info(f"Volumen auf {downsampled.shape} verkleinert (Faktor: {reduction_factor:.3f})")
-            binary_volume = downsampled
+            # Nach Downsampling erneut binär machen
+            binary_volume = (downsampled > 0.5).astype(np.uint8)
 
-            # Passe Voxelgröße entsprechend an
+            logger.info(f"Volumen auf {binary_volume.shape} verkleinert (Faktor: {reduction_factor:.3f})")
             voxel_size = voxel_size / reduction_factor
             logger.info(f"Voxelgröße angepasst auf {voxel_size:.6f}")
 
-        # Berechne Mesh-Parameter
+
+        # --- Mesh-Parameter berechnen ---
         vs = np.ones(3) * voxel_size
         mesh_size_factor = 1.4
         max_facet_distance = mesh_size_factor * np.min(vs)
         max_cell_circumradius = 2 * mesh_size_factor * np.min(vs)
 
+        # --- Re-Binarisierung: explizites Invertieren vor dem Meshing ---
+        logger.info("Führe explizite Re-Binarisierung durch (1 ↔ 0)...")
+        binary_volume = 1 - binary_volume
+
         logger.info("Starte CGAL Tetrahedral Meshing...")
 
-        # Direktes Anwenden der cgal_mesh-Funktion auf das binäre Volumen
-        # ohne den nicht unterstützten Parameter 'surface_mesh_file'
         mesh = tetraFE.cgal_mesh(binary_volume, vs, 'tetra', max_facet_distance, max_cell_circumradius)
 
-        # Log mesh information if possible
+
+        # --- Optionale Log-Ausgabe über Zellanzahl ---
         try:
             if hasattr(mesh, 'n_cells'):
-                if callable(mesh.n_cells):
-                    cell_count = mesh.n_cells()
-                else:
-                    cell_count = mesh.n_cells
+                cell_count = mesh.n_cells() if callable(mesh.n_cells) else mesh.n_cells
             elif hasattr(mesh, 'cells'):
                 cell_count = len(mesh.cells)
             elif hasattr(mesh, 'num_cells'):
-                if callable(mesh.num_cells):
-                    cell_count = mesh.num_cells()
-                else:
-                    cell_count = mesh.num_cells
+                cell_count = mesh.num_cells() if callable(mesh.num_cells) else mesh.num_cells
             else:
                 cell_count = None
 
