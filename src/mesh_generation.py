@@ -161,7 +161,7 @@ def save_mesh_as_vtk(verts: np.ndarray, faces: np.ndarray, output_filename: str)
 
 
 def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, output_filename: str,
-                              use_downsampling=True, max_volume_size=50_000_000):
+                              use_downsampling=True, max_volume_size=100_000_000):
     """
     Erstellt ein Tetraedernetz und speichert es als VTK-Datei.
     Bei großen Volumen wird optional Downsampling angewendet.
@@ -208,10 +208,6 @@ def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, outp
         max_facet_distance = mesh_size_factor * np.min(vs)
         max_cell_circumradius = 2 * mesh_size_factor * np.min(vs)
 
-        # --- Re-Binarisierung: explizites Invertieren vor dem Meshing ---
-        logger.info("Führe explizite Re-Binarisierung durch (1 ↔ 0)...")
-        binary_volume = 1 - binary_volume
-
         logger.info("Starte CGAL Tetrahedral Meshing...")
 
         mesh = tetraFE.cgal_mesh(binary_volume, vs, 'tetra', max_facet_distance, max_cell_circumradius)
@@ -240,3 +236,15 @@ def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, outp
     except Exception as e:
         logger.error(f"Fehler beim Erstellen des Tetrahedral Meshes: {e}")
         return None
+
+
+def reverse_binary(volume: np.ndarray) -> np.ndarray:
+    """
+    Kehrt die Werte eines binären Volumens um (1 → 0, 0 → 1).
+    Gibt eine Fehlermeldung aus, wenn das Volumen nicht binär ist.
+    """
+    unique_values = np.unique(volume)
+    if not np.all(np.isin(unique_values, [0, 1])):
+        logger.warning(f"Nicht-binäre Werte im Volumen gefunden: {unique_values}. Erwarte nur 0 und 1.")
+
+    return 1 - volume

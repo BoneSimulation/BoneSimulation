@@ -21,7 +21,7 @@ from cluster_analysis import (
 from mesh_generation import (
     marching_cubes,
     save_mesh_as_vtk,
-    generate_tetrahedral_mesh
+    generate_tetrahedral_mesh, reverse_binary
 )
 from image_loading import (
     load_images_in_chunks
@@ -171,20 +171,20 @@ def process_and_visualize(directory):
             logger.error("Error during mesh generation. Skipping save.")
 
         # Generate tetrahedral mesh
+        logger.info("Inverting volume...")
+        negative_volume = reverse_binary(largest_cluster)
+
         wait_for_memory()
         logger.info("Generating tetrahedral mesh...")
-        print("1")
         tetra_output_path = os.path.join(OUTPUT_DIR, f"tetramesh_{timestamp}.vtk")
-        print("2")
-        tetrahedral_mesh = generate_tetrahedral_mesh(largest_cluster, 0.1, tetra_output_path)
-        print("3")
+
+        tetrahedral_mesh = generate_tetrahedral_mesh(negative_volume, 0.1, tetra_output_path)
 
         if tetrahedral_mesh:
             logger.info(f"Tetrahedral mesh successfully generated and saved as: {tetra_output_path}")
             print("4")
         else:
             logger.warning("Tetrahedral mesh could not be generated.")
-            print("4.1")
 
         logger.info("Processing completed.")
 
