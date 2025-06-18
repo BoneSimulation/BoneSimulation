@@ -248,3 +248,64 @@ def reverse_binary(volume: np.ndarray) -> np.ndarray:
         logger.warning(f"Nicht-binäre Werte im Volumen gefunden: {unique_values}. Erwarte nur 0 und 1.")
 
     return 1 - volume
+
+
+import os
+import numpy as np
+import logging
+from mesh_generation import marching_cubes, save_mesh_as_vtk
+
+logger = logging.getLogger(__name__)
+
+def extract_physical_blocks(volume: np.ndarray,
+                            voxel_spacing: tuple[float, float, float],
+                            block_size_mm: float,
+                            output_dir: str,
+                            timestamp: str):
+    """
+    Extracts physical 3D blocks (in mm³) from a binary volume and generates meshes using Marching Cubes.
+
+    :param volume: 3D binary volume (e.g. largest cluster)
+    :param voxel_spacing: Tuple of voxel size in mm (z_spacing, y_spacing, x_spacing)
+    :param block_size_mm: Desired physical block edge length in mm (e.g. 30 mm)
+    :param output_dir: Directory to store the mesh files
+    :param timestamp: Timestamp string for filenames
+    """
+    block_size_voxels = tuple(int(block_size_mm / spacing) for spacing in voxel_spacing)
+    stride_voxels = block_size_voxels  # no overlap
+
+    logger.info(f"Extracting blocks of size {block_size_mm}mm³ => {block_size_voxels} voxels")
+
+    z_dim, y_dim, x_dim = volume.shape
+    block_counter = 0
+
+    for z in range(0, z_dim - block_size_voxels[0] + 1, stride_voxels[0]):
+        for y in range(0, y_dim - block_size_voxels[1] + 1, stride_voxels[1]):
+            for x in range(0, x_dim - block_size_voxels[2] + 1, stride_voxels[2]):
+                z_end = z + block_size_voxels[0]
+                y_end = y + block_size_voxels[1]
+                x_end = x + block_size_voxels[2]
+
+                block = volume[z:z_end, y:y_end, x:x_end]
+                block_id = f"z{z}_y{y}_x{x}"
+
+                logger.info(f"Processing block at {block_id}...")
+
+                if block.size == 0 or np.sum(block) < 50:
+                    logger.info(f"Skipping block {block_id} – too few active voxels.")
+                    continue
+                if np.min(block) == np.max(block):
+                    logger.info(f"Skipping block {block_id} – constant value ({np.min(block)}), no surface.")
+                    continue
+
+                verts, faces = marching_cubes(block)
+
+                if verts is not None and faces is not None:
+                    mesh_path = os.path.join(output_dir, f"mesh_{block_id}_{timestamp}.vtk")
+                    save_mesh_as_vtk(verts, faces, mesh_path)
+                    logger.info(f"Saved mesh for block {block_id} to: {mesh_path}")
+                    block_counter += 1
+                else:
+                    logger.warning(f"No mesh created for block {block_id}.")
+
+    logger.info(f"Block extraction complete. {block_counter} meshes saved.")

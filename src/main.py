@@ -21,7 +21,7 @@ from cluster_analysis import (
 from mesh_generation import (
     marching_cubes,
     save_mesh_as_vtk,
-    generate_tetrahedral_mesh, reverse_binary
+    generate_tetrahedral_mesh, reverse_binary, extract_physical_blocks
 )
 from image_loading import (
     load_images_in_chunks
@@ -30,6 +30,11 @@ from file_io import (
     save_tiff_in_chunks,
     save_largest_cluster_as_tiff
 )
+
+import tifffile
+import glob
+
+from src.block_meshing import extract_and_mesh_blocks
 
 # Configure logging
 logging.basicConfig(
@@ -43,7 +48,7 @@ logger = logging.getLogger(__name__)
 MEMORY_LIMIT_PERCENT = 80  # Maximum memory usage in percent
 CHUNK_SIZE = 50  # Number of images per chunk for processing
 OUTPUT_DIR = "test_pictures"
-
+CHUNK_DIR = "chunks"
 
 def get_base_path():
     """Returns the base path of the data."""
@@ -101,18 +106,19 @@ def process_and_visualize(directory):
 
     # Process images in chunks instead of loading everything at once
     try:
+        import tifffile  # Neu hinzugefügt am Anfang
+        import glob  # Neu hinzugefügt für das Wieder-Einlesen
+
+        # ...
         data_generator = load_images_in_chunks(dataset_path, chunk_size=CHUNK_SIZE)
-        all_processed_chunks = []
 
         for i, chunk in enumerate(data_generator):
             logger.info(f"Processing chunk {i + 1} with {len(chunk)} images")
 
-            # Check memory before each processing step
             wait_for_memory()
 
-            # Process chunk
             blurred_chunk, binary_chunk, _ = process_images_globally(chunk)
-            del chunk  # Free up memory
+            del chunk
             gc.collect()
 
             wait_for_memory()
@@ -125,18 +131,45 @@ def process_and_visualize(directory):
             del closed_binary_chunk
             gc.collect()
 
-            # Save processed chunk
-            all_processed_chunks.append(interpolated_chunk)
+            # Speicherpfad für den Chunk
+            chunk_output_path = os.path.join(CHUNK_DIR, f"interpolated_chunk_{i + 1:03d}_{timestamp}.tif")
 
-            # Log progress
-            logger.info(f"Chunk {i + 1} processed. Current memory usage: {psutil.virtual_memory().percent}%")
+            # Chunk speichern (komprimiert)
+            tifffile.imwrite(
+                chunk_output_path,
+                interpolated_chunk.astype(np.uint8),  # Anpassen, falls du float brauchst
+                compression='zlib'
+            )
+            logger.info(f"Interpolated chunk {i + 1} saved to: {chunk_output_path}")
 
-        # Concatenate all processed chunks
+            logger.info(f"Reversing interpolated chunk {i + 1} for tetrahedral mesh generation...")
+            reversed_chunk = reverse_binary(interpolated_chunk)
+            tetra_chunk_output_path = os.path.join(CHUNK_DIR, f"tetramesh_chunk_{i + 1:03d}_{timestamp}.vtk")
+            chunk_mesh = generate_tetrahedral_mesh(reversed_chunk, 0.1, tetra_chunk_output_path)
+
+            if chunk_mesh:
+                logger.info(f"Tetrahedral mesh for chunk {i + 1} successfully saved as: {tetra_chunk_output_path}")
+            else:
+                logger.warning(f"Tetrahedral mesh for chunk {i + 1} could not be generated.")
+
+            # Speicher freigeben
+            del interpolated_chunk
+            gc.collect()
+
         wait_for_memory()
-        interpolated_stack = np.concatenate(all_processed_chunks, axis=0)
+        logger.info("Loading all interpolated chunks from disk...")
+
+        chunk_files = sorted(glob.glob(os.path.join(OUTPUT_DIR, f"interpolated_chunk_*_{timestamp}.tif")))
+        chunks = [tifffile.imread(path) for path in chunk_files]
+        interpolated_stack = np.concatenate(chunks, axis=0)
+
+
         interpolated_stack = crop_stack_custom(interpolated_stack, cropping_settings)
         logger.info(f"Stack cropped with custom settings defined in cropping_settings: {cropping_settings}")
-        del all_processed_chunks
+        gc.collect()
+
+        interpolated_stack = crop_stack_custom(interpolated_stack, cropping_settings)
+        logger.info(f"Stack cropped with custom settings defined in cropping_settings: {cropping_settings}")
         gc.collect()
 
         # Find the largest cluster
@@ -148,6 +181,19 @@ def process_and_visualize(directory):
         cluster_tiff_path = os.path.join(OUTPUT_DIR, f"largest_cluster_{timestamp}.tif")
         save_largest_cluster_as_tiff(largest_cluster, cluster_tiff_path)
         logger.info(f"Largest cluster saved as TIFF at: {cluster_tiff_path}")
+
+        # Physikalische Blockextraktion (z. B. 30 mm³)
+        block_size_mm = 30.0
+        voxel_spacing = (0.05, 0.05, 0.05)  # Voxelgröße (z, y, x) in mm
+
+        extract_and_mesh_blocks(
+            volume=largest_cluster,
+            voxel_spacing=voxel_spacing,
+            block_size_mm=30.0,  # oder was du willst
+            step_size_mm=15.0,  # z. B. 50 % Überschneidung
+            output_dir=OUTPUT_DIR,
+            timestamp=timestamp
+        )
 
         # If no cluster was found, exit the program
         if largest_cluster is None:
@@ -161,6 +207,8 @@ def process_and_visualize(directory):
         # Generate mesh
         wait_for_memory()
         logger.info("Generating mesh with Marching Cubes...")
+
+
         verts, faces = marching_cubes(largest_cluster)
 
         if verts is not None and faces is not None:
@@ -170,21 +218,21 @@ def process_and_visualize(directory):
         else:
             logger.error("Error during mesh generation. Skipping save.")
 
-        # Generate tetrahedral mesh
-        logger.info("Inverting volume...")
-        negative_volume = reverse_binary(largest_cluster)
 
         wait_for_memory()
         logger.info("Generating tetrahedral mesh...")
         tetra_output_path = os.path.join(OUTPUT_DIR, f"tetramesh_{timestamp}.vtk")
+        logger.info("Reversing picture")
+        reversed_picture = reverse_binary(largest_cluster)
+        tetrahedral_mesh = generate_tetrahedral_mesh(reversed_picture, 0.1, tetra_output_path)
 
-        tetrahedral_mesh = generate_tetrahedral_mesh(negative_volume, 0.1, tetra_output_path)
+
 
         if tetrahedral_mesh:
             logger.info(f"Tetrahedral mesh successfully generated and saved as: {tetra_output_path}")
             print("4")
         else:
-            logger.warning("Tetrahedral mesh could not be generated.")
+                logger.warning("Tetrahedral mesh could not be generated.")
 
         logger.info("Processing completed.")
 
