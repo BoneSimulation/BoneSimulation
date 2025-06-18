@@ -127,3 +127,15 @@ def crop_stack_custom(stack, crop: dict):
            y0: y - y1,
            x0: x - x1
            ]
+
+
+
+import os
+import numpy as np
+
+def save_blocks_as_npy(blocks, output_dir, timestamp):
+    """Saves each block as a separate .npy file."""
+    for idx, block in enumerate(blocks):
+        filename = os.path.join(output_dir, f"block_{idx:04d}_{timestamp}.npy")
+        np.save(filename, block)
+        print(f"Saved block {idx} as: {filename}")
