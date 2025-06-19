@@ -252,60 +252,49 @@ def reverse_binary(volume: np.ndarray) -> np.ndarray:
 
 import os
 import numpy as np
-import logging
-from mesh_generation import marching_cubes, save_mesh_as_vtk
+import pyvista as pv  # pyvista als VTK-Wrapper
 
-logger = logging.getLogger(__name__)
+def extract_blocks(volume, block_size_voxels, step_size_voxels):
+    """Extract as many non-empty blocks as possible from the volume."""
+    blocks = []
 
-def extract_physical_blocks(volume: np.ndarray,
-                            voxel_spacing: tuple[float, float, float],
-                            block_size_mm: float,
-                            output_dir: str,
-                            timestamp: str):
-    """
-    Extracts physical 3D blocks (in mm³) from a binary volume and generates meshes using Marching Cubes.
+    z_max, y_max, x_max = volume.shape
+    z_block, y_block, x_block = block_size_voxels
+    z_step, y_step, x_step = step_size_voxels
 
-    :param volume: 3D binary volume (e.g. largest cluster)
-    :param voxel_spacing: Tuple of voxel size in mm (z_spacing, y_spacing, x_spacing)
-    :param block_size_mm: Desired physical block edge length in mm (e.g. 30 mm)
-    :param output_dir: Directory to store the mesh files
-    :param timestamp: Timestamp string for filenames
-    """
-    block_size_voxels = tuple(int(block_size_mm / spacing) for spacing in voxel_spacing)
-    stride_voxels = block_size_voxels  # no overlap
+    block_idx = 0
 
-    logger.info(f"Extracting blocks of size {block_size_mm}mm³ => {block_size_voxels} voxels")
+    for z in range(0, z_max - z_block + 1, z_step):
+        for y in range(0, y_max - y_block + 1, y_step):
+            for x in range(0, x_max - x_block + 1, x_step):
+                block = volume[z:z + z_block, y:y + y_block, x:x + x_block]
 
-    z_dim, y_dim, x_dim = volume.shape
-    block_counter = 0
+                if np.count_nonzero(block) < 100:
+                    continue  # skip empty block
 
-    for z in range(0, z_dim - block_size_voxels[0] + 1, stride_voxels[0]):
-        for y in range(0, y_dim - block_size_voxels[1] + 1, stride_voxels[1]):
-            for x in range(0, x_dim - block_size_voxels[2] + 1, stride_voxels[2]):
-                z_end = z + block_size_voxels[0]
-                y_end = y + block_size_voxels[1]
-                x_end = x + block_size_voxels[2]
+                blocks.append((block_idx, block))
+                block_idx += 1
 
-                block = volume[z:z_end, y:y_end, x:x_end]
-                block_id = f"z{z}_y{y}_x{x}"
+    print(f"Total blocks extracted: {block_idx}")
+    return blocks
 
-                logger.info(f"Processing block at {block_id}...")
 
-                if block.size == 0 or np.sum(block) < 50:
-                    logger.info(f"Skipping block {block_id} – too few active voxels.")
-                    continue
-                if np.min(block) == np.max(block):
-                    logger.info(f"Skipping block {block_id} – constant value ({np.min(block)}), no surface.")
-                    continue
+def save_blocks_as_vtk(blocks, voxel_spacing, output_dir, timestamp):
+    """Save each block as VTK file."""
+    os.makedirs(output_dir, exist_ok=True)
 
-                verts, faces = marching_cubes(block)
+    for block_idx, block in blocks:
+        # Convert numpy block to PyVista grid
+        grid = pv.UniformGrid()
+        grid.dimensions = np.array(block.shape)[::-1] + 1  # (x, y, z) + 1
+        grid.origin = (0.0, 0.0, 0.0)
+        grid.spacing = voxel_spacing[::-1]  # (x, y, z)
 
-                if verts is not None and faces is not None:
-                    mesh_path = os.path.join(output_dir, f"mesh_{block_id}_{timestamp}.vtk")
-                    save_mesh_as_vtk(verts, faces, mesh_path)
-                    logger.info(f"Saved mesh for block {block_id} to: {mesh_path}")
-                    block_counter += 1
-                else:
-                    logger.warning(f"No mesh created for block {block_id}.")
+        # Add binary data as scalar field
+        grid.cell_data["values"] = block.flatten(order="F")
 
-    logger.info(f"Block extraction complete. {block_counter} meshes saved.")
+        # Save VTK
+        vtk_filename = os.path.join(output_dir, f"block_{block_idx:04d}_{timestamp}.vtk")
+        grid.save(vtk_filename)
+
+        logger.info(f"Saved block {block_idx} as VTK: {vtk_filename}")
