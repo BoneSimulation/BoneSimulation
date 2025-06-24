@@ -1,0 +1,5 @@
+Beste Parameter:
+{'threshold': 0.23216455319528395, 'kernel_size': 3, 'scaling': 0.8120020478711456, 'learning_rate': 0.20516409423988896, 'max_depth': 8, 'n_estimators': 53}
+Bestes Score (neg. MSE): -0.9501
+INFO:__main__:Trial: score=-8.1226, params={'threshold': 0.867361453200658, 'kernel_size': 8, 'scaling': 0.6072229867270538, 'learning_rate': 0.2870801125799933, 'max_depth': 3, 'n_estimators': 51}
+[I 2025-06-19 20:29:07,858] Trial 49 finished with value: -8.122570233798523 and parameters: {'threshold': 0.867361453200658, 'kernel_size': 8, 'scaling': 0.6072229867270538, 'learning_rate': 0.2870801125799933, 'max_depth': 3, 'n_estimators': 51}. Best is trial 8 with value: -0.9501402036582103.

@@ -269,7 +269,7 @@ def extract_blocks(volume, block_size_voxels, step_size_voxels):
             for x in range(0, x_max - x_block + 1, x_step):
                 block = volume[z:z + z_block, y:y + y_block, x:x + x_block]
 
-                if np.count_nonzero(block) < 100:
+                if np.count_nonzero(block) == 0:
                     continue  # skip empty block
 
                 blocks.append((block_idx, block))

@@ -29,7 +29,7 @@ def process_images_globally(data_array):
     return blurred, binary, threshold
 
 
-def apply_morphological_closing(binary_images, ball_radius=3):
+def apply_morphological_closing(binary_images, ball_radius=2):
     """Performs morphological closing to close small gaps."""
     logger.info(f"Starting morphological closing with radius {ball_radius}...")
 
@@ -56,7 +56,7 @@ def apply_morphological_closing(binary_images, ball_radius=3):
     return result
 
 
-def interpolate_image_stack(image_stack, scaling_factor=0.5, chunk_size=20):
+def interpolate_image_stack(image_stack, scaling_factor=1.0, chunk_size=20):
     """
     Interpolates the image using spline interpolation in smaller chunks
     to avoid memory issues.

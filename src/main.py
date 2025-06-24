@@ -34,6 +34,7 @@ from image_loading import load_images_in_chunks
 from file_io import save_largest_cluster_as_tiff
 from src.calculix_export import export_to_calculix
 from src.reporting import extract_statistics_from_volume
+from src.block_extraction import extract_blocks_raster
 
 # Configure logging
 logging.basicConfig(
@@ -186,27 +187,23 @@ def process_and_visualize(directory, test_mode="none"):
         else:
             logger.warning("Tetrahedral mesh generation failed.")
 
-        block_size_mm = 0.003
-        step_size_mm = 15.0  # 50 % Überlappung
-        voxel_spacing = (0.05, 0.05, 0.05)  # (z, y, x)
+        block_size_mm = 30.0
+        voxel_spacing = (0.05, 0.05, 0.05)
 
-        block_size_voxels = tuple(int(block_size_mm / s) for s in voxel_spacing)
-        step_size_voxels = tuple(int(step_size_mm / s) for s in voxel_spacing)
+        # Cube size in voxels:
+        block_size_voxels = int(block_size_mm / voxel_spacing[0])  # weil spacing isotrop
 
-        blocks = extract_blocks(
-            volume=largest_cluster,
-            block_size_voxels=block_size_voxels,
-            step_size_voxels=step_size_voxels
-        )
-
-        # Blöcke als VTK speichern
         blocks_output_dir = os.path.join(OUTPUT_DIR, f"blocks_{timestamp}")
-        save_blocks_as_vtk(
-            blocks=blocks,
-            voxel_spacing=voxel_spacing,
-            output_dir=blocks_output_dir,
-            timestamp=timestamp
-        )
+        if test_mode != "dry":
+            extract_blocks_raster(
+                volume=largest_cluster,
+                block_size_voxels=block_size_voxels,
+                output_dir=blocks_output_dir,
+                voxel_spacing=voxel_spacing,
+                write_tetra_mesh=True
+            )
+        else:
+            logger.info("[Dry] Skipping block extraction.")
 
         # Export to CalculiX
         material_props = {'E': 18000.0, 'nu': 0.3}
