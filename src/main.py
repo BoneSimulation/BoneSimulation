@@ -16,6 +16,10 @@ import gc
 import time
 import numpy as np
 import argparse
+import stat
+import faulthandler
+import subprocess
+import meshio
 
 from image_processing import (
     process_images_globally,
@@ -47,7 +51,14 @@ logger = logging.getLogger(__name__)
 # Configuration
 MEMORY_LIMIT_PERCENT = 80
 CHUNK_SIZE = 50
-OUTPUT_DIR = "test_pictures"
+OUTPUT_DIR_MESHES = "pictures"
+
+PDF_REPORT_DIR = "report"
+CALCULIX_REPORT_DIR = "calculix"
+LOGS_DIR = "logs"
+
+DATASET_BIG = "data/bigdataset"
+DATASET_SMALL = "data/dataset"
 
 # Crop settings
 cropping_settings = {
@@ -57,19 +68,58 @@ cropping_settings = {
 }
 
 
-def generate_run_script(input_inp_path, output_dir):
+def export_to_calculix(mesh_points, mesh_elements, material_props, inp_path):
+    mesh = meshio.Mesh(
+        points=mesh_points,
+        cells={"tetra": mesh_elements}
+    )
+    meshio.write(inp_path, mesh)
+    with open(inp_path, "a") as f:
+        f.write("*MATERIAL, NAME=Material1\n")
+        f.write("*ELASTIC\n")
+        f.write(f"{material_props['E']}, {material_props['nu']}\n")
+        f.write("*END MATERIAL\n")
+
+
+def generate_run_script(input_inp_path, preferred_solver, output_dir):
     run_script_path = os.path.join(output_dir, "run_simulation.sh")
+
+    if preferred_solver == "":
+        preferred_solver = "./cgx_2.22"
+
     with open(run_script_path, "w") as f:
         f.write("#!/bin/bash\n")
         f.write("# Automatisch erzeugtes Run-Script für CalculiX\n")
-        f.write(f"ccx -i {os.path.splitext(os.path.basename(input_inp_path))[0]}\n")
+        num_threads = get_max_threads()
+        f.write(f"export OMP_NUM_THREADS={num_threads}\n")
+        f.write(f"{preferred_solver} -i {os.path.splitext(os.path.basename(input_inp_path))[0]} \n")
 
     os.chmod(run_script_path, 0o755)
     logger.info(f"Run-Script gespeichert: {run_script_path}")
+    print(f"Run-Script gespeichert: {run_script_path}")
+    print(f"Verwendete Threads: {num_threads}")
+
+
+def get_max_threads():
+    output = subprocess.check_output(['lscpu'], universal_newlines=True)
+
+    cores = 0
+    threads_per_core = 0
+
+    for line in output.splitlines():
+        if "Core(s) per socket:" in line:
+            cores = int(line.split(":")[1].strip())
+        elif "Thread(s) per core:" in line:
+            threads_per_core = int(line.split(":")[1].strip())
+
+    max_threads = cores * threads_per_core
+    print(f"Maximale Anzahl an Threads: {max_threads}")
+    return max_threads
+
 
 
 def get_base_path():
-    return "/home/mathias/PycharmProjects/BoneSimulation/data"
+    return "data"
 
 def check_memory():
     memory = psutil.virtual_memory()
@@ -89,7 +139,7 @@ def ensure_output_dir(dir_path):
 def process_and_visualize(directory, test_mode="none"):
     logger.info(f"Starte Processing Pipeline (test_mode = '{test_mode}')")
 
-    ensure_output_dir(OUTPUT_DIR)
+    ensure_output_dir(OUTPUT_DIR_MESHES)
     timestamp = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
 
     dataset_path = os.path.join(directory, "bigdataset")
@@ -109,7 +159,7 @@ def process_and_visualize(directory, test_mode="none"):
         logger.warning("TESTMODE: Complete (alle Schritte und Reports werden geprüft)")
 
     logger.info(f"CHUNK_SIZE = {CHUNK_SIZE}")
-    logger.info(f"Output dir  = {OUTPUT_DIR}")
+    logger.info(f"Output dir  = {OUTPUT_DIR_MESHES}")
 
     logger.info(f"Loading images from: {dataset_path}")
     data_generator = load_images_in_chunks(dataset_path, chunk_size=CHUNK_SIZE)
@@ -150,7 +200,7 @@ def process_and_visualize(directory, test_mode="none"):
         largest_cluster, num_clusters, cluster_size = find_largest_cluster(interpolated_stack)
         logger.info(f"Largest cluster: {cluster_size} voxels in {num_clusters} clusters")
 
-        cluster_tiff_path = os.path.join(OUTPUT_DIR, f"largest_cluster_{timestamp}.tif")
+        cluster_tiff_path = os.path.join(OUTPUT_DIR_MESHES, f"largest_cluster_{timestamp}.tif")
         if test_mode not in ("dry",):
             save_largest_cluster_as_tiff(largest_cluster, cluster_tiff_path)
             logger.info(f"Largest cluster saved: {cluster_tiff_path}")
@@ -167,7 +217,7 @@ def process_and_visualize(directory, test_mode="none"):
         wait_for_memory()
         logger.info("Generating surface mesh...")
         verts, faces = marching_cubes(largest_cluster)
-        mesh_path = os.path.join(OUTPUT_DIR, f"mesh_{timestamp}.vtk")
+        mesh_path = os.path.join(OUTPUT_DIR_MESHES, f"mesh_{timestamp}.vtk")
         if verts is not None and faces is not None:
             if test_mode not in ("dry",):
                 save_mesh_as_vtk(verts, faces, mesh_path)
@@ -180,7 +230,7 @@ def process_and_visualize(directory, test_mode="none"):
         wait_for_memory()
         logger.info("Generating tetrahedral mesh...")
         reversed_cluster = reverse_binary(largest_cluster)
-        tetra_path = os.path.join(OUTPUT_DIR, f"tetramesh_{timestamp}.vtk")
+        tetra_path = os.path.join(OUTPUT_DIR_MESHES, f"tetramesh_{timestamp}.vtk")
         tetra_mesh = generate_tetrahedral_mesh(reversed_cluster, 0.1, tetra_path)
         if tetra_mesh:
             logger.info(f"Tetrahedral mesh saved: {tetra_path}")
@@ -189,16 +239,14 @@ def process_and_visualize(directory, test_mode="none"):
 
         block_size_mm = 30.0
         voxel_spacing = (0.05, 0.05, 0.05)
+        block_size_voxels = int(block_size_mm / voxel_spacing[0])
 
-        # Cube size in voxels:
-        block_size_voxels = int(block_size_mm / voxel_spacing[0])  # weil spacing isotrop
-
-        blocks_output_dir = os.path.join(OUTPUT_DIR, f"blocks_{timestamp}")
+        blocks_output_dir = os.path.join(OUTPUT_DIR_MESHES, f"blocks_{timestamp}")
         if test_mode != "dry":
             extract_blocks_raster(
                 volume=largest_cluster,
                 block_size_voxels=block_size_voxels,
-                output_dir=blocks_output_dir,
+                output_dir="output_blocks",
                 voxel_spacing=voxel_spacing,
                 write_tetra_mesh=True
             )
@@ -207,23 +255,26 @@ def process_and_visualize(directory, test_mode="none"):
 
         # Export to CalculiX
         material_props = {'E': 18000.0, 'nu': 0.3}
-        inp_path = os.path.join(OUTPUT_DIR, f"bone_sim_{timestamp}.inp")
+        inp_path = os.path.join(CALCULIX_REPORT_DIR, f"bone_sim_{timestamp}.inp")
 
         # --- Hier: Dummy points/elements ersetzen ---
-        mesh_points = np.array([[0.0, 0.0, 0.0]])
-        mesh_elements = np.array([[1, 1, 1, 1]])
+        mesh = meshio.read(tetra_path)
+        mesh_points = mesh.points
+        mesh_elements = mesh.cells_dict['tetra']
 
         if test_mode not in ("dry",):
+            preferred_solver = input("Please enter the preferred solver you would like to use: (default ccx)")
             export_to_calculix(mesh_points, mesh_elements, material_props, inp_path)
-            generate_run_script(inp_path, OUTPUT_DIR)
+            generate_run_script(inp_path, preferred_solver, CALCULIX_REPORT_DIR)
+            os.system("/home/mathias/PycharmProjects/BoneSimulation/test_pictures/run_simulation.sh")
         else:
-            logger.info(f"[Dry] Skip Calculix export.")
+            logger.info(f"[Dry] Skip CalculiX export.")
 
         # Report
         cluster_sizes, porosity, num_clusters = extract_statistics_from_volume(largest_cluster)
         logger.info(f"Statistik extrahiert: {num_clusters} Cluster, Porosität {porosity:.2%}")
 
-        report_path = os.path.join(OUTPUT_DIR, f"analysis_report_{timestamp}.pdf")
+        report_path = os.path.join(PDF_REPORT_DIR, f"analysis_report_{timestamp}.pdf")
         if test_mode not in ("dry",):
             from src.reporting import generate_report
             generate_report(cluster_sizes, porosity, report_path)
@@ -240,6 +291,9 @@ def process_and_visualize(directory, test_mode="none"):
 
 if __name__ == "__main__":
     start_time = timeit.default_timer()
+    with open(os.path.join(LOGS_DIR, "fault_log.txt"), "w") as f:
+        faulthandler.enable(file=f)
+    faulthandler.enable()
     try:
         parser = argparse.ArgumentParser(description="BoneSimulation Pipeline")
         parser.add_argument("--test", type=str, default="none",

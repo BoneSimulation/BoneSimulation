@@ -204,7 +204,7 @@ def generate_tetrahedral_mesh(binary_volume: np.ndarray, voxel_size: float, outp
 
         # --- Mesh-Parameter berechnen ---
         vs = np.ones(3) * voxel_size
-        mesh_size_factor = 1.4
+        mesh_size_factor = 10
         max_facet_distance = mesh_size_factor * np.min(vs)
         max_cell_circumradius = 2 * mesh_size_factor * np.min(vs)
 

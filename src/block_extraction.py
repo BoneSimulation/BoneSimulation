@@ -1,9 +1,12 @@
-# src/block_extraction.py
-
 import os
 import numpy as np
 import vtk
 import vtkmodules.util.numpy_support as numpy_support
+
+from skimage.filters import threshold_otsu, gaussian
+from skimage import morphology, measure
+from scipy import ndimage
+
 from mesh_generation import reverse_binary, generate_tetrahedral_mesh
 
 def numpy2vti(array: np.ndarray, output_filename: str):
@@ -11,9 +14,9 @@ def numpy2vti(array: np.ndarray, output_filename: str):
     if array.ndim != 3:
         raise ValueError("Input array must be 3-dimensional.")
 
-    dims = array.shape  # (z, y, x)
+    dims = array.shape
     vtk_image = vtk.vtkImageData()
-    vtk_image.SetDimensions(dims[::-1])  # VTK expects (x, y, z)
+    vtk_image.SetDimensions(dims[::-1])  # (z, y, x) → (x, y, z)
     vtk_image.SetSpacing(1.0, 1.0, 1.0)
     vtk_image.SetOrigin(0.0, 0.0, 0.0)
 
@@ -30,17 +33,16 @@ def numpy2vti(array: np.ndarray, output_filename: str):
 
 def extract_blocks_raster(
     volume: np.ndarray,
-    block_size_voxels: int,  # scalar → cube size in voxels
+    block_size_voxels: int,
     output_dir: str,
     voxel_spacing=(0.05, 0.05, 0.05),
-    write_tetra_mesh=True
+    write_tetra_mesh=True,
+    min_voxels_threshold: int = 99999
 ):
     """Extract cubic blocks from volume, save as VTI, optionally tetra-mesh."""
     os.makedirs(output_dir, exist_ok=True)
 
     z_max, y_max, x_max = volume.shape
-
-    # Compute number of full cubic blocks that fit
     blocks_per_dim = (
         z_max // block_size_voxels,
         y_max // block_size_voxels,
@@ -61,23 +63,44 @@ def extract_blocks_raster(
                 x_end = x_start + block_size_voxels
 
                 block = volume[z_start:z_end, y_start:y_end, x_start:x_end]
-                expected_shape = (block_size_voxels, block_size_voxels, block_size_voxels)
-                if block.shape != expected_shape:
+                if block.shape != (block_size_voxels, block_size_voxels, block_size_voxels):
                     raise RuntimeError(
-                        f"Wrong block shape {block.shape} at (i={i}, j={j}, k={k}), expected {expected_shape}"
+                        f"Wrong block shape {block.shape} at (i={i}, j={j}, k={k})"
                     )
 
-                # Save block as VTI
-                block_filename = f"block_{counter:04d}.vti"
-                vti_path = os.path.join(output_dir, block_filename)
+                # Save raw block
+                vti_path = os.path.join(output_dir, f"block_{counter:04d}.vti")
                 numpy2vti(block, vti_path)
                 print(f"[{counter:04d}] Saved VTI: {vti_path}")
 
-                # Optionally: Tetra mesh
+                # Preprocessing: Gaussian smoothing → Otsu threshold → morph closing → largest component
+                smoothed = gaussian(block, sigma=1, preserve_range=True)
+                threshold = threshold_otsu(smoothed)
+                binary = smoothed < threshold
+                binary = morphology.closing(binary, footprint=morphology.ball(3))
+
+                labels, _ = measure.label(binary, return_num=True, connectivity=1)
+                counts = np.bincount(labels.ravel())
+
+                if len(counts) <= 1:
+                    print(f"[{counter:04d}] No components found.")
+                    counter += 1
+                    continue
+
+                largest_label = counts[1:].argmax() + 1
+                mask = labels == largest_label
+
+                voxels_in_mask = np.sum(mask)
+                if voxels_in_mask < min_voxels_threshold:
+                    print(f"[{counter:04d}] Skipped: {voxels_in_mask} voxels (too small)")
+                    counter += 1
+                    continue
+
+                # Tetra-Meshing
                 if write_tetra_mesh:
-                    reversed_block = reverse_binary(block)
+                    reversed_mask = reverse_binary(mask.astype(np.uint8))  # or float if required
                     tetra_path = os.path.join(output_dir, f"block_{counter:04d}_tetra.vtk")
-                    tetra_mesh = generate_tetrahedral_mesh(reversed_block, 0.1, tetra_path)
+                    tetra_mesh = generate_tetrahedral_mesh(reversed_mask, 0.1, tetra_path)
                     if tetra_mesh:
                         print(f"[{counter:04d}] Tetra mesh saved: {tetra_path}")
                     else:
