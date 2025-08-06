@@ -38,7 +38,7 @@ from image_loading import load_images_in_chunks
 from file_io import save_largest_cluster_as_tiff
 from src.calculix_export import export_to_calculix
 from src.reporting import extract_statistics_from_volume
-from src.block_extraction import extract_blocks_raster
+from src.block_extraction import extract_blocks_raster, improved_block_extraction_integration
 
 # Configure logging
 logging.basicConfig(
@@ -82,22 +82,27 @@ def export_to_calculix(mesh_points, mesh_elements, material_props, inp_path):
 
 
 def generate_run_script(input_inp_path, preferred_solver, output_dir):
-    run_script_path = os.path.join(output_dir, "run_simulation.sh")
+    run_script_path = os.path.join(CALCULIX_REPORT_DIR, "run_simulation.sh")
 
     if preferred_solver == "":
-        preferred_solver = "./cgx_2.22"
+        preferred_solver = "./ccx_2.22"
+
+    input_basename = os.path.splitext(os.path.basename(input_inp_path))[0]
+    input_dir = os.path.dirname(os.path.abspath(input_inp_path))
 
     with open(run_script_path, "w") as f:
         f.write("#!/bin/bash\n")
         f.write("# Automatisch erzeugtes Run-Script für CalculiX\n")
         num_threads = get_max_threads()
         f.write(f"export OMP_NUM_THREADS={num_threads}\n")
-        f.write(f"{preferred_solver} -i {os.path.splitext(os.path.basename(input_inp_path))[0]} \n")
+        f.write(f"cd \"{input_dir}\"\n")
+        f.write(f"{preferred_solver} -i {input_basename}\n")
 
     os.chmod(run_script_path, 0o755)
     logger.info(f"Run-Script gespeichert: {run_script_path}")
     print(f"Run-Script gespeichert: {run_script_path}")
     print(f"Verwendete Threads: {num_threads}")
+
 
 
 def get_max_threads():
@@ -192,8 +197,8 @@ def process_and_visualize(directory, test_mode="none"):
         del interpolated_chunks
         gc.collect()
 
-        interpolated_stack = crop_stack_custom(interpolated_stack, cropping_settings)
-        logger.info(f"Stack cropped with settings: {cropping_settings}")
+        #interpolated_stack = crop_stack_custom(interpolated_stack, cropping_settings)
+        #logger.info(f"Stack cropped with settings: {cropping_settings}")
 
         wait_for_memory()
         logger.info("Finding largest cluster...")
@@ -237,36 +242,38 @@ def process_and_visualize(directory, test_mode="none"):
         else:
             logger.warning("Tetrahedral mesh generation failed.")
 
-        block_size_mm = 30.0
-        voxel_spacing = (0.05, 0.05, 0.05)
-        block_size_voxels = int(block_size_mm / voxel_spacing[0])
 
-        blocks_output_dir = os.path.join(OUTPUT_DIR_MESHES, f"blocks_{timestamp}")
-        if test_mode != "dry":
-            extract_blocks_raster(
-                volume=largest_cluster,
-                block_size_voxels=block_size_voxels,
-                output_dir="output_blocks",
-                voxel_spacing=voxel_spacing,
-                write_tetra_mesh=True
-            )
-        else:
-            logger.info("[Dry] Skipping block extraction.")
+        wait_for_memory()
+        logger.info("Starting improved block extraction...")
+        blocks_output_dir, num_blocks, successful_meshes = improved_block_extraction_integration(
+            largest_cluster, timestamp, test_mode, OUTPUT_DIR_MESHES
+        )
+        logger.info(f"Block extraction completed. Output directory: {blocks_output_dir}")
+        logger.info(f"Extracted {num_blocks} blocks, {successful_meshes} with successful tetrahedral meshes")
 
-        # Export to CalculiX
-        material_props = {'E': 18000.0, 'nu': 0.3}
-        inp_path = os.path.join(CALCULIX_REPORT_DIR, f"bone_sim_{timestamp}.inp")
+        # Export to CalculiX (nur wenn Tetraeder-Mesh erfolgreich war)
+        wait_for_memory()
+        if tetra_mesh and test_mode not in ("dry",):
+            material_props = {'E': 18000.0, 'nu': 0.3}
+            inp_path = os.path.join(CALCULIX_REPORT_DIR, f"bone_sim_{timestamp}.inp")
 
-        # --- Hier: Dummy points/elements ersetzen ---
-        mesh = meshio.read(tetra_path)
-        mesh_points = mesh.points
-        mesh_elements = mesh.cells_dict['tetra']
+            try:
+                mesh = meshio.read(tetra_path)
+                mesh_points = mesh.points
+                mesh_elements = mesh.cells_dict['tetra']
 
-        if test_mode not in ("dry",):
-            preferred_solver = input("Please enter the preferred solver you would like to use: (default ccx)")
-            export_to_calculix(mesh_points, mesh_elements, material_props, inp_path)
-            generate_run_script(inp_path, preferred_solver, CALCULIX_REPORT_DIR)
-            os.system("/home/mathias/PycharmProjects/BoneSimulation/test_pictures/run_simulation.sh")
+                preferred_solver = input(
+                    "Please enter the preferred solver you would like to use (default: ccx): ").strip()
+                if not preferred_solver:
+                    preferred_solver = "ccx"
+
+                export_to_calculix(mesh_points, mesh_elements, material_props, inp_path)
+                generate_run_script(inp_path, preferred_solver, CALCULIX_REPORT_DIR)
+                executable = os.path.join(CALCULIX_REPORT_DIR, f"run_simulation.sh")
+                os.system(executable)
+                logger.info("CalculiX export and execution completed.")
+            except Exception as e:
+                logger.error(f"CalculiX export failed: {e}")
         else:
             logger.info(f"[Dry] Skip CalculiX export.")
 
