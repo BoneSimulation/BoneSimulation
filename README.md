@@ -27,7 +27,7 @@
 
 ## Overview
 
-**BoneSimulation** is a scientific software platform developed as part of the **HLRS (High Performance Computing Center Stuttgart)** project. It transforms stacks of micro-CT TIFF images of trabecular bone into fully parameterised finite-element models ready for structural simulation.
+**BoneSimulation** is a scientific software platform developed as part of the SimulierteWelten project. It transforms stacks of micro-CT TIFF images of trabecular bone into fully parameterised finite-element models ready for structural simulation.
 
 The pipeline covers every processing stage end-to-end:
 
@@ -245,4 +245,4 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 ---
 
-*Developed as part of the HLRS computational science project. For questions, open an issue on GitHub.*
+*Developed as part of the SimulierteWelten computational science project. For questions, open an issue on GitHub.*
