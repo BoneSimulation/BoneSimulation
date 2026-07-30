@@ -3,7 +3,7 @@ PyMCubes
 
 numpy~=1.26.4
 matplotlib~=3.9.2
-pillow~=11.1.0
+pillow~=12.3.0
 scikit-image~=0.24.0
 mayavi~=4.8.2
 colorama~=0.4.6
