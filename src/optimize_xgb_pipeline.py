@@ -21,6 +21,8 @@ except ImportError:
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+X_blocks = None
+y_labels = None
 
 @njit
 def fast_triangle_area(v0, v1, v2):

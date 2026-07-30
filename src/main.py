@@ -36,7 +36,6 @@ from mesh_generation import (
 )
 from image_loading import load_images_in_chunks
 from file_io import save_largest_cluster_as_tiff
-from src.calculix_export import export_to_calculix
 from src.reporting import extract_statistics_from_volume
 from src.block_extraction import extract_blocks_raster, improved_block_extraction_integration
 

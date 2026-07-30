@@ -184,7 +184,7 @@ dependencies:
   - packaging=24.1=pyhd8ed1ab_0
   - pandas=2.2.3=py312hf9745cd_1
   - pcre2=10.44=hba22ea6_2
-  - pillow=10.4.0=py312h56024de_1
+  - pillow>=12.3.0
   - pixman=0.43.2=h59595ed_0
   - proj=9.5.0=h12925eb_0
   - propcache=0.2.0=py312h66e93f0_2
